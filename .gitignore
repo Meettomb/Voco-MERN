@@ -2,9 +2,12 @@
 
 # dependencies
 /node_modules
+/backend/node_modules/
 /.pnp
 .pnp.js
-
+# environment variables (VERY IMPORTANT)
+.env
+/backend/.env
 # testing
 /coverage
 
