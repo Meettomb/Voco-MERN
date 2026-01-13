@@ -1,0 +1,89 @@
+{
+  "nav": {
+    "home": "Home",
+    "learnWords": "Learn Words",
+    "videos": "Videos",
+    "mcqs": "MCQs",
+    "practice": "Practice",
+    "progress": "Progress",
+    "login": "Login | Sign Up"
+  },
+  "home": {
+    "hero-section": {
+      "titleLine1": "Learn Languages",
+      "titleLine2": "One Word at a Time",
+      "description": "Improve your English, Hindi, Gujarati, and more using daily words, free videos, and MCQ-based practice.",
+      "cta": {
+        "primary": "Get Started Free",
+        "secondary": "Explore Words"
+      },
+      "flow": {
+        "words": "Words",
+        "videos": "Videos",
+        "mcqs": "MCQs",
+        "confidence": "Confidence"
+      }
+    },
+    "howItWorks": {
+      "title": "How VOCO Works",
+      "subtitle": "A simple and effective way to learn languages using words, videos, and practice.",
+      "step1": {
+        "title": "Learn Words",
+        "description": "Build vocabulary with daily useful words, meanings, examples, and pronunciation."
+      },
+      "step2": {
+        "title": "Watch Videos",
+        "description": "Understand real-life usage and pronunciation through short explanation videos."
+      },
+      "step3": {
+        "title": "Practice with MCQs",
+        "description": "Test your understanding with MCQs and get instant feedback to improve faster."
+      }
+    }
+  },
+  "signIn": {
+    "title": "Sign In",
+    "subtitle": "Welcome back! Please enter your credentials.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter password",
+    "loginButton": "Login",
+    "noAccount": "Don’t have an account?",
+    "register": "Register",
+    "errors": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email address",
+      "passwordRequired": "Password is required",
+      "passwordLength": "Password must be at least 6 characters"
+    }
+  },
+  "signUp": {
+    "title": "Create Account",
+    "subtitle": "Please fill in the details to create your account",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "Enter username",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter email",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "Enter phone number",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter password",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter password",
+    "signUpButton": "Sign Up",
+    "haveAccount": "Already have an account?",
+    "signIn": "Sign In",
+    "errors": {
+      "usernameRequired": "Username is required",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email address",
+      "phoneRequired": "Phone number is required",
+      "phoneInvalid": "Please enter a valid 10-digit phone number",
+      "passwordRequired": "Password is required",
+      "passwordLength": "Password must be at least 6 characters",
+      "confirmPasswordRequired": "Confirm password is required",
+      "passwordMismatch": "Passwords do not match"
+    }
+  }
+}
