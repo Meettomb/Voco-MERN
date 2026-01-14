@@ -59,32 +59,38 @@
     }
   },
   "signUp": {
-  "title": "खाता बनाएं",
-  "subtitle": "कृपया अपना खाता बनाने के लिए विवरण भरें",
-  "usernameLabel": "उपयोगकर्ता नाम",
-  "usernamePlaceholder": "उपयोगकर्ता नाम दर्ज करें",
-  "emailLabel": "ईमेल",
-  "emailPlaceholder": "ईमेल दर्ज करें",
-  "phoneLabel": "फोन नंबर",
-  "phonePlaceholder": "फोन नंबर दर्ज करें",
-  "passwordLabel": "पासवर्ड",
-  "passwordPlaceholder": "पासवर्ड दर्ज करें",
-  "confirmPasswordLabel": "पासवर्ड की पुष्टि करें",
-  "confirmPasswordPlaceholder": "पासवर्ड दोबारा दर्ज करें",
-  "signUpButton": "पंजीकरण करें",
-  "haveAccount": "पहले से खाता है?",
-  "signIn": "लॉग इन करें",
-  "errors": {
-    "usernameRequired": "उपयोगकर्ता नाम आवश्यक है",
-    "emailRequired": "ईमेल आवश्यक है",
-    "emailInvalid": "कृपया एक वैध ईमेल पता दर्ज करें",
-    "phoneRequired": "फोन नंबर आवश्यक है",
-    "phoneInvalid": "कृपया 10 अंकों का वैध फोन नंबर दर्ज करें",
-    "passwordRequired": "पासवर्ड आवश्यक है",
-    "passwordLength": "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए",
-    "confirmPasswordRequired": "पासवर्ड की पुष्टि आवश्यक है",
-    "passwordMismatch": "पासवर्ड मेल नहीं खा रहे हैं"
+    "title": "खाता बनाएं",
+    "subtitle": "कृपया अपना खाता बनाने के लिए विवरण भरें",
+    "usernameLabel": "उपयोगकर्ता नाम",
+    "usernamePlaceholder": "उपयोगकर्ता नाम दर्ज करें",
+    "emailLabel": "ईमेल",
+    "emailPlaceholder": "ईमेल दर्ज करें",
+    "phoneLabel": "फोन नंबर",
+    "phonePlaceholder": "फोन नंबर दर्ज करें",
+    "passwordLabel": "पासवर्ड",
+    "passwordPlaceholder": "पासवर्ड दर्ज करें",
+    "confirmPasswordLabel": "पासवर्ड की पुष्टि करें",
+    "confirmPasswordPlaceholder": "पासवर्ड दोबारा दर्ज करें",
+    "signUpButton": "पंजीकरण करें",
+    "haveAccount": "पहले से खाता है?",
+    "signIn": "लॉग इन करें",
+    "errors": {
+      "usernameRequired": "उपयोगकर्ता नाम आवश्यक है",
+      "emailRequired": "ईमेल आवश्यक है",
+      "emailInvalid": "कृपया एक वैध ईमेल पता दर्ज करें",
+      "phoneRequired": "फोन नंबर आवश्यक है",
+      "phoneInvalid": "कृपया 10 अंकों का वैध फोन नंबर दर्ज करें",
+      "passwordRequired": "पासवर्ड आवश्यक है",
+      "passwordLength": "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए",
+      "confirmPasswordRequired": "पासवर्ड की पुष्टि आवश्यक है",
+      "passwordMismatch": "पासवर्ड मेल नहीं खा रहे हैं"
+    }
+  },
+  "OtpPage": {
+    "title": "ओटीपी सत्यापन",
+    "subtitle": "आपके ईमेल पर भेजा गया 6 अंकों का कोड दर्ज करें",
+    "verifyButton": "ओटीपी सत्यापित करें",
+    "notReceived": "कोड प्राप्त नहीं हुआ?",
+    "resend": "पुनः भेजें"
   }
-}
-
 }

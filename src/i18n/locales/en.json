@@ -85,5 +85,17 @@
       "confirmPasswordRequired": "Confirm password is required",
       "passwordMismatch": "Passwords do not match"
     }
+  },
+
+  "OtpPage": {
+    "title": "Verify OTP",
+    "subtitle": "Enter the 6-digit code sent to your email",
+    "verifyButton": "Verify OTP",
+    "notReceived": "Didn’t receive the code?",
+    "resend": "Resend"
   }
+
+
+
+
 }

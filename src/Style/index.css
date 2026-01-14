@@ -752,5 +752,108 @@ h1, h2, h3 {
 
 
 
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* OTP Page */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+.otp-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--color-bg-main);
+}
+
+.otp-card {
+  background: var(--color-bg-card);
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  color: var(--color-text-primary);
+}
+
+/* Title */
+.otp-card h2 {
+  margin-bottom: 8px;
+  color: var(--color-text-primary);
+}
+
+/* Subtitle */
+.otp-subtitle {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+}
+
+/* OTP Inputs */
+.otp-inputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.otp-inputs input {
+  width: 48px;
+  height: 54px;
+  text-align: center;
+  font-size: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-medium);
+  background: var(--color-bg-section);
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.otp-inputs input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+/* Verify Button */
+.otp-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.otp-btn:hover {
+  background: var(--btn-primary-hover);
+}
+
+.otp-btn:active {
+  transform: scale(0.98);
+}
+
+/* Resend Text */
+.otp-resend {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.otp-resend span {
+  color: var(--color-primary);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.otp-resend span:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
 
 
