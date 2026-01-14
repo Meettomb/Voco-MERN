@@ -39,6 +39,32 @@
         "title": "Practice with MCQs",
         "description": "Test your understanding with MCQs and get instant feedback to improve faster."
       }
+    },
+    "languagePath": {
+      "title": "Choose Your Language Path",
+      "subtitle": "Learn in the language you understand, and master the language you want.",
+      "uiTitle": "UI Language",
+      "uiDescription": "Select the language used in menus, explanations, and navigation.",
+      "learnTitle": "Learning Language",
+      "learnDescription": "Focus on building vocabulary and confidence in your target language.",
+      "cta": "Start Learning Now"
+    },
+    "learningPreview": {
+      "title": "Experience Learning with VOCO",
+      "subtitle": "Here’s a quick preview of how you’ll learn every day.",
+      "wordLabel": "Word",
+      "word": "Improve",
+      "meaning": "To make something better",
+      "example": "I want to improve my English skills.",
+      "listen": "Listen",
+      "mcqLabel": "MCQ",
+      "mcqQuestion": "Improve means…",
+      "options": {
+        "option1": "To make something worse",
+        "option2": "To make something better",
+        "option3": "To stop something"
+      },
+      "correctFeedback": "Correct Answer"
     }
   },
   "signIn": {
@@ -86,7 +112,6 @@
       "passwordMismatch": "Passwords do not match"
     }
   },
-
   "OtpPage": {
     "title": "Verify OTP",
     "subtitle": "Enter the 6-digit code sent to your email",
@@ -94,8 +119,4 @@
     "notReceived": "Didn’t receive the code?",
     "resend": "Resend"
   }
-
-
-
-
 }

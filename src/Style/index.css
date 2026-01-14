@@ -451,7 +451,9 @@ h1, h2, h3 {
   }
 }
 
-/* SECTION 2: HOW VOCO WORKS */
+/* =========================
+   Section 2 – HOW VOCO WORKS
+   ========================= */
 
 .homePage_section2 {
     background-color: var(--color-bg-section);
@@ -549,6 +551,250 @@ h1, h2, h3 {
         width: 100%;
         max-width: 420px;
     }
+}
+/* =========================
+   Section 3 – Language Path
+   ========================= */
+
+.homePage_section3 {
+  background: var(--color-primary-light);
+  padding: 5rem 1.5rem;
+}
+
+.language-path-container {
+  max-width: 1100px;
+  margin: auto;
+  text-align: center;
+}
+
+.language-path-header h2 {
+  font-size: 2.2rem;
+  color: var(--color-text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.language-path-header p {
+  color: var(--color-text-secondary);
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+
+/* Grid */
+.language-path-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+/* Cards */
+.language-card {
+  background: var(--color-bg-card);
+  padding: 2.5rem 2rem;
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.language-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+}
+
+.language-card.highlight {
+  border: 2px solid var(--color-primary);
+}
+
+/* Icons */
+.language-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin: 0 auto 1rem;
+}
+
+.language-icon.ui {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.language-icon.learn {
+  background: var(--color-accent-green);
+  color: var(--color-text-inverse);
+}
+
+/* Text */
+.language-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.6rem;
+  color: var(--color-text-primary);
+}
+
+.language-card p {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1.2rem;
+}
+
+/* Tags */
+.language-tags {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.language-tags span {
+  background: var(--color-bg-hover);
+  border: 1px solid var(--color-border-light);
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+/* CTA */
+.language-path-cta {
+  margin-top: 3rem;
+}
+.language-icon svg {
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+}
+
+.language-icon.ui {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.language-icon.learn {
+  background: var(--color-accent-green);
+  color: var(--color-text-inverse);
+}
+
+
+/* =========================
+   Section 4 – Learning Preview
+   ========================= */
+
+.homePage_section4 {
+  background: var(--color-bg-section);
+  padding: 5rem 1.5rem;
+}
+
+.learning-preview-container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.learning-preview-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.learning-preview-header h2 {
+  font-size: 2.2rem;
+  color: var(--color-text-primary);
+}
+
+.learning-preview-header p {
+  color: var(--color-text-secondary);
+}
+
+/* Grid */
+.learning-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+/* Cards */
+.preview-card {
+  background: var(--color-bg-card);
+  padding: 2rem;
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.preview-card.mcq {
+  border: 2px solid var(--color-accent-green);
+}
+
+.preview-label {
+  display: inline-block;
+  font-size: 0.75rem;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+
+.preview-card h3 {
+  margin-bottom: 0.5rem;
+  color: var(--color-text-primary);
+}
+
+.meaning {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.example {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin: 1rem 0;
+}
+
+.audio-btn {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.audio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.audio-icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* MCQ */
+.mcq-options {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.mcq-options li {
+  padding: 0.6rem;
+  border-radius: 8px;
+  background: var(--color-bg-hover);
+  margin-bottom: 0.5rem;
+}
+
+.mcq-options .correct {
+  background: #dcfce7;
+  color: var(--color-accent-green);
+  font-weight: 600;
+}
+
+.mcq-feedback {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--color-accent-green);
+  font-weight: 600;
 }
 
 

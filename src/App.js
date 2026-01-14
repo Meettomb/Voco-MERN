@@ -22,7 +22,7 @@ function App() {
             path="/"
             element={
               <>
-                <Home />
+                <Home onOpen={()=> setAuthView('login')}/>
 
                 {authView === "login" && (
                   <SignIn
