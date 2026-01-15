@@ -3,8 +3,9 @@ import '../Style/index.css';
 import { COMPANY_NAME } from "../hooks/usePageTitle";
 import Logo from '../assets/images/Voco.png';
 import { useTranslation } from 'react-i18next';
+import { Link } from "react-router-dom";
 
-function Header({onOpen}) {
+function Header({ onOpen }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const sideNavRef = useRef(null);
@@ -27,7 +28,7 @@ function Header({onOpen}) {
     setMenuOpen(false);
   };
 
-  
+
 
   return (
     <header className="header">
@@ -47,12 +48,28 @@ function Header({onOpen}) {
           {/* Desktop Links */}
           <div className="header_links_section">
             <ul>
-              <li>{t("nav.home")}</li>
-              <li>{t("nav.learnWords")}</li>
-              <li>{t("nav.videos")}</li>
-              <li>{t("nav.mcqs")}</li>
-              <li>{t("nav.practice")}</li>
-              <li>{t("nav.progress")}</li>
+              <li>
+                <Link to="/">{t("nav.home")}</Link>
+              </li>
+
+              <li>
+                <Link to="/learn-words">{t("nav.learnWords")}</Link>
+              </li>
+
+              <li>
+                <Link to="/videos">{t("nav.videos")}</Link>
+              </li>
+
+              <li>
+                <Link to="/mcqs">{t("nav.mcqs")}</Link>
+              </li>
+
+              <li>
+                <Link to="/practice">{t("nav.practice")}</Link>
+              </li>
+              <li>
+                <Link to="/progress">{t("nav.progress")}</Link>
+              </li>
 
               <li>
                 <select
@@ -94,37 +111,103 @@ function Header({onOpen}) {
         className={`side-nav ${menuOpen ? "open" : ""}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div
-          className="close-btn"
-          onClick={() => setMenuOpen(false)}
-          role="button"
-        >
-          <svg viewBox="0 -960 960 960">
-            <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
-          </svg>
+        {/* Header */}
+        <div className="side-nav-header">
+          <div className="side-nav-brand">
+            <img src={Logo} alt="VOCO" />
+            <span>VOCO</span>
+          </div>
+
+          <button
+            className="close-btn"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Close menu"
+          >
+            <svg viewBox="0 -960 960 960">
+              <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+            </svg>
+          </button>
         </div>
 
-        <ul>
+        {/* Language */}
+        <div className="side-nav-lang">
+          <label>Language</label>
+          <select
+            className="language-select"
+            value={i18n.language}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+          >
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+          </select>
+        </div>
+
+        {/* Links */}
+        <ul className="side-nav-links">
           <li>
-            <select
-              className="language-select"
-              value={i18n.language}
-              onChange={(e) => i18n.changeLanguage(e.target.value)}
-            >
-              <option value="en">English</option>
-              <option value="hi">हिंदी</option>
-            </select>
+            <Link to="/" onClick={() => setMenuOpen(false)}>
+              <svg viewBox="0 -960 960 960">
+                <path d="M120-200v-360l360-280 360 280v360H600v-240H360v240H120Z" />
+              </svg>
+              {t("nav.home")}
+            </Link>
           </li>
 
-          <li>{t("nav.home")}</li>
-          <li>{t("nav.learnWords")}</li>
-          <li>{t("nav.videos")}</li>
-          <li>{t("nav.mcqs")}</li>
-          <li>{t("nav.practice")}</li>
-          <li>{t("nav.progress")}</li>
-          <li className="auth-link" onClick={onOpen}>{t("nav.login")}</li>
+          <li>
+            <Link to="/learn-words" onClick={() => setMenuOpen(false)}>
+              <svg viewBox="0 -960 960 960">
+                <path d="M160-120v-720l640 360-640 360Z" />
+              </svg>
+              {t("nav.learnWords")}
+            </Link>
+          </li>
+
+          <li>
+            <Link to="/videos" onClick={() => setMenuOpen(false)}>
+              <svg viewBox="0 -960 960 960">
+                <path d="m380-300 280-180-280-180v360Z" />
+              </svg>
+              {t("nav.videos")}
+            </Link>
+          </li>
+
+          <li>
+            <Link to="/mcqs" onClick={() => setMenuOpen(false)}>
+              <svg viewBox="0 -960 960 960">
+                <path d="M160-120v-720h640v720H160Z" />
+              </svg>
+              {t("nav.mcqs")}
+            </Link>
+          </li>
+
+          <li>
+            <Link to="/practice" onClick={() => setMenuOpen(false)}>
+              <svg viewBox="0 -960 960 960">
+                <path d="M440-200h80v-240h240v-80H520v-240h-80v240H200v80h240v240Z" />
+              </svg>
+              {t("nav.practice")}
+            </Link>
+          </li>
+
+          <li>
+            <Link to="/progress" onClick={() => setMenuOpen(false)}>
+              <svg viewBox="0 -960 960 960">
+                <path d="M200-160v-80h560v80H200Zm0-160v-360h80v360h-80Zm200 0v-480h80v480h-80Zm200 0v-240h80v240h-80Z" />
+              </svg>
+              {t("nav.progress")}
+            </Link>
+          </li>
         </ul>
+
+
+
+        {/* Auth CTA */}
+        <button className="side-nav-auth" onClick={onOpen}>
+          {t("nav.login")}
+        </button>
       </div>
+
+
     </header>
   );
 }

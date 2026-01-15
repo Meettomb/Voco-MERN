@@ -1,23 +1,31 @@
-import { useState } from 'react';
-import './App.css';
-import Header from './Components/Header';
-import Home from './Components/Home';
-import SignIn from './Components/SIgnInPopup';
-import RegisterPopup from './Components/RegisterPopup'
+import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-
-
+import Home from "./Components/Home";
+import SignIn from "./Components/SIgnInPopup";
+import RegisterPopup from "./Components/RegisterPopup";
+import OtpVerify from "./Components/OtpVerify";
+import MainLayout from "./MainLayout";
 
 function App() {
   const [authView, setAuthView] = useState(null);
-  // authView: null | "login" | "register"
 
   return (
-    <div>
-      <Header onOpen={() => setAuthView("login")} />
+    <BrowserRouter>
+      <Routes>
 
-      <Home />
+        {/* Pages WITH Header + Footer */}
+        <Route element={<MainLayout onOpen={() => setAuthView("login")} />}>
+          <Route path="/" element={<Home />} />
+          <Route path="OtpVerify" element={<OtpVerify />} />
+        </Route>
 
+        {/* Pages WITHOUT Header */}
+        <Route path="/OtpVerify" element={<OtpVerify />} />
+
+      </Routes>
+
+      {/* AUTH POPUPS (GLOBAL) */}
       {authView === "login" && (
         <SignIn
           onClose={() => setAuthView(null)}
@@ -31,7 +39,7 @@ function App() {
           onOpenSignIn={() => setAuthView("login")}
         />
       )}
-    </div>
+    </BrowserRouter>
   );
 }
 

@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Navigate, useNavigate } from "react-router-dom";
+
 
 function RegisterPopup({ onClose, onOpenSignIn }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   /* Lock background scroll */
   useEffect(() => {
@@ -86,16 +89,53 @@ function RegisterPopup({ onClose, onOpenSignIn }) {
     if (!validateForm()) return;
 
     console.log("Registration data:", formData);
-    // API call here
+
+    setFormData({
+      username:"",
+      email:"",
+      phone:"",
+      password:""
+    })
+
+    setErrors({});
+    onClose();
+
+    // Navigate to the OTP Page
+    navigate("/OtpVerify",{
+      state:{
+        username:formData.username,
+        email:formData.email,
+        phone: formData.phone,
+        password:formData.password
+      }
+    })
+
+    
+
   };
 
   return (
     <main className="signIn_main">
       <div className="signin-overlay" onClick={onClose}>
         <div className="signin-modal" onClick={(e) => e.stopPropagation()}>
-          <button className="signin-close" onClick={onClose}>
-            ✕
+          <button className="signin-close" onClick={onClose} aria-label="Close">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18 6L6 18M6 6l12 12"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
+
 
           <h2 className="signin-title">{t("signUp.title")}</h2>
           <p className="signin-subtitle">{t("signUp.subtitle")}</p>

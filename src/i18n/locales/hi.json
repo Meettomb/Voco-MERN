@@ -39,6 +39,42 @@
         "title": "बहुविकल्पीय प्रश्नों के साथ अभ्यास करें",
         "description": "बहुविकल्पीय प्रश्नों के माध्यम से अपनी समझ का परीक्षण करें और तेजी से सुधार करने के लिए तुरंत प्रतिक्रिया प्राप्त करें।"
       }
+    },
+    "languagePath": {
+      "title": "अपना भाषा मार्ग चुनें",
+      "subtitle": "जिस भाषा को आप समझते हैं उसमें सीखें और जिस भाषा में महारत चाहिए, उसे हासिल करें।",
+      "uiTitle": "यूआई भाषा",
+      "uiDescription": "मेनू, व्याख्या और नेविगेशन में उपयोग होने वाली भाषा चुनें।",
+      "learnTitle": "सीखने की भाषा",
+      "learnDescription": "अपनी लक्षित भाषा में शब्दावली और आत्मविश्वास विकसित करें।",
+      "cta": "अभी सीखना शुरू करें"
+    },
+    "learningPreview": {
+      "title": "VOCO के साथ सीखने का अनुभव करें",
+      "subtitle": "यहाँ देखें कि आप रोज़ कैसे सीखेंगे।",
+      "wordLabel": "शब्द",
+      "word": "Improve",
+      "meaning": "किसी चीज़ को बेहतर बनाना",
+      "example": "मैं अपनी अंग्रेज़ी कौशल को बेहतर बनाना चाहता हूँ।",
+      "listen": "सुनें",
+      "mcqLabel": "MCQ (बहुविकल्पीय प्रश्न)",
+      "mcqQuestion": "Improve का अर्थ है…",
+      "options": {
+        "option1": "किसी चीज़ को खराब करना",
+        "option2": "किसी चीज़ को बेहतर बनाना",
+        "option3": "किसी चीज़ को रोकना"
+      },
+      "correctFeedback": "सही उत्तर"
+    },
+    "progress": {
+      "title": "अपनी प्रगति को ट्रैक करें",
+      "description": "स्पष्ट प्रगति संकेतकों के साथ अपनी सीखने की यात्रा को देखें। हर कदम के साथ आत्मविश्वास बढ़ाएँ।",
+      "stats": {
+        "words": "सीखे गए शब्द",
+        "accuracy": "सटीकता",
+        "days": "सक्रिय दिन"
+      },
+      "cta": "अभी प्रगति देखें"
     }
   },
   "signIn": {
@@ -59,32 +95,60 @@
     }
   },
   "signUp": {
-  "title": "खाता बनाएं",
-  "subtitle": "कृपया अपना खाता बनाने के लिए विवरण भरें",
-  "usernameLabel": "उपयोगकर्ता नाम",
-  "usernamePlaceholder": "उपयोगकर्ता नाम दर्ज करें",
-  "emailLabel": "ईमेल",
-  "emailPlaceholder": "ईमेल दर्ज करें",
-  "phoneLabel": "फोन नंबर",
-  "phonePlaceholder": "फोन नंबर दर्ज करें",
-  "passwordLabel": "पासवर्ड",
-  "passwordPlaceholder": "पासवर्ड दर्ज करें",
-  "confirmPasswordLabel": "पासवर्ड की पुष्टि करें",
-  "confirmPasswordPlaceholder": "पासवर्ड दोबारा दर्ज करें",
-  "signUpButton": "पंजीकरण करें",
-  "haveAccount": "पहले से खाता है?",
-  "signIn": "लॉग इन करें",
-  "errors": {
-    "usernameRequired": "उपयोगकर्ता नाम आवश्यक है",
-    "emailRequired": "ईमेल आवश्यक है",
-    "emailInvalid": "कृपया एक वैध ईमेल पता दर्ज करें",
-    "phoneRequired": "फोन नंबर आवश्यक है",
-    "phoneInvalid": "कृपया 10 अंकों का वैध फोन नंबर दर्ज करें",
-    "passwordRequired": "पासवर्ड आवश्यक है",
-    "passwordLength": "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए",
-    "confirmPasswordRequired": "पासवर्ड की पुष्टि आवश्यक है",
-    "passwordMismatch": "पासवर्ड मेल नहीं खा रहे हैं"
-  }
+    "title": "खाता बनाएं",
+    "subtitle": "कृपया अपना खाता बनाने के लिए विवरण भरें",
+    "usernameLabel": "उपयोगकर्ता नाम",
+    "usernamePlaceholder": "उपयोगकर्ता नाम दर्ज करें",
+    "emailLabel": "ईमेल",
+    "emailPlaceholder": "ईमेल दर्ज करें",
+    "phoneLabel": "फोन नंबर",
+    "phonePlaceholder": "फोन नंबर दर्ज करें",
+    "passwordLabel": "पासवर्ड",
+    "passwordPlaceholder": "पासवर्ड दर्ज करें",
+    "confirmPasswordLabel": "पासवर्ड की पुष्टि करें",
+    "confirmPasswordPlaceholder": "पासवर्ड दोबारा दर्ज करें",
+    "signUpButton": "पंजीकरण करें",
+    "haveAccount": "पहले से खाता है?",
+    "signIn": "लॉग इन करें",
+    "errors": {
+      "usernameRequired": "उपयोगकर्ता नाम आवश्यक है",
+      "emailRequired": "ईमेल आवश्यक है",
+      "emailInvalid": "कृपया एक वैध ईमेल पता दर्ज करें",
+      "phoneRequired": "फोन नंबर आवश्यक है",
+      "phoneInvalid": "कृपया 10 अंकों का वैध फोन नंबर दर्ज करें",
+      "passwordRequired": "पासवर्ड आवश्यक है",
+      "passwordLength": "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए",
+      "confirmPasswordRequired": "पासवर्ड की पुष्टि आवश्यक है",
+      "passwordMismatch": "पासवर्ड मेल नहीं खा रहे हैं"
+    }
+  },
+  "OtpPage": {
+    "title": "ओटीपी सत्यापन",
+    "subtitle": "आपके ईमेल पर भेजा गया 6 अंकों का कोड दर्ज करें",
+    "verifyButton": "ओटीपी सत्यापित करें",
+    "notReceived": "कोड प्राप्त नहीं हुआ?",
+    "resend": "पुनः भेजें"
+  },
+  "footer": {
+  "tagline": "एक-एक शब्द से भाषा सीखें।",
+  "sections": {
+    "product": "उत्पाद",
+    "company": "कंपनी",
+    "language": "भाषाएँ"
+  },
+  "links": {
+    "words": "शब्द सीखें",
+    "videos": "वीडियो",
+    "mcqs": "MCQ",
+    "progress": "प्रगति",
+    "about": "हमारे बारे में",
+    "contact": "संपर्क करें",
+    "privacy": "गोपनीयता नीति",
+    "terms": "उपयोग की शर्तें"
+  },
+  "languageNote": "अंग्रेज़ी, हिंदी, गुजराती",
+  "rights": "सभी अधिकार सुरक्षित।"
 }
+
 
 }
