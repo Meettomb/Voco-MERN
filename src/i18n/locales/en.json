@@ -65,6 +65,16 @@
         "option3": "To stop something"
       },
       "correctFeedback": "Correct Answer"
+    },
+    "progress": {
+      "title": "Track Your Progress",
+      "description": "Monitor your learning journey with clear progress indicators. Build confidence as you improve step by step.",
+      "stats": {
+        "words": "Words Learned",
+        "accuracy": "Accuracy",
+        "days": "Days Active"
+      },
+      "cta": "Start Tracking Now"
     }
   },
   "signIn": {
@@ -118,5 +128,25 @@
     "verifyButton": "Verify OTP",
     "notReceived": "Didn’t receive the code?",
     "resend": "Resend"
+  },
+  "footer": {
+    "tagline": "Learn languages one word at a time.",
+    "sections": {
+      "product": "Product",
+      "company": "Company",
+      "language": "Languages"
+    },
+    "links": {
+      "words": "Learn Words",
+      "videos": "Videos",
+      "mcqs": "MCQs",
+      "progress": "Progress",
+      "about": "About Us",
+      "contact": "Contact",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use"
+    },
+    "languageNote": "English, Hindi, Gujarati",
+    "rights": "All rights reserved."
   }
 }

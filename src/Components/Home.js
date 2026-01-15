@@ -289,6 +289,44 @@ function Home({ onOpen }) {
                         </div>
                     </section>
 
+                    <section className="homePage_section5">
+                        <div className="progress-container">
+
+                            {/* Left – Stats */}
+                            <div className="progress-stats">
+
+                                <div className="stat-card">
+                                    <h3>120+</h3>
+                                    <p>{t('home.progress.stats.words')}</p>
+                                </div>
+
+                                <div className="stat-card">
+                                    <h3>85%</h3>
+                                    <p>{t('home.progress.stats.accuracy')}</p>
+                                </div>
+
+                                <div className="stat-card">
+                                    <h3>15</h3>
+                                    <p>{t('home.progress.stats.days')}</p>
+                                </div>
+
+                            </div>
+
+                            {/* Right – Content */}
+                            <div className="progress-content">
+                                <h2>{t('home.progress.title')}</h2>
+                                <p>{t('home.progress.description')}</p>
+
+                                <button className="primary-btn" onClick={onOpen}>
+                                    {t('home.progress.cta')}
+                                </button>
+                            </div>
+
+                        </div>
+                    </section>
+
+
+
 
                 </div>
             </main>

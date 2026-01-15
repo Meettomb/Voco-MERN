@@ -1,11 +1,10 @@
 import { useState } from "react";
-import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Home from "./Components/Home";
 import SignIn from "./Components/SIgnInPopup";
 import RegisterPopup from "./Components/RegisterPopup";
 import OtpVerify from "./Components/OtpVerify";
-
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./MainLayout";
 
 function App() {
@@ -14,37 +13,32 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Pages WITH Header */}
-        <Route
-          element={<MainLayout onOpen={() => setAuthView("login")} />}
-        >
-          <Route
-            path="/"
-            element={
-              <>
-                <Home onOpen={()=> setAuthView('login')}/>
 
-                {authView === "login" && (
-                  <SignIn
-                    onClose={() => setAuthView(null)}
-                    onOpenRegister={() => setAuthView("register")}
-                  />
-                )}
-
-                {authView === "register" && (
-                  <RegisterPopup
-                    onClose={() => setAuthView(null)}
-                    onOpenSignIn={() => setAuthView("login")}
-                  />
-                )}
-              </>
-            }
-          />
+        {/* Pages WITH Header + Footer */}
+        <Route element={<MainLayout onOpen={() => setAuthView("login")} />}>
+          <Route path="/" element={<Home />} />
+          <Route path="OtpVerify" element={<OtpVerify />} />
         </Route>
 
-        {/* OTP page WITHOUT Header */}
+        {/* Pages WITHOUT Header */}
         <Route path="/OtpVerify" element={<OtpVerify />} />
+
       </Routes>
+
+      {/* AUTH POPUPS (GLOBAL) */}
+      {authView === "login" && (
+        <SignIn
+          onClose={() => setAuthView(null)}
+          onOpenRegister={() => setAuthView("register")}
+        />
+      )}
+
+      {authView === "register" && (
+        <RegisterPopup
+          onClose={() => setAuthView(null)}
+          onOpenSignIn={() => setAuthView("login")}
+        />
+      )}
     </BrowserRouter>
   );
 }
