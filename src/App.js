@@ -6,6 +6,7 @@ import SignIn from "./Components/SIgnInPopup";
 import RegisterPopup from "./Components/RegisterPopup";
 import OtpVerify from "./Components/OtpVerify";
 import MainLayout from "./MainLayout";
+import LearnWords from "./Components/LearnWords";
 
 function App() {
   const [authView, setAuthView] = useState(null);
@@ -17,6 +18,7 @@ function App() {
         {/* Pages WITH Header + Footer */}
         <Route element={<MainLayout onOpen={() => setAuthView("login")} />}>
           <Route path="/" element={<Home />} />
+          <Route path="/learn-words" element={<LearnWords />} />
           <Route path="OtpVerify" element={<OtpVerify />} />
         </Route>
 
