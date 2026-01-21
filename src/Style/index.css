@@ -1473,3 +1473,118 @@ h3 {
     text-align: center;
   }
 }
+
+
+/* =========================
+   Learn Words – Select Language
+   ========================= */
+
+.learn-words-page {
+  min-height: calc(100vh - 140px);
+  background: var(--color-bg-main);
+  padding: 4rem 1.5rem;
+}
+
+.learn-words-container {
+  max-width: 900px;
+  margin: auto;
+}
+
+/* Header */
+.learn-words-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.learn-words-header h1 {
+  font-size: 2.2rem;
+  color: var(--color-text-primary);
+}
+
+.learn-words-header p {
+  margin-top: 0.6rem;
+  color: var(--color-text-secondary);
+}
+
+.language-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.language-card {
+  background: var(--color-bg-card);
+  border-radius: 20px;
+  padding: 2rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid transparent;
+  transition: all 0.25s ease;
+  text-align: center;
+}
+
+.language-card:hover {
+  transform: translateY(-4px);
+}
+
+.language-card.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.language-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 1rem;
+  border-radius: 14px;
+  background: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.language-icon svg {
+  width: 28px;
+  height: 28px;
+  stroke: var(--color-primary);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.language-card h3 {
+  font-size: 1.2rem;
+  color: var(--color-text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.language-card p {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}
+
+.learn-words-container .primary-btn {
+  display: block;
+  margin: auto;
+  padding: 0.9rem 2.4rem;
+  font-size: 1rem;
+}
+
+.primary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+@media (max-width: 768px) {
+  .language-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .learn-words-header h1 {
+    font-size: 1.9rem;
+  }
+}
+

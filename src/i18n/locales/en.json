@@ -129,6 +129,21 @@
     "notReceived": "Didn’t receive the code?",
     "resend": "Resend"
   },
+
+  "LearnWords": {
+    "title": "Select Your Learning Language",
+    "subtitle": "Choose one language to start building vocabulary.",
+    "english": {
+      "title": "English",
+      "description": "Learn commonly used English words with meanings and examples."
+    },
+    "hindi": {
+      "title": "हिंदी",
+      "description": "Learn commonly used Hindi words with meanings and examples."
+    },
+    "cta": "Start Learning"
+  },
+  
   "footer": {
     "tagline": "Learn languages one word at a time.",
     "sections": {
