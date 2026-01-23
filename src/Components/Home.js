@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import heroImage from '../assets/images/hero-visual.png'
 import usePageTitle from '../hooks/usePageTitle';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 function Home({ onOpen }) {
 

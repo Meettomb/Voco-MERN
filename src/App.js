@@ -7,6 +7,7 @@ import RegisterPopup from "./Components/RegisterPopup";
 import OtpVerify from "./Components/OtpVerify";
 import MainLayout from "./MainLayout";
 import LearnWords from "./Components/LearnWords";
+import SelectLearningLanguage from "./Components/SelectLerningLangauge";
 
 function App() {
   const [authView, setAuthView] = useState(null);
@@ -24,6 +25,7 @@ function App() {
 
         {/* Pages WITHOUT Header */}
         <Route path="/OtpVerify" element={<OtpVerify />} />
+          <Route path="/select-learning-langauge" element={<SelectLearningLanguage />} />
 
       </Routes>
 
