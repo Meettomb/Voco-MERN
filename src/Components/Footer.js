@@ -59,4 +59,3 @@ function Footer() {
 }
 
 export default Footer;
-// This line is just for testing purposes.
