@@ -156,7 +156,9 @@ function Header({ onOpen }) {
           <li>
             <Link to="/learn-words" onClick={() => setMenuOpen(false)}>
               <svg viewBox="0 -960 960 960">
-                <path d="M160-120v-720l640 360-640 360Z" />
+                <path d="M160-120v-640q0-33 23.5-56.5T240-840h400q33 0 56.5 23.5T720-760v640
+      q-20-12-40-18t-40-6H240q-20 0-40 6t-40 18Zm80-160h320v-80H240v80Zm0-160h400v-80H240v80Zm0-160h400v-80H240v80Z
+    " />
               </svg>
               {t("nav.learnWords")}
             </Link>
@@ -165,7 +167,7 @@ function Header({ onOpen }) {
           <li>
             <Link to="/videos" onClick={() => setMenuOpen(false)}>
               <svg viewBox="0 -960 960 960">
-                <path d="m380-300 280-180-280-180v360Z" />
+                <path d="M160-120v-720l640 360-640 360Z" />
               </svg>
               {t("nav.videos")}
             </Link>
@@ -174,7 +176,12 @@ function Header({ onOpen }) {
           <li>
             <Link to="/mcqs" onClick={() => setMenuOpen(false)}>
               <svg viewBox="0 -960 960 960">
-                <path d="M160-120v-720h640v720H160Z" />
+                <path d=" M480-200q-33 0-56.5-23.5T400-280q0-33 23.5-56.5T480-360
+      q33 0 56.5 23.5T560-280q0 33-23.5 56.5T480-200Zm-120-240
+      q0-66 40-105t80-55q30-12 45-29t15-39q0-33-23.5-56.5T480-760
+      q-33 0-56.5 23.5T400-680h-80q0-66 47-113t113-47
+      q66 0 113 47t47 113q0 45-23 75t-57 45q-33 14-49 31t-16 49v40h-80v-40Z
+    " />
               </svg>
               {t("nav.mcqs")}
             </Link>
