@@ -1349,10 +1349,11 @@ h3 {
   text-decoration: underline;
 }
 
-/* =========================
-   Footer
-   ========================= */
-
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* Footer */
+/* ========================================================================================== */
+/* ========================================================================================== */
 .footer {
   background: linear-gradient(180deg, #0f172a, #020617);
   color: var(--color-text-inverse);
@@ -1436,9 +1437,6 @@ h3 {
   color: var(--color-text-muted);
 }
 
-/* =========================
-   Responsive
-   ========================= */
 
 /* Tablets */
 @media (max-width: 1024px) {
@@ -1474,46 +1472,71 @@ h3 {
   }
 }
 
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* Select Learning Language */
+/* ========================================================================================== */
+/* ========================================================================================== */
 
-/* =========================
-   Learn Words – Select Language
-   ========================= */
-
-.learn-words-page {
+.sll-page {
   min-height: calc(100vh - 140px);
   background: var(--color-bg-main);
   padding: 4rem 1.5rem;
 }
 
-.learn-words-container {
+.sll-container {
   max-width: 900px;
   margin: auto;
 }
+/* Back Button */
+.sll-back-btn {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  color: var(--color-text-primary);
+}
 
-/* Header */
-.learn-words-header {
+.sll-back-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sll-back-btn:hover {
+  opacity: 0.7;
+}
+.sll-header {
+  position: relative;
   text-align: center;
   margin-bottom: 3rem;
 }
 
-.learn-words-header h1 {
+.sll-header h1 {
   font-size: 2.2rem;
   color: var(--color-text-primary);
 }
 
-.learn-words-header p {
+.sll-header p {
   margin-top: 0.6rem;
   color: var(--color-text-secondary);
 }
 
-.language-grid {
+.sll-language-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
   margin-bottom: 3rem;
 }
 
-.language-card {
+.sll-language-card {
   background: var(--color-bg-card);
   border-radius: 20px;
   padding: 2rem;
@@ -1524,16 +1547,16 @@ h3 {
   text-align: center;
 }
 
-.language-card:hover {
+.sll-language-card:hover {
   transform: translateY(-4px);
 }
 
-.language-card.active {
+.sll-language-card.active {
   border-color: var(--color-primary);
   background: var(--color-primary-light);
 }
 
-.language-icon {
+.sll-language-icon {
   width: 56px;
   height: 56px;
   margin: 0 auto 1rem;
@@ -1544,7 +1567,7 @@ h3 {
   justify-content: center;
 }
 
-.language-icon svg {
+.sll-language-icon svg {
   width: 28px;
   height: 28px;
   stroke: var(--color-primary);
@@ -1554,37 +1577,42 @@ h3 {
   stroke-linejoin: round;
 }
 
-.language-card h3 {
+.sll-language-card h3 {
   font-size: 1.2rem;
   color: var(--color-text-primary);
   margin-bottom: 0.4rem;
 }
 
-.language-card p {
+.sll-language-card p {
   font-size: 0.95rem;
   color: var(--color-text-secondary);
 }
 
-.learn-words-container .primary-btn {
+.sll-primary-btn {
   display: block;
   margin: auto;
   padding: 0.9rem 2.4rem;
   font-size: 1rem;
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
 }
-
-.primary-btn:disabled {
+.sll-primary-btn:hover {
+  background-color: var(--btn-primary-hover);
+}
+.sll-primary-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-
 @media (max-width: 768px) {
-  .language-grid {
+  .sll-language-grid {
     grid-template-columns: 1fr;
   }
 
-  .learn-words-header h1 {
+  .sll-header h1 {
     font-size: 1.9rem;
   }
 }
-
