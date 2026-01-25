@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import FullScreenLoader from './FullScreenLoader';
+import FullScreenLoader from "./FullScreenLoader";
+import { Link } from "react-router-dom";
 
 const API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
 
-// Map chapters to playlist IDs
+/* Chapter → Playlist mapping */
 const PLAYLISTS = {
     chapter1: {
         title: "Vocabulary Basics",
@@ -22,9 +23,10 @@ const PLAYLISTS = {
 function Videos() {
     const [activeChapter, setActiveChapter] = useState("chapter1");
     const [videos, setVideos] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
+    /* Fetch videos when chapter changes */
     useEffect(() => {
         async function fetchVideos() {
             setLoading(true);
@@ -35,11 +37,16 @@ function Videos() {
                     `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=12&playlistId=${PLAYLISTS[activeChapter].id}&key=${API_KEY}`
                 );
 
+                if (!response.ok) {
+                    throw new Error("YouTube API request failed");
+                }
+
                 const data = await response.json();
-                setVideos(data.items);
+                setVideos(data.items || []);
             } catch (err) {
                 console.error(err);
                 setError("Failed to load videos");
+                setVideos([]);
             } finally {
                 setLoading(false);
             }
@@ -47,6 +54,8 @@ function Videos() {
 
         fetchVideos();
     }, [activeChapter]);
+
+    /* Lock scroll while loading */
     useEffect(() => {
         document.body.style.overflow = loading ? "hidden" : "auto";
 
@@ -54,7 +63,6 @@ function Videos() {
             document.body.style.overflow = "auto";
         };
     }, [loading]);
-
 
     return (
         <div className="videos-page">
@@ -74,16 +82,23 @@ function Videos() {
                 ))}
             </div>
 
-            {/* States */}
+            {/* Loader */}
             {loading && <FullScreenLoader />}
 
+            {/* Error */}
             {error && <p>{error}</p>}
 
-            {/* Videos */}
+            {/* Videos Grid */}
             <div className="videos-grid">
                 {!loading &&
-                    videos.map((video) => (
-                        <div className="video-card">
+                    videos?.map((video) => (
+                        <Link
+                            key={video.id}
+                            className="video-card"
+                            to={`/video/${video.snippet.resourceId.videoId}`}
+                            target="_blank"
+                        >
+
                             <div className="thumb-wrapper">
                                 <img
                                     src={video.snippet.thumbnails.medium.url}
@@ -94,8 +109,7 @@ function Videos() {
                             </div>
 
                             <p className="video-title">{video.snippet.title}</p>
-                        </div>
-
+                        </Link>
                     ))}
             </div>
         </div>
