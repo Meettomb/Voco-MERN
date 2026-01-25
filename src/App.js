@@ -8,6 +8,8 @@ import OtpVerify from "./Components/OtpVerify";
 import MainLayout from "./MainLayout";
 import LearnWords from "./Components/LearnWords";
 import SelectLearningLanguage from "./Components/SelectLerningLangauge";
+import Videos from "./Components/Videos";
+import VideoPlayer from "./Components/VideoPlayer";
 
 function App() {
   const [authView, setAuthView] = useState(null);
@@ -20,7 +22,9 @@ function App() {
         <Route element={<MainLayout onOpen={() => setAuthView("login")} />}>
           <Route path="/" element={<Home />} />
           <Route path="/learn-words" element={<LearnWords />} />
+          <Route path="/videos" element={<Videos/>}/>
           <Route path="OtpVerify" element={<OtpVerify />} />
+          <Route path="/video/:id" element={<VideoPlayer/>}/>
         </Route>
 
         {/* Pages WITHOUT Header */}

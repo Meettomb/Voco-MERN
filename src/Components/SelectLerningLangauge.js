@@ -25,8 +25,8 @@ function SelectLearningLanguage({ onBack }) {
             </svg>
           </button>
 
-          <h1>{t("LearnWords.title")}</h1>
-          <p>{t("LearnWords.subtitle")}</p>
+          <h1>{t("SelectLearnLangauge.title")}</h1>
+          <p>{t("SelectLearnLangauge.subtitle")}</p>
         </div>
 
         {/* Language Cards */}
@@ -43,8 +43,8 @@ function SelectLearningLanguage({ onBack }) {
                 <path d="M8 7h8M8 11h6M8 15h4" />
               </svg>
             </div>
-            <h3>{t("LearnWords.english.title")}</h3>
-            <p>{t("LearnWords.english.description")}</p>
+            <h3>{t("SelectLearnLangauge.english.title")}</h3>
+            <p>{t("SelectLearnLangauge.english.description")}</p>
           </div>
 
           {/* Hindi */}
@@ -58,15 +58,15 @@ function SelectLearningLanguage({ onBack }) {
                 <path d="M8 10h8M12 8v8" />
               </svg>
             </div>
-            <h3>{t("LearnWords.hindi.title")}</h3>
-            <p>{t("LearnWords.hindi.description")}</p>
+            <h3>{t("SelectLearnLangauge.hindi.title")}</h3>
+            <p>{t("SelectLearnLangauge.hindi.description")}</p>
           </div>
 
         </div>
 
         {/* CTA */}
         <button className="sll-primary-btn" disabled={!selected}>
-          {t("LearnWords.cta")}
+          {t("SelectLearnLangauge.cta")}
         </button>
 
       </div>

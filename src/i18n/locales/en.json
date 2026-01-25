@@ -129,8 +129,7 @@
     "notReceived": "Didn’t receive the code?",
     "resend": "Resend"
   },
-
-  "LearnWords": {
+  "SelectLearnLangauge": {
     "title": "Select Your Learning Language",
     "subtitle": "Choose one language to start building vocabulary.",
     "english": {
@@ -143,7 +142,32 @@
     },
     "cta": "Start Learning"
   },
-  
+  "LearnWords": {
+    "title": "Learn Words",
+    "chapter": "Chapter {{number}}",
+    "exam": "Chapter Exam",
+    "start": "Start Chapter",
+    "takeExam": "Take Exam",
+    "chapters": {
+      "1": {
+        "description": "Basic everyday words"
+      },
+      "2": {
+        "description": "Common phrases & usage"
+      },
+      "3": {
+        "description": "Advanced vocabulary"
+      }
+    }
+  },
+  "Videos": {
+    "title": "English Learning Videos"
+  },
+  "VideoPlayer": {
+    "bookmark": "Bookmark",
+    "bookmarked": "Bookmarked",
+    "back": "Back"
+  },
   "footer": {
     "tagline": "Learn languages one word at a time.",
     "sections": {
