@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import FullScreenLoader from "./FullScreenLoader";
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 const API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
 
@@ -21,6 +22,8 @@ const PLAYLISTS = {
 };
 
 function Videos() {
+    const { t } = useTranslation();
+
     const [activeChapter, setActiveChapter] = useState("chapter1");
     const [videos, setVideos] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -66,7 +69,7 @@ function Videos() {
 
     return (
         <div className="videos-page">
-            <h1>English Learning Videos</h1>
+            <h1>{t("Videos.title")}</h1>
 
             {/* Chapter Selector */}
             <div className="chapter-tabs">
@@ -95,9 +98,7 @@ function Videos() {
                         <Link
                             key={video.id}
                             className="video-card"
-                            to={`/video/${video.snippet.resourceId.videoId}`}
-                            target="_blank"
-                        >
+                            to={`/video/${video.snippet.resourceId.videoId}`}>
 
                             <div className="thumb-wrapper">
                                 <img

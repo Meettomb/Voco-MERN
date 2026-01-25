@@ -2014,3 +2014,30 @@ h3 {
 .bookmark-btn.active {
   background: var(--color-accent-green);
 }
+.back-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 14px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.back-icon {
+  width: 22px;
+  height: 22px;
+  fill: var(--color-primary);
+}
+
+.back-btn:hover .back-icon {
+  fill: var(--color-primary-dark);
+}
+
+.back-btn:hover {
+  text-decoration: underline;
+}

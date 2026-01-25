@@ -129,7 +129,6 @@
     "notReceived": "Didn’t receive the code?",
     "resend": "Resend"
   },
-
   "SelectLearnLangauge": {
     "title": "Select Your Learning Language",
     "subtitle": "Choose one language to start building vocabulary.",
@@ -143,8 +142,6 @@
     },
     "cta": "Start Learning"
   },
-
-  
   "LearnWords": {
     "title": "Learn Words",
     "chapter": "Chapter {{number}}",
@@ -163,9 +160,14 @@
       }
     }
   },
-
-
-  
+  "Videos": {
+    "title": "English Learning Videos"
+  },
+  "VideoPlayer": {
+    "bookmark": "Bookmark",
+    "bookmarked": "Bookmarked",
+    "back": "Back"
+  },
   "footer": {
     "tagline": "Learn languages one word at a time.",
     "sections": {
