@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import heroImage from '../assets/images/hero-visual.png'
 import usePageTitle from '../hooks/usePageTitle';
 import { useTranslation } from 'react-i18next';

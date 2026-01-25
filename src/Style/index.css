@@ -2,7 +2,8 @@
   margin: 0;
   padding: 0;
 }
-a{
+
+a {
   text-decoration: none;
 }
 
@@ -171,9 +172,10 @@ h3 {
   padding: 0;
 }
 
-.header_links_section li a{
+.header_links_section li a {
   color: var(--color-text-primary);
 }
+
 .header_links_section li {
   cursor: pointer;
   font-weight: 500;
@@ -346,9 +348,9 @@ h3 {
 }
 
 .side-nav-links li svg path {
-  transform-box: fill-box;    
-  transform-origin: center;    
-  transform: scale(0.78);      
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.78);
 }
 
 .side-nav-links li:hover svg {
@@ -1444,7 +1446,7 @@ h3 {
   max-width: 1200px;
   margin: 3rem auto 0;
   padding-top: 1.2rem;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   justify-content: space-between;
   font-size: 0.8rem;
@@ -1502,6 +1504,7 @@ h3 {
   max-width: 900px;
   margin: auto;
 }
+
 /* Back Button */
 .sll-back-btn {
   position: absolute;
@@ -1527,6 +1530,7 @@ h3 {
 .sll-back-btn:hover {
   opacity: 0.7;
 }
+
 .sll-header {
   position: relative;
   text-align: center;
@@ -1613,9 +1617,11 @@ h3 {
   border: none;
   cursor: pointer;
 }
+
 .sll-primary-btn:hover {
   background-color: var(--btn-primary-hover);
 }
+
 .sll-primary-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -1630,6 +1636,7 @@ h3 {
     font-size: 1.9rem;
   }
 }
+
 /* ========================================================================================== */
 /* ========================================================================================== */
 /* Learn Words*/
@@ -1675,19 +1682,19 @@ h3 {
   width: 48px;
   height: 48px;
 
-  aspect-ratio: 1 / 1;       
-  flex-shrink: 0;            
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
 
   border-radius: 50%;
   background: var(--color-primary);
   color: var(--color-text-inverse);
 
-  display: grid;              
+  display: grid;
   place-items: center;
 
   font-size: 16px;
   font-weight: 600;
-  line-height: 1;           
+  line-height: 1;
   box-sizing: border-box;
 
   z-index: 1;
@@ -1752,3 +1759,208 @@ h3 {
   background: var(--color-primary-light);
 }
 
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* Videos Page*/
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+
+.videos-page {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+
+/* Mobile spacing */
+@media (max-width: 600px) {
+  .videos-page {
+    padding: 16px;
+  }
+}
+
+
+.chapter-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+
+.chapter-btn {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-light);
+  background: #ffffff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--color-text-primary);
+}
+
+.chapter-btn:hover {
+  background: var(--color-primary-light);
+}
+
+.chapter-btn.active {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+
+.videos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: 26px;
+}
+
+
+.video-card {
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.video-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+}
+
+.thumb-wrapper {
+  position: relative;
+}
+
+.video-thumb {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.play-icon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 48px;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.video-card:hover .play-icon {
+  opacity: 1;
+}
+
+
+.video-title {
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text-primary);
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* Full Screen Loader*/
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.loader-card {
+  background: var(--color-bg-card);
+  padding: 36px 44px;
+  border-radius: 18px;
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  min-width: 240px;
+}
+
+
+.ring {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 6px solid var(--color-border-light);
+  border-top-color: var(--color-primary);
+  animation: spin 1s linear infinite;
+  margin: 0 auto 18px;
+}
+
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.dots span {
+  width: 8px;
+  height: 8px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+
+.loader-card p {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce {
+
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+
+  40% {
+    transform: scale(1);
+  }
+}
