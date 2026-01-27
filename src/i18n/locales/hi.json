@@ -6,7 +6,12 @@
     "mcqs": "एमसीक्यू",
     "practice": "अभ्यास",
     "progress": "प्रगति",
-    "login": "लॉगिन | पंजीकरण"
+    "login": "लॉगिन | पंजीकरण",
+    "profile": "प्रोफ़ाइल",
+    "logout": "लॉगआउट",
+    "settings": "सेटिंग्स",
+    "adminPanel": "एडमिन पैनल",
+    "myProfile": "मेरी प्रोफ़ाइल"
   },
   "home": {
     "hero-section": {

@@ -6,7 +6,12 @@
     "mcqs": "MCQs",
     "practice": "Practice",
     "progress": "Progress",
-    "login": "Login | Sign Up"
+    "login": "Login | Sign Up",
+    "profile": "Profile",
+    "logout": "Logout",
+    "settings": "Settings",
+    "adminPanel": "Admin Panel",
+    "myProfile": "My Profile"
   },
   "home": {
     "hero-section": {

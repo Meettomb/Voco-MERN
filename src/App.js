@@ -11,8 +11,8 @@ import SelectLearningLanguage from "./Components/SelectLerningLangauge";
 import Videos from "./Components/Videos";
 import VideoPlayer from "./Components/VideoPlayer";
 import Dashboard from "./Components/admin/Dashboard";
-import AdminHeader from "./Components/admin/AdminHeader";
 import AllUsers from "./Components/admin/users/AllUsers";
+import AdminSideMainLayout from "./AdminSideMainLayout";
 
 function App() {
   const [authView, setAuthView] = useState(null);
@@ -30,10 +30,10 @@ function App() {
           <Route path="/video/:id" element={<VideoPlayer />} />
         </Route>
 
-        {/* Admin Pages WITH Admin Header + Sidebar */}     
-        <Route path="/admin" element={<AdminHeader />}>
+        {/* Admin Pages WITH Admin Header + Sidebar */}
+        <Route path="/admin" element={<AdminSideMainLayout />}>
           <Route index element={<Dashboard />} />
-          <Route path="/admin/users/all_users" element={<AllUsers />} />
+          <Route path="users/all_users" element={<AllUsers />} />
         </Route>
 
         {/* Pages WITHOUT Header */}

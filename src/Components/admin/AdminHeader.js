@@ -118,6 +118,7 @@ export default function AdminSidebar() {
             {profileOpen && (
               <div className="profile-menu">
                 <Link to="#" onClick={() => setProfileOpen(false)}>Profile</Link>
+                <Link to="/" onClick={() => setProfileOpen(false)}>Client side</Link>
                 <Link to="#" onClick={() => setProfileOpen(false)}>Logout</Link>
               </div>
             )}
