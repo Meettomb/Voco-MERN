@@ -10,9 +10,9 @@ import LearnWords from "./Components/LearnWords";
 import SelectLearningLanguage from "./Components/SelectLerningLangauge";
 import Videos from "./Components/Videos";
 import VideoPlayer from "./Components/VideoPlayer";
+import AdminHeader from "./Components/admin/AdminHeader";
 import Dashboard from "./Components/admin/Dashboard";
 import AllUsers from "./Components/admin/users/AllUsers";
-import AdminSideMainLayout from "./AdminSideMainLayout";
 import UserDetailView from "./Components/admin/users/manage_users/UserDetailView";
 
 function App() {
@@ -32,7 +32,7 @@ function App() {
         </Route>
 
         {/* Admin Pages WITH Admin Header + Sidebar */}
-        <Route path="/admin" element={<AdminSideMainLayout />}>
+        <Route path="/admin" element={<AdminHeader />}>
           <Route index element={<Dashboard />} />
           <Route path="users/all-users" element={<AllUsers />} />
           <Route path="users/manage-users/user-detail-view" element={<UserDetailView />} />

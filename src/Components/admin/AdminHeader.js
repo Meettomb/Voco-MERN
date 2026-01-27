@@ -9,11 +9,6 @@ export default function AdminSidebar() {
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
 
-  const toggleCollapse = () => {
-    setCollapsed(v => !v);
-    setOpenUser(false);
-  };
-
   const openSidebar = () => {
     setCollapsed(false);
   };
@@ -103,7 +98,7 @@ export default function AdminSidebar() {
       {!collapsed && (
         <div className="sidebar-overlay" onClick={() => setCollapsed(true)} />
       )}
-      {!collapsed && <div className="sidebar-overlay" onClick={() => setCollapsed(true)} />}
+
 
       <div className="main">
 
