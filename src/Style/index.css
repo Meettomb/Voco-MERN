@@ -2316,3 +2316,113 @@ h3 {
   }
 }
 
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* Dashboard */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+
+/* ================= Dashboard ================= */
+
+.dashboard{
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+}
+
+/* Header */
+
+.dashboard-header h1{
+  font-size:26px;
+  color:var(--color-text-primary);
+}
+
+.dashboard-header p{
+  color:var(--color-text-secondary);
+}
+
+/* Stats */
+
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+}
+
+.stat-card{
+  background:var(--color-bg-card);
+  padding:20px;
+  border-radius:12px;
+  box-shadow:var(--shadow-sm);
+}
+
+.stat-card h3{
+  font-size:14px;
+  color:var(--color-text-secondary);
+}
+
+.stat-number{
+  font-size:28px;
+  font-weight:600;
+  margin-top:8px;
+  color:var(--color-primary);
+}
+
+/* Grid */
+
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:20px;
+}
+
+.dashboard-card{
+  background:var(--color-bg-card);
+  padding:20px;
+  border-radius:12px;
+  box-shadow:var(--shadow-sm);
+}
+
+.dashboard-card h2{
+  margin-bottom:12px;
+  font-size:18px;
+  color:var(--color-text-primary);
+}
+
+/* List */
+
+.list{
+  list-style:none;
+  padding:0;
+}
+
+.list li{
+  padding:10px 0;
+  border-bottom:1px solid var(--color-border-light);
+  color:var(--color-text-secondary);
+}
+
+/* Actions */
+
+.action-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.action-grid button{
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:var(--btn-primary-bg);
+  color:var(--btn-primary-text);
+  cursor:pointer;
+}
+
+.action-grid button:hover{
+  background:var(--btn-primary-hover);
+}
+
+
