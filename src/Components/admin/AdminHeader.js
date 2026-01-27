@@ -13,6 +13,13 @@ export default function AdminSidebar() {
     setCollapsed(v => !v);
     setOpenUser(false);
   };
+
+
+  const handleNavClick = () => {
+    setCollapsed(true);
+    setOpenUser(false);
+  };
+
   useEffect(() => {
     function handleClickOutside(e) {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
@@ -25,24 +32,27 @@ export default function AdminSidebar() {
   }, []);
 
 
+
   return (
     <div className="layout">
 
       <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
 
         <div className="logo-row">
-          <div className="logo">
-            <span className="logo-first">
-              {COMPANY_NAME.charAt(0)}
-            </span>
-            {!collapsed && COMPANY_NAME.slice(1)}
-          </div>
+          <Link to="/admin" onClick={handleNavClick} className="logo_link">
+            <div className="logo">
+              <span className="logo-first">
+                {COMPANY_NAME.charAt(0)}
+              </span>
+              {!collapsed && COMPANY_NAME.slice(1)}
+            </div>
+          </Link>
 
         </div>
 
         <nav className="nav">
 
-          <Link to="/admin/dashboard" className="nav-item">
+          <Link to="/admin" className="nav-item" onClick={handleNavClick}>
             <svg viewBox="0 0 24 24">
               <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
             </svg>
@@ -65,13 +75,13 @@ export default function AdminSidebar() {
 
           {openUser && !collapsed && (
             <div className="submenu">
-              <Link to="/admin/users/all">All Users</Link>
-              <Link to="/admin/users/all_active">Active Users</Link>
-              <Link to="/admin/users/all_blocked">Blocked Users</Link>
+              <Link to="/admin/users/all_users" onClick={handleNavClick}>All Users</Link>
+              <Link to="/admin/users/all_active" onClick={handleNavClick}>Active Users</Link>
+              <Link to="/admin/users/all_blocked" onClick={handleNavClick}>Blocked Users</Link>
             </div>
           )}
 
-          <Link to="/admin/settings" className="nav-item">
+          <Link to="/admin/settings" className="nav-item" onClick={handleNavClick}>
             <svg viewBox="0 0 24 24">
               <path d="M19.14 12.94a7.14 7.14 0 0 0 .05-.94 7.14 7.14 0 0 0-.05-.94l2.03-1.58-1.92-3.32-2.39.96a7.17 7.17 0 0 0-1.63-.94l-.36-2.54h-3.8l-.36 2.54c-.58.22-1.12.52-1.63.94l-2.39-.96-1.92 3.32 2.03 1.58a7.14 7.14 0 0 0-.05.94c0 .32.02.63.05.94L2.82 14.6l1.92 3.32 2.39-.96c.5.42 1.05.77 1.63.94l.36 2.54h3.8l.36-2.54c.58-.22 1.12-.52 1.63-.94l2.39.96 1.92-3.32-2.03-1.58zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" />
             </svg>
@@ -108,8 +118,8 @@ export default function AdminSidebar() {
 
             {profileOpen && (
               <div className="profile-menu">
-                <Link to="#">Profile</Link>
-                <Link to="#">Logout</Link>
+                <Link to="#" onClick={() => setProfileOpen(false)}>Profile</Link>
+                <Link to="#" onClick={() => setProfileOpen(false)}>Logout</Link>
               </div>
             )}
           </div>

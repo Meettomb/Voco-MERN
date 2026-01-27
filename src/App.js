@@ -12,6 +12,7 @@ import Videos from "./Components/Videos";
 import VideoPlayer from "./Components/VideoPlayer";
 import Dashboard from "./Components/admin/Dashboard";
 import AdminHeader from "./Components/admin/AdminHeader";
+import AllUsers from "./Components/admin/users/AllUsers";
 
 function App() {
   const [authView, setAuthView] = useState(null);
@@ -32,6 +33,7 @@ function App() {
         {/* Admin Pages WITH Admin Header + Sidebar */}     
         <Route path="/admin" element={<AdminHeader />}>
           <Route index element={<Dashboard />} />
+          <Route path="/admin/users/all_users" element={<AllUsers />} />
         </Route>
 
         {/* Pages WITHOUT Header */}
