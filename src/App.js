@@ -10,6 +10,11 @@ import LearnWords from "./Components/LearnWords";
 import SelectLearningLanguage from "./Components/SelectLerningLangauge";
 import Videos from "./Components/Videos";
 import VideoPlayer from "./Components/VideoPlayer";
+import AdminHeader from "./Components/admin/AdminHeader";
+import Dashboard from "./Components/admin/Dashboard";
+import AllUsers from "./Components/admin/users/AllUsers";
+import UserDetailView from "./Components/admin/users/manage_users/UserDetailView";
+import UpdateUserDetails from "./Components/admin/users/manage_users/UpdateUserDetails";
 
 function App() {
   const [authView, setAuthView] = useState(null);
@@ -22,14 +27,22 @@ function App() {
         <Route element={<MainLayout onOpen={() => setAuthView("login")} />}>
           <Route path="/" element={<Home />} />
           <Route path="/learn-words" element={<LearnWords />} />
-          <Route path="/videos" element={<Videos/>}/>
+          <Route path="/videos" element={<Videos />} />
           <Route path="OtpVerify" element={<OtpVerify />} />
-          <Route path="/video/:id" element={<VideoPlayer/>}/>
+          <Route path="/video/:id" element={<VideoPlayer />} />
+        </Route>
+
+        {/* Admin Pages WITH Admin Header + Sidebar */}
+        <Route path="/admin" element={<AdminHeader />}>
+          <Route index element={<Dashboard />} />
+          <Route path="users/all-users" element={<AllUsers />} />
+          <Route path="users/manage-users/user-detail-view" element={<UserDetailView />} />
+          <Route path="users/manage-users/update-user-details" element={<UpdateUserDetails />} />
         </Route>
 
         {/* Pages WITHOUT Header */}
         <Route path="/OtpVerify" element={<OtpVerify />} />
-          <Route path="/select-learning-langauge" element={<SelectLearningLanguage />} />
+        <Route path="/select-learning-langauge" element={<SelectLearningLanguage />} />
 
       </Routes>
 

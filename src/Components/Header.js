@@ -4,30 +4,51 @@ import { COMPANY_NAME } from "../hooks/usePageTitle";
 import Logo from '../assets/images/Voco.png';
 import { useTranslation } from 'react-i18next';
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 function Header({ onOpen }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const isLoggedIn = true; // Replace with actual auth logic
+  const profileRef = useRef(null);
   const { t, i18n } = useTranslation();
   const sideNavRef = useRef(null);
+  const navigate = useNavigate();
 
-  // Disable background scroll when menu is open
+
   useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => (document.body.style.overflow = "");
+  }, [menuOpen]);
+
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(e.target)
+      ) {
+        setProfileOpen(false);
+      }
     }
 
+    document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
-      document.body.style.overflow = "";
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [menuOpen]);
+  }, []);
 
   // Close menu when clicking outside
   const handleBackdropClick = () => {
     setMenuOpen(false);
   };
 
+  // const handleSideNavNavigate = () => {
+  //   setProfileOpen(false);
+  //   setMenuOpen(false);
+  // };
 
 
   return (
@@ -82,7 +103,37 @@ function Header({ onOpen }) {
                 </select>
               </li>
 
-              <li className="auth-link" onClick={onOpen}>{t("nav.login")}</li>
+              {!isLoggedIn ? (
+                <li className="auth-link" onClick={onOpen}>{t("nav.login")}</li>
+              ) : (
+                <li className="profile-wrapper" ref={profileRef}>
+                  <button
+                    className="profile-btn"
+                    onClick={() => setProfileOpen(v => !v)}
+                  >
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 12a5 5 0 1 0-0.001-10.001A5 5 0 0 0 12 12zm0 2c-4 0-8 2-8 6v2h16v-2c0-4-4-6-8-6z" />
+                    </svg>
+                  </button>
+
+                  {profileOpen && (
+                    <div className="profile-dropdown">
+                      <Link to="/profile" onClick={() => setProfileOpen(false)}>{t("nav.profile")}</Link>
+
+                      <Link to="/settings" onClick={() => setProfileOpen(false)}>
+                        {t("nav.settings")}
+                      </Link>
+
+                      <Link to="/admin" onClick={() => setProfileOpen(false)}>
+                        {t("nav.adminPanel")}
+                      </Link>
+                      <button>{t("nav.logout")}</button>
+
+                    </div>
+                  )}
+                </li>
+              )}
+
             </ul>
           </div>
 
@@ -111,107 +162,179 @@ function Header({ onOpen }) {
         className={`side-nav ${menuOpen ? "open" : ""}`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="side-nav-header">
-          <div className="side-nav-brand">
-            <img src={Logo} alt="VOCO" />
-            <span>VOCO</span>
+
+        <div className="side-nav-content">
+          {/* Header */}
+          <div className="side-nav-header">
+            <div className="side-nav-brand">
+              <img src={Logo} alt="VOCO" />
+              <span>VOCO</span>
+            </div>
+
+            <button
+              className="close-btn"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              <svg viewBox="0 -960 960 960">
+                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+              </svg>
+            </button>
           </div>
 
-          <button
-            className="close-btn"
-            onClick={() => setMenuOpen(false)}
-            aria-label="Close menu"
-          >
-            <svg viewBox="0 -960 960 960">
-              <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
-            </svg>
-          </button>
-        </div>
+          {/* Profile OR Login */}
+          {isLoggedIn ? (
+            <div className="side-nav-profile">
+              <button
+                className="side-profile-btn"
+                onClick={() => setProfileOpen(v => !v)}
+              >
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 12a5 5 0 1 0-0.001-10.001A5 5 0 0 0 12 12zm0 2c-4 0-8 2-8 6v2h16v-2c0-4-4-6-8-6z" />
+                </svg>
 
-        {/* Language */}
-        <div className="side-nav-lang">
-          <label>Language</label>
-          <select
-            className="language-select"
-            value={i18n.language}
-            onChange={(e) => i18n.changeLanguage(e.target.value)}
-          >
-            <option value="en">English</option>
-            <option value="hi">हिंदी</option>
-          </select>
-        </div>
+                <span>{t("nav.myProfile")}</span>
+              </button>
 
-        {/* Links */}
-        <ul className="side-nav-links">
-          <li>
-            <Link to="/" onClick={() => setMenuOpen(false)}>
-              <svg viewBox="0 -960 960 960">
-                <path d="M120-200v-360l360-280 360 280v360H600v-240H360v240H120Z" />
-              </svg>
-              {t("nav.home")}
-            </Link>
-          </li>
+              {profileOpen && (
+                <div
+                  className="side-profile-dropdown"
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
 
-          <li>
-            <Link to="/learn-words" onClick={() => setMenuOpen(false)}>
-              <svg viewBox="0 -960 960 960">
-                <path d="M160-120v-640q0-33 23.5-56.5T240-840h400q33 0 56.5 23.5T720-760v640
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate("/profile");
+                      setProfileOpen(false);
+                      setMenuOpen(false);
+                    }}
+                  >
+                    {t("nav.profile")}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate("/settings");
+                      setProfileOpen(false);
+                      setMenuOpen(false);
+                    }}
+                  >
+                    
+                    {t("nav.settings")}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate("/admin");
+                      setProfileOpen(false);
+                      setMenuOpen(false);
+                    }}
+                  >
+                    {t("nav.adminPanel")}
+                  </button>
+
+                </div>
+              )}
+
+            </div>
+          ) : (null)}
+
+
+
+          {/* Language */}
+          <div className="side-nav-lang">
+            <label>Language</label>
+            <select
+              className="language-select"
+              value={i18n.language}
+              onChange={(e) => i18n.changeLanguage(e.target.value)}
+            >
+              <option value="en">English</option>
+              <option value="hi">हिंदी</option>
+            </select>
+          </div>
+
+          {/* Links */}
+          <ul className="side-nav-links">
+            <li>
+              <Link to="/" onClick={() => setMenuOpen(false)}>
+                <svg viewBox="0 -960 960 960">
+                  <path d="M120-200v-360l360-280 360 280v360H600v-240H360v240H120Z" />
+                </svg>
+                {t("nav.home")}
+              </Link>
+            </li>
+
+            <li>
+              <Link to="/learn-words" onClick={() => setMenuOpen(false)}>
+                <svg viewBox="0 -960 960 960">
+                  <path d="M160-120v-640q0-33 23.5-56.5T240-840h400q33 0 56.5 23.5T720-760v640
       q-20-12-40-18t-40-6H240q-20 0-40 6t-40 18Zm80-160h320v-80H240v80Zm0-160h400v-80H240v80Zm0-160h400v-80H240v80Z
     " />
-              </svg>
-              {t("nav.learnWords")}
-            </Link>
-          </li>
+                </svg>
+                {t("nav.learnWords")}
+              </Link>
+            </li>
 
-          <li>
-            <Link to="/videos" onClick={() => setMenuOpen(false)}>
-              <svg viewBox="0 -960 960 960">
-                <path d="M160-120v-720l640 360-640 360Z" />
-              </svg>
-              {t("nav.videos")}
-            </Link>
-          </li>
+            <li>
+              <Link to="/videos" onClick={() => setMenuOpen(false)}>
+                <svg viewBox="0 -960 960 960">
+                  <path d="M160-120v-720l640 360-640 360Z" />
+                </svg>
+                {t("nav.videos")}
+              </Link>
+            </li>
 
-          <li>
-            <Link to="/mcqs" onClick={() => setMenuOpen(false)}>
-              <svg viewBox="0 -960 960 960">
-                <path d=" M480-200q-33 0-56.5-23.5T400-280q0-33 23.5-56.5T480-360
+            <li>
+              <Link to="/mcqs" onClick={() => setMenuOpen(false)}>
+                <svg viewBox="0 -960 960 960">
+                  <path d=" M480-200q-33 0-56.5-23.5T400-280q0-33 23.5-56.5T480-360
       q33 0 56.5 23.5T560-280q0 33-23.5 56.5T480-200Zm-120-240
       q0-66 40-105t80-55q30-12 45-29t15-39q0-33-23.5-56.5T480-760
       q-33 0-56.5 23.5T400-680h-80q0-66 47-113t113-47
       q66 0 113 47t47 113q0 45-23 75t-57 45q-33 14-49 31t-16 49v40h-80v-40Z
     " />
-              </svg>
-              {t("nav.mcqs")}
-            </Link>
-          </li>
+                </svg>
+                {t("nav.mcqs")}
+              </Link>
+            </li>
 
-          <li>
-            <Link to="/practice" onClick={() => setMenuOpen(false)}>
-              <svg viewBox="0 -960 960 960">
-                <path d="M440-200h80v-240h240v-80H520v-240h-80v240H200v80h240v240Z" />
-              </svg>
-              {t("nav.practice")}
-            </Link>
-          </li>
+            <li>
+              <Link to="/practice" onClick={() => setMenuOpen(false)}>
+                <svg viewBox="0 -960 960 960">
+                  <path d="M440-200h80v-240h240v-80H520v-240h-80v240H200v80h240v240Z" />
+                </svg>
+                {t("nav.practice")}
+              </Link>
+            </li>
 
-          <li>
-            <Link to="/progress" onClick={() => setMenuOpen(false)}>
-              <svg viewBox="0 -960 960 960">
-                <path d="M200-160v-80h560v80H200Zm0-160v-360h80v360h-80Zm200 0v-480h80v480h-80Zm200 0v-240h80v240h-80Z" />
-              </svg>
-              {t("nav.progress")}
-            </Link>
-          </li>
-        </ul>
+            <li>
+              <Link to="/progress" onClick={() => setMenuOpen(false)}>
+                <svg viewBox="0 -960 960 960">
+                  <path d="M200-160v-80h560v80H200Zm0-160v-360h80v360h-80Zm200 0v-480h80v480h-80Zm200 0v-240h80v240h-80Z" />
+                </svg>
+                {t("nav.progress")}
+              </Link>
+            </li>
+          </ul>
 
 
 
-        {/* Auth CTA */}
-        <button className="side-nav-auth" onClick={onOpen}>
-          {t("nav.login")}
-        </button>
+          {/* Auth CTA */}
+          {isLoggedIn ? (
+            <button className="side-nav-auth" >
+              Logout
+            </button>
+          ) : (
+            <button className="side-nav-auth" onClick={onOpen}>
+              {t("nav.login")}
+            </button>
+          )}
+
+        </div>
       </div>
 
 
