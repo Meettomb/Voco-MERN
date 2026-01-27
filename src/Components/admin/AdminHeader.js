@@ -14,6 +14,14 @@ export default function AdminSidebar() {
     setOpenUser(false);
   };
 
+  const openSidebar = () => {
+    setCollapsed(false);
+  };
+
+  const closeSidebar = () => {
+    setCollapsed(true);
+    setOpenUser(false);
+  };
 
   const handleNavClick = () => {
     setCollapsed(true);
@@ -50,7 +58,8 @@ export default function AdminSidebar() {
 
         </div>
 
-        <nav className="nav">
+        <nav className="nav" onMouseEnter={openSidebar}
+          onMouseLeave={closeSidebar}>
 
           <Link to="/admin" className="nav-item" onClick={handleNavClick}>
             <svg viewBox="0 0 24 24">
@@ -75,9 +84,9 @@ export default function AdminSidebar() {
 
           {openUser && !collapsed && (
             <div className="submenu">
-              <Link to="/admin/users/all_users" onClick={handleNavClick}>All Users</Link>
-              <Link to="/admin/users/all_active" onClick={handleNavClick}>Active Users</Link>
-              <Link to="/admin/users/all_blocked" onClick={handleNavClick}>Blocked Users</Link>
+              <Link to="/admin/users/all-users" onClick={handleNavClick}>All Users</Link>
+              <Link to="/admin/users/all-active" onClick={handleNavClick}>Active Users</Link>
+              <Link to="/admin/users/all-blocked" onClick={handleNavClick}>Blocked Users</Link>
             </div>
           )}
 
@@ -100,7 +109,7 @@ export default function AdminSidebar() {
 
         <div className="topbar">
 
-          <button className="menu-btn" onClick={toggleCollapse}>
+          <button className="menu-btn" onClick={() => setCollapsed(v => !v)}>
             <svg viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none">
               <line x1="4" y1="6" x2="20" y2="6" />
               <line x1="4" y1="12" x2="20" y2="12" />

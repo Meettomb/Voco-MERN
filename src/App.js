@@ -13,6 +13,7 @@ import VideoPlayer from "./Components/VideoPlayer";
 import Dashboard from "./Components/admin/Dashboard";
 import AllUsers from "./Components/admin/users/AllUsers";
 import AdminSideMainLayout from "./AdminSideMainLayout";
+import UserDetailView from "./Components/admin/users/manage_users/UserDetailView";
 
 function App() {
   const [authView, setAuthView] = useState(null);
@@ -33,7 +34,8 @@ function App() {
         {/* Admin Pages WITH Admin Header + Sidebar */}
         <Route path="/admin" element={<AdminSideMainLayout />}>
           <Route index element={<Dashboard />} />
-          <Route path="users/all_users" element={<AllUsers />} />
+          <Route path="users/all-users" element={<AllUsers />} />
+          <Route path="users/manage-users/user-detail-view" element={<UserDetailView />} />
         </Route>
 
         {/* Pages WITHOUT Header */}

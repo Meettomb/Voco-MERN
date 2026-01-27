@@ -2647,20 +2647,20 @@ h3 {
   gap: 10px;
 }
 
-.actions button {
+.actions a {
   background: none;
   border: none;
   cursor: pointer;
   color: var(--color-text-secondary);
 }
 
-.actions button svg {
+.actions a svg {
   width: 20px;
   height: 20px;
   fill: currentColor;
 }
 
-.actions button:hover {
+.actions a:hover {
   color: var(--color-primary);
 }
 
@@ -2678,3 +2678,109 @@ h3 {
   }
 
 }
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* Users Details */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+.user-detail-page{
+  padding: 24px;
+  max-width: 800px;
+  margin: auto;
+}
+
+/* Header */
+.user-detail-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.user-detail-header h2{
+  font-size:20px;
+  font-weight:600;
+}
+
+.header-actions{
+  display:flex;
+  gap:10px;
+}
+
+/* Icon Buttons */
+.icon-btn{
+  background:#f2f2f2;
+  border:none;
+  padding:8px;
+  border-radius:8px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.icon-btn svg{
+  width:20px;
+  height:20px;
+  fill:#333;
+}
+
+.icon-btn:hover{
+  background:#e4e4e4;
+}
+
+.icon-btn.danger svg{
+  fill:#d32f2f;
+}
+
+/* Card */
+.user-detail-card{
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  padding:20px;
+}
+
+/* Rows */
+.detail-row{
+  display:flex;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid #eee;
+}
+
+.detail-row:last-child{
+  border-bottom:none;
+}
+
+.detail-row span{
+  color:#777;
+  font-size:14px;
+}
+
+.detail-row p{
+  font-weight:500;
+}
+
+/* Status */
+.status.active{
+  color:#2e7d32;
+  font-weight:600;
+}
+
+.status.inactive{
+  color:#c62828;
+  font-weight:600;
+}
+
+/* Mobile */
+@media(max-width:600px){
+  .detail-row{
+    flex-direction:column;
+    gap:4px;
+  }
+}
+
+
