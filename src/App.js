@@ -10,6 +10,8 @@ import LearnWords from "./Components/LearnWords";
 import SelectLearningLanguage from "./Components/SelectLerningLangauge";
 import Videos from "./Components/Videos";
 import VideoPlayer from "./Components/VideoPlayer";
+import Dashboard from "./Components/admin/Dashboard";
+import AdminHeader from "./Components/admin/AdminHeader";
 
 function App() {
   const [authView, setAuthView] = useState(null);
@@ -22,14 +24,19 @@ function App() {
         <Route element={<MainLayout onOpen={() => setAuthView("login")} />}>
           <Route path="/" element={<Home />} />
           <Route path="/learn-words" element={<LearnWords />} />
-          <Route path="/videos" element={<Videos/>}/>
+          <Route path="/videos" element={<Videos />} />
           <Route path="OtpVerify" element={<OtpVerify />} />
-          <Route path="/video/:id" element={<VideoPlayer/>}/>
+          <Route path="/video/:id" element={<VideoPlayer />} />
+        </Route>
+
+        {/* Admin Pages WITH Admin Header + Sidebar */}     
+        <Route path="/admin" element={<AdminHeader />}>
+          <Route index element={<Dashboard />} />
         </Route>
 
         {/* Pages WITHOUT Header */}
         <Route path="/OtpVerify" element={<OtpVerify />} />
-          <Route path="/select-learning-langauge" element={<SelectLearningLanguage />} />
+        <Route path="/select-learning-langauge" element={<SelectLearningLanguage />} />
 
       </Routes>
 
