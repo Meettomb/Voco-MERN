@@ -14,6 +14,7 @@ import AdminHeader from "./Components/admin/AdminHeader";
 import Dashboard from "./Components/admin/Dashboard";
 import AllUsers from "./Components/admin/users/AllUsers";
 import UserDetailView from "./Components/admin/users/manage_users/UserDetailView";
+import UpdateUserDetails from "./Components/admin/users/manage_users/UpdateUserDetails";
 
 function App() {
   const [authView, setAuthView] = useState(null);
@@ -36,6 +37,7 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="users/all-users" element={<AllUsers />} />
           <Route path="users/manage-users/user-detail-view" element={<UserDetailView />} />
+          <Route path="users/manage-users/update-user-details" element={<UpdateUserDetails />} />
         </Route>
 
         {/* Pages WITHOUT Header */}
