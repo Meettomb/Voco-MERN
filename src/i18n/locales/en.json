@@ -192,5 +192,19 @@
     },
     "languageNote": "English, Hindi, Gujarati",
     "rights": "All rights reserved."
+  },
+  "chooseLearningLanguage": {
+    "title": "Select Language to Learn",
+    "subtitle": "Choose one language",
+    "continue": "Continue"
+  },
+  "McqsExam": {
+    "title": "MCQs Exam",
+    "subtitle": "Select the correct answer",
+    "submit": "Submit Exam",
+    "resultTitle": "Exam Result",
+    "yourScore": "Your Score:",
+    "answerAll": "Please answer all questions before submitting.",
+    "close": "Close"
   }
 }

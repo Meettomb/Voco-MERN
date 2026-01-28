@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 export default function ChooseLearningLanguage() {
 
- const navigate = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
-// which page user wanted
+  // which page user wanted
   const targetPage = location.state?.target || "learn-words";
+  const { t } = useTranslation();
 
   const languages = [
     { code: "en", label: "English", native: "English" },
@@ -24,7 +26,7 @@ export default function ChooseLearningLanguage() {
     setSelectedLanguage(lang);
   };
 
- const continueLearning = () => {
+  const continueLearning = () => {
     if (!selectedLanguage) return;
 
     // (optional) save to localStorage
@@ -33,10 +35,10 @@ export default function ChooseLearningLanguage() {
     // redirect based on original click
     if (targetPage === "videos") {
       navigate("/videos");
-    } 
+    }
     else if (targetPage === "mcqs-exam") {
       navigate("/mcqs-exam");
-    } 
+    }
     else {
       navigate("/learn-words");
     }
@@ -49,8 +51,8 @@ export default function ChooseLearningLanguage() {
 
         {/* Header */}
         <div className="choose-lang-page__header">
-          <h2>Select Language to Learn</h2>
-          <p>Choose one language</p>
+          <h2>{t("chooseLearningLanguage.title")}</h2>
+          <p>{t("chooseLearningLanguage.subtitle")}</p>
         </div>
 
         {/* Grid */}
@@ -80,7 +82,7 @@ export default function ChooseLearningLanguage() {
             disabled={!selectedLanguage}
             onClick={continueLearning}
           >
-            Continue
+              {t("chooseLearningLanguage.continue")}
           </button>
         </div>
 

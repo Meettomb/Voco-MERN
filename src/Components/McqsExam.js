@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+
 
 export default function McqsExam() {
+    const { t } = useTranslation();
 
     const questions = [
         {
@@ -56,8 +59,8 @@ export default function McqsExam() {
 
                 {/* Header */}
                 <div className="mcqs-page__header">
-                    <h2>MCQs Exam</h2>
-                    <p>Select the correct answer</p>
+                    <h2>{t("McqsExam.title")}</h2>
+                    <p>{t("McqsExam.subtitle")}</p>
                 </div>
 
                 {/* Questions */}
@@ -100,7 +103,7 @@ export default function McqsExam() {
                         onClick={submitExam}
                         disabled={Object.keys(answers).length !== questions.length}
                     >
-                        Submit Exam
+                        {t("McqsExam.submit")}
                     </button>
                 </div>
 
@@ -112,10 +115,10 @@ export default function McqsExam() {
 
                     <div className="mcqs-page__modal">
 
-                        <h2>Exam Result</h2>
+                        <h2>{t("McqsExam.resultTitle")}</h2>
 
                         <p>
-                            Your Score:
+                            {t("McqsExam.yourScore")}
                             <span> {score} </span>
                             / {questions.length}
                         </p>
@@ -124,7 +127,7 @@ export default function McqsExam() {
                             className="mcqs-page__close-btn"
                             onClick={() => setShowResult(false)}
                         >
-                            Close
+                            {t("McqsExam.close")}
                         </button>
 
                     </div>
