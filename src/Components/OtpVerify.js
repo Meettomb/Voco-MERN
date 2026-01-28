@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import usePageTitle from "../hooks/usePageTitle";
 
 function OtpVerify() {
   const { t } = useTranslation();
 
+    usePageTitle("Verify OTP");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
 
   const handleChange = (value, index) => {

@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
+import usePageTitle from '../../../../hooks/usePageTitle';
 
 export default function UserDetailView() {
+  usePageTitle("User Detail View");
 
   const navigate = useNavigate();
 

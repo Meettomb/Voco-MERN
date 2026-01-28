@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import usePageTitle from "../hooks/usePageTitle";
 
 function SelectLearningLanguage({ onBack }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [selected, setSelected] = useState(null);
+  usePageTitle("Select Learning Language");
 
   return (
     <div className="sll-page">

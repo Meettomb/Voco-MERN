@@ -1,20 +1,30 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+// Comen Components
+import OtpVerify from "./Components/OtpVerify";
+import MainLayout from "./MainLayout";
+
+// User Components
 import Home from "./Components/Home";
 import SignIn from "./Components/SIgnInPopup";
 import RegisterPopup from "./Components/RegisterPopup";
-import OtpVerify from "./Components/OtpVerify";
-import MainLayout from "./MainLayout";
 import LearnWords from "./Components/LearnWords";
 import SelectLearningLanguage from "./Components/SelectLerningLangauge";
 import Videos from "./Components/Videos";
 import VideoPlayer from "./Components/VideoPlayer";
+import McqsExam from "./Components/McqsExam";
+import ChooseLearningLanguage from "./Components/ChooseLearningLanguage";
+
+// Admin Components
 import AdminHeader from "./Components/admin/AdminHeader";
 import Dashboard from "./Components/admin/Dashboard";
 import AllUsers from "./Components/admin/users/AllUsers";
 import UserDetailView from "./Components/admin/users/manage_users/UserDetailView";
 import UpdateUserDetails from "./Components/admin/users/manage_users/UpdateUserDetails";
+import ActiveUsers from "./Components/admin/users/ActiveUsers";
+import BlockedUsers from "./Components/admin/users/BlockedUsers";
+
 
 function App() {
   const [authView, setAuthView] = useState(null);
@@ -28,14 +38,18 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/learn-words" element={<LearnWords />} />
           <Route path="/videos" element={<Videos />} />
-          <Route path="OtpVerify" element={<OtpVerify />} />
           <Route path="/video/:id" element={<VideoPlayer />} />
+          <Route path="/mcqs-exam" element={<McqsExam />} />
+          <Route path="/choose-learning-language" element={<ChooseLearningLanguage />} />
         </Route>
 
         {/* Admin Pages WITH Admin Header + Sidebar */}
         <Route path="/admin" element={<AdminHeader />}>
           <Route index element={<Dashboard />} />
           <Route path="users/all-users" element={<AllUsers />} />
+          <Route path="users/active-users" element={<ActiveUsers />} />
+          <Route path="users/blocked-users" element={<BlockedUsers />} />
+
           <Route path="users/manage-users/user-detail-view" element={<UserDetailView />} />
           <Route path="users/manage-users/update-user-details" element={<UpdateUserDetails />} />
         </Route>

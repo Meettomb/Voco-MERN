@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
+import usePageTitle from "../hooks/usePageTitle";
 
 function SignInPopup({ onClose, onOpenRegister }) {
+  usePageTitle("Sign In");
   const [showPassword, setShowPassword] = useState(false);
   const { t } = useTranslation();
 
