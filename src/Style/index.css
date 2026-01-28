@@ -103,6 +103,12 @@ h3 {
 .error-text {
   color: rgb(255, 22, 22);
 }
+body, html {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
 
 /* ========================================================================================== */
 /* ========================================================================================== */
@@ -2183,6 +2189,8 @@ h3 {
   display: flex;
   height: 100vh;
   background: var(--color-bg-main);
+  
+  overflow: hidden;
 }
 
 
@@ -2317,11 +2325,13 @@ h3 {
   flex: 1;
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 }
-
 
 .main .topbar {
   height: 64px;
+  flex-shrink: 0;
   background-color: var(--color-text-primary);
   display: flex;
   align-items: center;
@@ -2405,7 +2415,10 @@ h3 {
 .main .content {
   flex: 1;
   padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
+
 
 
 .sidebar.collapsed .nav .nav-item {
@@ -2478,105 +2491,140 @@ h3 {
 /* Dashboard */
 /* ========================================================================================== */
 /* ========================================================================================== */
-
+/* ================= PAGE ================= */
 
 .dashboard {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 26px;
 }
 
-/* Header */
+/* ================= HEADER ================= */
 
-.dashboard-header h1 {
-  font-size: 26px;
+.dashboard .dashboard-header h1 {
+  font-size: 28px;
   color: var(--color-text-primary);
 }
 
-.dashboard-header p {
+.dashboard .dashboard-header p {
   color: var(--color-text-secondary);
 }
 
-/* Stats */
+/* ================= STATS ================= */
 
-.stats-grid {
+.dashboard .dashboard-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
 }
 
-.stat-card {
+.dashboard .dashboard-stats .stat-card {
   background: var(--color-bg-card);
-  padding: 20px;
-  border-radius: 12px;
+  padding: 22px;
+  border-radius: 14px;
   box-shadow: var(--shadow-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.stat-card h3 {
-  font-size: 14px;
+.dashboard .dashboard-stats .stat-card .stat-left p {
   color: var(--color-text-secondary);
+  font-size: 14px;
 }
 
-.stat-number {
+.dashboard .dashboard-stats .stat-card .stat-left h3 {
   font-size: 28px;
-  font-weight: 600;
-  margin-top: 8px;
   color: var(--color-primary);
 }
 
-/* Grid */
-
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 20px;
+.dashboard .dashboard-stats .stat-card .stat-icon {
+  width: 36px;
+  height: 36px;
+  fill: var(--color-primary);
 }
 
-.dashboard-card {
+/* ================= GRID ================= */
+
+.dashboard .dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 22px;
+}
+
+/* ================= CARD ================= */
+
+.dashboard .dashboard-grid .dashboard-card {
   background: var(--color-bg-card);
-  padding: 20px;
-  border-radius: 12px;
+  padding: 22px;
+  border-radius: 14px;
   box-shadow: var(--shadow-sm);
 }
 
-.dashboard-card h2 {
-  margin-bottom: 12px;
+.dashboard .dashboard-grid .dashboard-card .card-header h2 {
   font-size: 18px;
+  margin-bottom: 12px;
   color: var(--color-text-primary);
 }
 
-/* List */
+/* ================= LISTS ================= */
 
-.list {
+.dashboard .dashboard-grid .dashboard-card .data-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
-.list li {
+.dashboard .dashboard-grid .dashboard-card .data-list li {
   padding: 10px 0;
   border-bottom: 1px solid var(--color-border-light);
   color: var(--color-text-secondary);
 }
 
-/* Actions */
-
-.action-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+.dashboard .dashboard-grid .dashboard-card .status-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.action-grid button {
-  padding: 10px;
+.dashboard .dashboard-grid .dashboard-card .status-list li {
+  padding: 10px 0;
+  color: var(--color-accent-green);
+}
+
+/* ================= ACTIONS ================= */
+
+.dashboard .dashboard-grid .dashboard-card .action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.dashboard .dashboard-grid .dashboard-card .action-grid button {
+  padding: 12px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--btn-primary-bg);
   color: var(--btn-primary-text);
   cursor: pointer;
 }
 
-.action-grid button:hover {
+.dashboard .dashboard-grid .dashboard-card .action-grid button:hover {
   background: var(--btn-primary-hover);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 600px) {
+
+  .dashboard .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard .dashboard-grid .dashboard-card .action-grid {
+    grid-template-columns: 1fr;
+  }
+
 }
 
 
@@ -3087,7 +3135,7 @@ h3 {
 
 /* PAGE */
 .choose-lang-page {
-  min-height: 100vh;
+  height: auto;
   background: var(--color-bg-main);
   display: flex;
   justify-content: center;
