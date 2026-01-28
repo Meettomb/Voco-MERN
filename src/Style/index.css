@@ -109,6 +109,7 @@ h3 {
 /* Header */
 /* ========================================================================================== */
 /* ========================================================================================== */
+
 .header {
   width: 100%;
   height: 70px;
@@ -132,7 +133,10 @@ h3 {
   align-items: center;
   height: 100%;
 }
-
+.navbar a {
+  text-decoration: none;
+  display: flex;
+}
 /* Logo */
 .logo {
   display: flex;
@@ -142,8 +146,8 @@ h3 {
 }
 
 .logo img {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
 }
 
 .logo p {
@@ -154,8 +158,11 @@ h3 {
   margin-left: 10px;
   font-family: 'Poppins', sans-serif;
   letter-spacing: -2px;
+  color: var(--color-text-primary);
 }
-
+.navbar .logo p a{
+  color: var(--color-text-primary);
+}
 .logo p::first-letter {
   color: var(--color-primary);
   letter-spacing: -5px;
@@ -394,6 +401,7 @@ h3 {
   gap: 10px;
   font-size: 14px;
   cursor: pointer;
+  
 }
 
 .side-profile-btn svg {
@@ -443,11 +451,18 @@ h3 {
   color: var(--color-primary);
   display: flex;
   align-items: center;
+  border: 2px solid var(--color-border-light);
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .profile-btn svg {
-  width: 24px;
-  height: 24px;
+  width: calc(100% / 1.2);
+  height: calc(100% / 1.2);
   fill: currentColor;
 }
 
@@ -474,6 +489,7 @@ h3 {
   color: #0f172a;
   text-decoration: none;
   display: block;
+  font-size: 16px;
 }
 
 .profile-dropdown a:hover,
@@ -1173,7 +1189,7 @@ h3 {
 
 /* ========================================================================================== */
 /* ========================================================================================== */
-/* SignIn */
+/* SignInPopup and RegisterPopup */
 /* ========================================================================================== */
 /* ========================================================================================== */
 
@@ -1378,7 +1394,7 @@ h3 {
 
 /* ========================================================================================== */
 /* ========================================================================================== */
-/* OTP Page */
+/* OTP Page (OtpVerify) */
 /* ========================================================================================== */
 /* ========================================================================================== */
 
@@ -1604,7 +1620,7 @@ h3 {
 
 /* ========================================================================================== */
 /* ========================================================================================== */
-/* Select Learning Language */
+/* SelectLearningLanguage */
 /* ========================================================================================== */
 /* ========================================================================================== */
 
@@ -1753,7 +1769,7 @@ h3 {
 
 /* ========================================================================================== */
 /* ========================================================================================== */
-/* Learn Words*/
+/* LearnWords*/
 /* ========================================================================================== */
 /* ========================================================================================== */
 
@@ -1876,7 +1892,7 @@ h3 {
 
 /* ========================================================================================== */
 /* ========================================================================================== */
-/* Videos Page*/
+/* Videos Page (Videos) */
 /* ========================================================================================== */
 /* ========================================================================================== */
 
@@ -1991,7 +2007,7 @@ h3 {
 
 /* ========================================================================================== */
 /* ========================================================================================== */
-/* Full Screen Loader*/
+/* FullScreenLoader*/
 /* ========================================================================================== */
 /* ========================================================================================== */
 
@@ -2082,7 +2098,7 @@ h3 {
 
 /* ========================================================================================== */
 /* ========================================================================================== */
-/* Video Player Page*/
+/* VideoPlayer */
 /* ========================================================================================== */
 /* ========================================================================================== */
 
@@ -2159,7 +2175,7 @@ h3 {
 
 /* ========================================================================================== */
 /* ========================================================================================== */
-/* Admin Page Header-Nav */
+/* Admin Page Header-Nav (AdminHeader)*/
 /* ========================================================================================== */
 /* ========================================================================================== */
 
@@ -2197,8 +2213,8 @@ h3 {
 }
 
 .sidebar .logo {
-  font-size: 30px;
-  font-weight: 600;
+  font-size: 40px;
+  font-weight: 700;
 }
 
 .sidebar .logo-first {
@@ -2347,11 +2363,18 @@ h3 {
   border: none;
   cursor: pointer;
   color: #fff;
+  border: 2px solid white;
+  border-radius: 50%;
+  width: 33px;
+  height: 33px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .main .profile-btn svg {
-  width: 28px;
-  height: 28px;
+  width: calc(100% / 1.5);
+  height: calc(100% / 1.5);
   fill: currentColor;
 }
 
@@ -2559,7 +2582,7 @@ h3 {
 
 /* ========================================================================================== */
 /* ========================================================================================== */
-/* All Users */
+/* AllUsers */
 /* ========================================================================================== */
 /* ========================================================================================== */
 
@@ -2635,6 +2658,9 @@ h3 {
 .badge.active {
   background: var(--color-accent-green);
 }
+.badge.inactive {
+  background: #f59e0b;
+}
 
 .badge.blocked {
   background: #ef4444;
@@ -2681,7 +2707,7 @@ h3 {
 
 /* ========================================================================================== */
 /* ========================================================================================== */
-/* Users Details */
+/* UsersDetailView */
 /* ========================================================================================== */
 /* ========================================================================================== */
 
@@ -2864,6 +2890,327 @@ h3 {
   background:#125ea7;
 }
 
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* McqsExam */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+/* PAGE */
+.mcqs-page {
+  min-height: 100vh;
+  background: var(--color-bg-main);
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.mcqs-page .mcqs-page__container {
+  width: 100%;
+  max-width: 800px;
+}
+
+/* HEADER */
+.mcqs-page .mcqs-page__container .mcqs-page__header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.mcqs-page .mcqs-page__container .mcqs-page__header h2 {
+  color: var(--color-primary);
+  margin-bottom: 0.3rem;
+}
+
+.mcqs-page .mcqs-page__container .mcqs-page__header p {
+  color: var(--color-text-secondary);
+}
+
+/* QUESTIONS LIST */
+.mcqs-page .mcqs-page__container .mcqs-page__questions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* QUESTION CARD */
+.mcqs-page .mcqs-page__container .mcqs-page__questions .mcqs-page__question-card {
+  background: var(--color-bg-card);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* QUESTION */
+.mcqs-page .mcqs-page__container .mcqs-page__questions 
+.mcqs-page__question-card .mcqs-page__question {
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+/* OPTIONS GRID */
+.mcqs-page .mcqs-page__container .mcqs-page__questions 
+.mcqs-page__question-card .mcqs-page__options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+/* OPTION BUTTON */
+.mcqs-page .mcqs-page__container .mcqs-page__questions 
+.mcqs-page__question-card .mcqs-page__options .mcqs-page__option {
+  padding: 0.8rem;
+  background: var(--color-bg-section);
+  border: 2px solid var(--color-border-medium);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  transition: 0.2s ease;
+}
+
+/* HOVER */
+.mcqs-page .mcqs-page__container .mcqs-page__questions 
+.mcqs-page__question-card .mcqs-page__options .mcqs-page__option:hover {
+  border-color: var(--color-primary);
+  background: var(--color-bg-hover);
+}
+
+/* ACTIVE */
+.mcqs-page .mcqs-page__container .mcqs-page__questions 
+.mcqs-page__question-card .mcqs-page__options .mcqs-page__option.active {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+/* FOOTER */
+.mcqs-page .mcqs-page__container .mcqs-page__footer {
+  margin-top: 2.5rem;
+  text-align: center;
+}
+
+/* SUBMIT BUTTON */
+.mcqs-page .mcqs-page__container .mcqs-page__footer .mcqs-page__submit-btn {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  padding: 0.8rem 2rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.mcqs-page .mcqs-page__container .mcqs-page__footer .mcqs-page__submit-btn:hover {
+  background: var(--btn-primary-hover);
+}
+.mcqs-page .mcqs-page__container 
+.mcqs-page__footer .mcqs-page__submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+
+  .mcqs-page .mcqs-page__container .mcqs-page__questions 
+  .mcqs-page__question-card .mcqs-page__options {
+    grid-template-columns: 1fr;
+  }
+
+}
+/* MODAL OVERLAY */
+.mcqs-page .mcqs-page__modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* MODAL BOX */
+.mcqs-page .mcqs-page__modal-overlay .mcqs-page__modal {
+  background: var(--color-bg-card);
+  padding: 2rem;
+  border-radius: 14px;
+  width: 90%;
+  max-width: 350px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+/* TITLE */
+.mcqs-page .mcqs-page__modal-overlay .mcqs-page__modal h2 {
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+/* SCORE TEXT */
+.mcqs-page .mcqs-page__modal-overlay .mcqs-page__modal p {
+  color: var(--color-text-primary);
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* SCORE NUMBER */
+.mcqs-page .mcqs-page__modal-overlay .mcqs-page__modal p span {
+  color: var(--color-accent-green);
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+
+/* CLOSE BUTTON */
+.mcqs-page .mcqs-page__modal-overlay .mcqs-page__modal .mcqs-page__close-btn {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  padding: 0.6rem 1.8rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.mcqs-page .mcqs-page__modal-overlay .mcqs-page__modal .mcqs-page__close-btn:hover {
+  background: var(--btn-primary-hover);
+}
+
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* ChooseLearningLanguage */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+/* PAGE */
+.choose-lang-page {
+  min-height: 100vh;
+  background: var(--color-bg-main);
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+/* CONTAINER */
+.choose-lang-page .choose-lang-page__container {
+  width: 100%;
+  max-width: 800px;
+}
+
+/* HEADER */
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__header h2 {
+  color: var(--color-primary);
+  margin-bottom: 0.4rem;
+}
+
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__header p {
+  color: var(--color-text-secondary);
+}
+
+/* GRID */
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.2rem;
+}
+
+/* CARD */
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__grid .choose-lang-page__card {
+  background: var(--color-bg-card);
+  padding: 1.2rem;
+  text-align: center;
+  border-radius: 12px;
+  border: 2px solid var(--color-border-medium);
+  cursor: pointer;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+/* HOVER */
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__grid .choose-lang-page__card:hover {
+  border-color: var(--color-primary);
+  background: var(--color-bg-hover);
+}
+
+/* ACTIVE */
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__grid .choose-lang-page__card.active {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__grid .choose-lang-page__card span {
+  display: block;
+}
+/* NATIVE */
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__grid .choose-lang-page__card .native {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* ENGLISH */
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__grid .choose-lang-page__card .english {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+/* FOOTER */
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__footer {
+  margin-top: 2.5rem;
+  text-align: center;
+}
+
+/* SAVE BUTTON */
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__footer .choose-lang-page__save-btn {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  padding: 0.8rem 2.2rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__footer .choose-lang-page__save-btn:hover {
+  background: var(--btn-primary-hover);
+}
+/* DISABLED BUTTON */
+.choose-lang-page .choose-lang-page__container 
+.choose-lang-page__footer .choose-lang-page__save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* RESPONSIVE */
+@media (max-width: 500px) {
+
+  .choose-lang-page .choose-lang-page__container 
+  .choose-lang-page__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
 
 
 

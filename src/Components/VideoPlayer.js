@@ -2,9 +2,10 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from "react-router-dom";
+import usePageTitle from "../hooks/usePageTitle";
 
 function VideoPlayer() {
-
+    usePageTitle("Video Player");
     const navigate = useNavigate();
     const { t } = useTranslation();
     const { id } = useParams();

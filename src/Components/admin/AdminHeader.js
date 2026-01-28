@@ -79,9 +79,9 @@ export default function AdminSidebar() {
 
           {openUser && !collapsed && (
             <div className="submenu">
-              <Link to="/admin/users/all-users" onClick={handleNavClick}>All Users</Link>
-              <Link to="/admin/users/all-active" onClick={handleNavClick}>Active Users</Link>
-              <Link to="/admin/users/all-blocked" onClick={handleNavClick}>Blocked Users</Link>
+              <Link to="users/all-users" onClick={handleNavClick}>All Users</Link>
+              <Link to="users/active-users" onClick={handleNavClick}>Active Users</Link>
+              <Link to="users/blocked-users" onClick={handleNavClick}>Blocked Users</Link>
             </div>
           )}
 

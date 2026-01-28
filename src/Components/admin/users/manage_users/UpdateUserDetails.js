@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import usePageTitle from "../../../../hooks/usePageTitle";
 
 export default function UpdateUserDetails() {
-
+  usePageTitle("Update User Details");
   const navigate = useNavigate();
 
   // Static user data (UI only)

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import FullScreenLoader from "./FullScreenLoader";
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import usePageTitle from "../hooks/usePageTitle";
 
 const API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
 
@@ -23,6 +24,7 @@ const PLAYLISTS = {
 
 function Videos() {
     const { t } = useTranslation();
+    usePageTitle("Videos");
 
     const [activeChapter, setActiveChapter] = useState("chapter1");
     const [videos, setVideos] = useState([]);

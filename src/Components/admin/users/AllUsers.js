@@ -1,7 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import usePageTitle from '../../../hooks/usePageTitle';
+
 
 export default function AllUsers() {
+  usePageTitle("All Users");
   return (
     <div className="users-page">
 
@@ -44,7 +47,26 @@ export default function AllUsers() {
                 {/* View */}
                 <Link to="/admin/users/manage-users/user-detail-view">
                   <svg viewBox="0 0 24 24">
-                    <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
+                    <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" />
+                  </svg>
+                </Link>
+
+              </td>
+            </tr>
+
+            <tr>
+              <td>2</td>
+              <td>Meet Patel</td>
+              <td>meet@example.com</td>
+              <td>
+                <span className="badge inactive">Inactive</span>
+              </td>
+              <td className="actions">
+
+                {/* View */}
+                <Link to="/admin/users/manage-users/user-detail-view">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" />
                   </svg>
                 </Link>
 

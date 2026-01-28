@@ -57,13 +57,15 @@ function Header({ onOpen }) {
         <nav className="navbar">
           {/* Logo */}
           <div className="logo">
-            <img
-              id="logo"
-              className="logoImage"
-              src={Logo}
-              alt={`${COMPANY_NAME} Logo`}
-            />
-            <p>{COMPANY_NAME}</p>
+            <Link to="/">
+              <img
+                id="logo"
+                className="logoImage"
+                src={Logo}
+                alt={`${COMPANY_NAME} Logo`}
+              />
+              <p>{COMPANY_NAME}</p>
+            </Link>
           </div>
 
           {/* Desktop Links */}
@@ -74,20 +76,17 @@ function Header({ onOpen }) {
               </li>
 
               <li>
-                <Link to="/learn-words">{t("nav.learnWords")}</Link>
+                <Link to="/choose-learning-language" state={{ target: "learn-words" }}>{t("nav.learnWords")}</Link>
               </li>
 
               <li>
-                <Link to="/videos">{t("nav.videos")}</Link>
+                <Link to="/choose-learning-language" state={{ target: "videos" }}>{t("nav.videos")}</Link>
               </li>
 
               <li>
-                <Link to="/mcqs">{t("nav.mcqs")}</Link>
+                <Link to="/choose-learning-language" state={{ target: "mcqs-exam" }}>{t("nav.mcqs")}</Link>
               </li>
 
-              <li>
-                <Link to="/practice">{t("nav.practice")}</Link>
-              </li>
               <li>
                 <Link to="/progress">{t("nav.progress")}</Link>
               </li>
@@ -221,7 +220,7 @@ function Header({ onOpen }) {
                       setMenuOpen(false);
                     }}
                   >
-                    
+
                     {t("nav.settings")}
                   </button>
 
@@ -269,7 +268,7 @@ function Header({ onOpen }) {
             </li>
 
             <li>
-              <Link to="/learn-words" onClick={() => setMenuOpen(false)}>
+              <Link to="/choose-learning-language" state={{ target: "learn-words" }} onClick={() => setMenuOpen(false)}>
                 <svg viewBox="0 -960 960 960">
                   <path d="M160-120v-640q0-33 23.5-56.5T240-840h400q33 0 56.5 23.5T720-760v640
       q-20-12-40-18t-40-6H240q-20 0-40 6t-40 18Zm80-160h320v-80H240v80Zm0-160h400v-80H240v80Zm0-160h400v-80H240v80Z
@@ -280,7 +279,7 @@ function Header({ onOpen }) {
             </li>
 
             <li>
-              <Link to="/videos" onClick={() => setMenuOpen(false)}>
+              <Link to="/choose-learning-language" state={{ target: "videos" }} onClick={() => setMenuOpen(false)}>
                 <svg viewBox="0 -960 960 960">
                   <path d="M160-120v-720l640 360-640 360Z" />
                 </svg>
@@ -289,7 +288,7 @@ function Header({ onOpen }) {
             </li>
 
             <li>
-              <Link to="/mcqs" onClick={() => setMenuOpen(false)}>
+              <Link to="/choose-learning-language" state={{ target: "mcqs-exam" }} onClick={() => setMenuOpen(false)}>
                 <svg viewBox="0 -960 960 960">
                   <path d=" M480-200q-33 0-56.5-23.5T400-280q0-33 23.5-56.5T480-360
       q33 0 56.5 23.5T560-280q0 33-23.5 56.5T480-200Zm-120-240
@@ -299,15 +298,6 @@ function Header({ onOpen }) {
     " />
                 </svg>
                 {t("nav.mcqs")}
-              </Link>
-            </li>
-
-            <li>
-              <Link to="/practice" onClick={() => setMenuOpen(false)}>
-                <svg viewBox="0 -960 960 960">
-                  <path d="M440-200h80v-240h240v-80H520v-240h-80v240H200v80h240v240Z" />
-                </svg>
-                {t("nav.practice")}
               </Link>
             </li>
 

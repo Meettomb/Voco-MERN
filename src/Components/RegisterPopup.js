@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-
+import usePageTitle from "../hooks/usePageTitle";
 
 function RegisterPopup({ onClose, onOpenSignIn }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  usePageTitle("Registration");
   /* Lock background scroll */
   useEffect(() => {
     const original = document.body.style.overflow;

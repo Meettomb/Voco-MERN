@@ -1,7 +1,9 @@
 import { useTranslation } from "react-i18next";
-// import "./LearnWords.css";
+import usePageTitle from "../hooks/usePageTitle";
 
 function LearnWords() {
+  
+    usePageTitle("Learn Words");
   const { t } = useTranslation();
 
   const ROADMAP_DATA = [
