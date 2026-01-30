@@ -16,6 +16,11 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "Backend is running" });
 });
 
+app.get("/", (req, res) => {
+  res.send("Voco Backend Server Running");
+});
+
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`);
