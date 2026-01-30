@@ -29,6 +29,7 @@ import LearningLanguages from "./Components/admin/language/learning-languages/Le
 import AddWords from "./Components/admin/words/AddWords";
 import ViewAllLearningLanguages from "./Components/admin/language/learning-languages/ViewAllLearningLanguages";
 import ViewLearningLanguages from "./Components/admin/language/learning-languages/ViewLearningLanguages";
+import UpdateLearningLanguage from "./Components/admin/language/learning-languages/UpdateLearningLanguage";
 
 
 function App() {
@@ -66,6 +67,7 @@ function App() {
           <Route path="language/learning-languages/add" element={<LearningLanguages />} />
           <Route path="language/learning-languages/view-all-learning-languages" element={<ViewAllLearningLanguages />} />
           <Route path="language/learning-languages/view-learning-languages" element={<ViewLearningLanguages />} />
+          <Route path="language/learning-languages/update-learning-language" element={<UpdateLearningLanguage />} />
 
         {/* ======================= Manage Words ======================= */}
           <Route path="words/add" element={<AddWords />} />

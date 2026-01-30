@@ -3498,7 +3498,7 @@ html {
 }
 
 
-.learning-languages-page__card h3{
+.learning-languages-page__card h2{
   margin-bottom: 10px;
 }
 .learning-languages-page__card {
@@ -3935,6 +3935,121 @@ html {
   background: var(--color-bg-main);
 }
 
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* UpdateLearningLanguage.js */
+/* ========================================================================================== */
+/* ========================================================================================== */
+.update-learning-language-page .icon-btn,
+.delete-btn,
+.outline-btn,
+.primary-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.update-learning-language-page button{
+  cursor: pointer;
+}
+
+svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.UpdateUpdateLearningLanguageh4{
+  margin-top: 20px;
+}
+.add-lang-page {
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-lang-card {
+  background: white;
+  width: 600px;
+  padding: 32px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.add-lang-card input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.chapter-row {
+  margin-top: 12px;
+}
+
+.delete-btn {
+  margin-top: 8px;
+  background: #fee2e2;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.action-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.primary-btn {
+  background: #2563eb;
+  color: white;
+  padding: 12px 22px;
+  border-radius: 8px;
+  border: none;
+}
+
+.outline-btn {
+  background: white;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+  padding: 12px 22px;
+  border-radius: 8px;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
 
 
 /* ========================================================================================== */

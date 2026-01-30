@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 /* ========== SVG ICONS ========== */
 
@@ -84,9 +84,9 @@ export default function ViewLearningLanguages() {
             />
           </div>
 
-          <button className="view-lang-page__icon-btn edit">
+          <Link to="/admin/language/learning-languages/update-learning-language" className="view-lang-page__icon-btn edit">
             <EditIcon />
-          </button>
+          </Link>
 
           <button className="view-lang-page__icon-btn delete">
             <TrashIcon />
