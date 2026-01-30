@@ -25,8 +25,10 @@ import UpdateUserDetails from "./Components/admin/users/manage_users/UpdateUserD
 import ActiveUsers from "./Components/admin/users/ActiveUsers";
 import BlockedUsers from "./Components/admin/users/BlockedUsers";
 import UiLanguages from "./Components/admin/language/UiLanguages";
-import LearningLanguages from "./Components/admin/language/LearningLanguages";
+import LearningLanguages from "./Components/admin/language/learning-languages/LearningLanguages";
 import AddWords from "./Components/admin/words/AddWords";
+import ViewAllLearningLanguages from "./Components/admin/language/learning-languages/ViewAllLearningLanguages";
+import ViewLearningLanguages from "./Components/admin/language/learning-languages/ViewLearningLanguages";
 
 
 function App() {
@@ -60,7 +62,10 @@ function App() {
 
         {/* ======================= Manage Languages ======================= */}
           <Route path="language/ui-languages" element={<UiLanguages />} />
-          <Route path="language/learning-languages" element={<LearningLanguages />} />
+
+          <Route path="language/learning-languages/add" element={<LearningLanguages />} />
+          <Route path="language/learning-languages/view-all-learning-languages" element={<ViewAllLearningLanguages />} />
+          <Route path="language/learning-languages/view-learning-languages" element={<ViewLearningLanguages />} />
 
         {/* ======================= Manage Words ======================= */}
           <Route path="words/add" element={<AddWords />} />

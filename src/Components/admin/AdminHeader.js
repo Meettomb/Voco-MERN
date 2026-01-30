@@ -62,15 +62,21 @@ export default function AdminSidebar() {
 
           <Link to="/admin" className="nav-item" onClick={handleNavClick}>
             <svg viewBox="0 0 24 24">
-              <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
+              <rect x="3" y="3" width="7" height="7" rx="2" />
+              <rect x="14" y="3" width="7" height="7" rx="2" />
+              <rect x="3" y="14" width="7" height="7" rx="2" />
+              <rect x="14" y="14" width="7" height="7" rx="2" />
             </svg>
+
             {!collapsed && <span>Dashboard</span>}
           </Link>
 
           <button className="nav-item" onClick={() => setOpenUser(v => !v)}>
             <svg viewBox="0 0 24 24">
-              <path d="M12 12a5 5 0 1 0-0.001-10.001A5 5 0 0 0 12 12zm0 2c-4 0-8 2-8 6v2h16v-2c0-4-4-6-8-6z" />
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />
             </svg>
+
 
             {!collapsed && <span>User Management</span>}
 
@@ -92,15 +98,42 @@ export default function AdminSidebar() {
           {/* =======================
    Language Management
 ======================= */}
-          <button className="nav-item" onClick={() => setOpenLanguage(v => !v)}>
+
+          <Link
+            to="language/ui-languages"
+            className="nav-item"
+            onClick={handleNavClick}
+          >
             <svg viewBox="0 0 24 24">
-              <path d="M12 3 2 9l10 6 10-6-10-6zm0 13L2 10v8l10 6 10-6v-8l-10 6z" />
+              <circle cx="12" cy="12" r="9" />
+              <path d="M3 12h18" />
+              <path d="M12 3a15 15 0 0 1 0 18" />
+              <path d="M12 3a15 15 0 0 0 0 18" />
             </svg>
 
-            {!collapsed && <span>Language Management</span>}
+
+
+            {!collapsed && <span>Supported UI Languages</span>}
+          </Link>
+
+          <button
+            className="nav-item"
+            onClick={() => setOpenLanguage(v => !v)}
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="M4 4h13a3 3 0 0 1 3 3v13H7a3 3 0 0 0-3 3V4z" />
+              <path d="M7 4v16" />
+            </svg>
+
+
+
+            {!collapsed && <span>Learning Languages</span>}
 
             {!collapsed && (
-              <svg className={openLanguage ? "arrow open" : "arrow"} viewBox="0 0 24 24">
+              <svg
+                className={openLanguage ? "arrow open" : "arrow"}
+                viewBox="0 0 24 24"
+              >
                 <path d="M7 10l5 5 5-5" />
               </svg>
             )}
@@ -108,23 +141,38 @@ export default function AdminSidebar() {
 
           {openLanguage && !collapsed && (
             <div className="submenu">
-              <Link to="language/ui-languages" onClick={handleNavClick}>
-                Supported UI Languages
+
+              <Link
+                to="language/learning-languages/add"
+                onClick={handleNavClick}
+              >
+                Add Learning Language
               </Link>
 
-              <Link to="language/learning-languages" onClick={handleNavClick}>
-                Learning Languages
+              <Link
+                to="language/learning-languages/view-all-learning-languages"
+                onClick={handleNavClick}
+              >
+                Manage Learning Languages
               </Link>
+
             </div>
           )}
+
+
+
 
           {/* =======================
    Words Management
 ======================= */}
           <button className="nav-item" onClick={() => setOpenWords(v => !v)}>
             <svg viewBox="0 0 24 24">
-              <path d="M4 4h16v4H4V4zm0 6h16v4H4v-4zm0 6h10v4H4v-4z" />
+              <rect x="4" y="4" width="16" height="4" rx="1" />
+              <rect x="4" y="10" width="16" height="4" rx="1" />
+              <rect x="4" y="16" width="10" height="4" rx="1" />
             </svg>
+
+
 
             {!collapsed && <span>Words Management</span>}
 
@@ -148,8 +196,15 @@ export default function AdminSidebar() {
 ======================= */}
           <button className="nav-item" onClick={() => setOpenMcqs(v => !v)}>
             <svg viewBox="0 0 24 24">
-              <path d="M3 5h18v4H3V5zm0 5h18v4H3v-4zm0 5h12v4H3v-4z" />
+              <circle cx="5" cy="7" r="2" />
+              <circle cx="5" cy="12" r="2" />
+              <circle cx="5" cy="17" r="2" />
+              <path d="M10 7h10" />
+              <path d="M10 12h10" />
+              <path d="M10 17h10" />
             </svg>
+
+
 
             {!collapsed && <span>MCQs Management</span>}
 
@@ -170,9 +225,11 @@ export default function AdminSidebar() {
 
 
           <Link to="/admin/settings" className="nav-item" onClick={handleNavClick}>
-            <svg viewBox="0 -960 960 960">
-              <path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm112-260q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Z" />
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h.1A1.7 1.7 0 0 0 10 3.1V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
             </svg>
+
             {!collapsed && <span>Settings</span>}
           </Link>
 

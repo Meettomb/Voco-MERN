@@ -2262,10 +2262,14 @@ html {
 }
 
 .sidebar .nav .nav-item svg {
-  width: 20px;
-  height: 20px;
-  fill: currentColor;
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  flex-shrink: 0;
 }
+
 
 
 .sidebar .nav .submenu {
@@ -3259,6 +3263,8 @@ html {
 /* ========================================================================================== */
 /* ========================================================================================== */
 
+
+
 .ui-lang-page {
   padding: 32px;
   background: var(--color-bg-main);
@@ -3473,6 +3479,462 @@ html {
     width: 100%;
   }
 }
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* LearningLanguages */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+
+.learning-languages-page {
+  height: auto;
+  background: var(--color-bg-main);
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+
+.learning-languages-page__card h3{
+  margin-bottom: 10px;
+}
+.learning-languages-page__card {
+  width: 100%;
+  max-width: 900px;
+  background: var(--color-bg-card);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+}
+
+.learning-languages-page__title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 1.5rem;
+}
+
+.learning-languages-page__table-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+
+.learning-languages-page input {
+  width: 95%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-light);
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.learning-languages-page input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+
+.learning-languages-page__chapter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.learning-languages-page__chapter-row input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+
+.learning-languages-page__icon-btn {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-light);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.learning-languages-page__icon-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Danger */
+.learning-languages-page__icon-btn--danger {
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+.learning-languages-page__icon-btn--danger:hover {
+  background: #fee2e2;
+}
+
+
+.learning-languages-page__form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 1rem;
+}
+
+/* Primary */
+.learning-languages-page__primary-btn {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Secondary */
+.learning-languages-page__secondary-btn {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: 12px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.learning-languages-page__secondary-btn:hover {
+  background: var(--color-primary-light);
+}
+
+
+.learning-languages-page__table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.learning-languages-page__table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-bg-card);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.learning-languages-page__table thead {
+  background: var(--color-primary-light);
+}
+
+.learning-languages-page__table th,
+.learning-languages-page__table td {
+  padding: 14px;
+  font-size: 14px;
+  text-align: left;
+}
+
+.learning-languages-page__table th {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.learning-languages-page__table td {
+  border-top: 1px solid var(--color-border-light);
+  color: var(--color-text-secondary);
+}
+
+.learning-languages-page__table td:nth-child(1),
+.learning-languages-page__table td:nth-child(4) {
+  text-align: center;
+}
+
+.learning-languages-page__table tbody tr:hover {
+  background: var(--color-bg-hover);
+}
+
+
+.learning-languages-page__table-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.learning-languages-page__view-btn {
+  background: transparent;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.learning-languages-page__view-btn:hover {
+  background: var(--color-primary-light);
+}
+.learning-languages-page__secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.learning-languages-page__secondary-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+/* ================= ERROR MESSAGE ================= */
+
+.learning-languages-page__error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 14px;
+  border: 1px solid #fecaca;
+}
+
+.learning-languages-page svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+}
+.learning-languages-page__view-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+@media (max-width: 600px) {
+
+  .learning-languages-page__card {
+    padding: 1.5rem;
+  }
+
+  .learning-languages-page__form-actions {
+    flex-direction: column;
+  }
+
+  .learning-languages-page__primary-btn,
+  .learning-languages-page__secondary-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .learning-languages-page__table-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .learning-languages-page__view-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* ViewLearningLanguages */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+
+.view-lang-page {
+  height: auto;
+  background: var(--color-bg-main);
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* HEADER */
+
+.view-lang-page__header {
+  width: 100%;
+  max-width: 900px;
+  background: var(--color-bg-card);
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.view-lang-page__header h2 {
+  color: var(--color-primary);
+}
+
+/* ACTIONS */
+
+.view-lang-page__actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* SEARCH */
+
+.view-lang-page__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-bg-main);
+  border: 1px solid var(--color-border-light);
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+
+.view-lang-page__search input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 160px;
+}
+
+/* ICON BUTTON */
+
+.view-lang-page__icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-light);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.view-lang-page__icon-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+.view-lang-page__icon-btn.edit {
+  color: var(--color-primary);
+}
+
+.view-lang-page__icon-btn.edit:hover {
+  background: var(--color-primary-light);
+}
+
+.view-lang-page__icon-btn.delete {
+  color: #dc2626;
+}
+
+.view-lang-page__icon-btn.delete:hover {
+  background: #fee2e2;
+}
+
+/* CARD */
+
+.view-lang-page__card {
+  width: 100%;
+  max-width: 900px;
+  background: var(--color-bg-card);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.view-lang-page__card h3 {
+  margin-bottom: 1rem;
+}
+
+/* LIST */
+
+.view-lang-page__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.view-lang-page__item {
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--color-bg-main);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-lang-page__item span {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.view-lang-page__item p {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+
+  .view-lang-page__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .view-lang-page__actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .view-lang-page__search input {
+    width: 100%;
+  }
+
+}
+/* BACK BUTTON */
+
+.view-lang-page__back-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-light);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.view-lang-page__back-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+.view-lang-page__back-btn:hover {
+  background: var(--color-bg-main);
+}
+
 
 
 /* ========================================================================================== */
