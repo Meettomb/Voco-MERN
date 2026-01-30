@@ -26,6 +26,7 @@ import ActiveUsers from "./Components/admin/users/ActiveUsers";
 import BlockedUsers from "./Components/admin/users/BlockedUsers";
 import UiLanguages from "./Components/admin/language/UiLanguages";
 import LearningLanguages from "./Components/admin/language/LearningLanguages";
+import AddWords from "./Components/admin/words/AddWords";
 
 
 function App() {
@@ -61,6 +62,8 @@ function App() {
           <Route path="language/ui-languages" element={<UiLanguages />} />
           <Route path="language/learning-languages" element={<LearningLanguages />} />
 
+        {/* ======================= Manage Words ======================= */}
+          <Route path="words/add" element={<AddWords />} />
         </Route>
 
         {/* Pages WITHOUT Header */}
