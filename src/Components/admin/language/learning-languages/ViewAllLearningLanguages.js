@@ -1,6 +1,6 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import usePageTitle from '../../../../hooks/usePageTitle';
 
 /* Icons */
 
@@ -19,8 +19,9 @@ const TrashIcon = () => (
 );
 
 export default function ViewAllLearningLanguages() {
+  usePageTitle("View All Learning Languages");
 
-  const [languages, setLanguages] = useState([
+  const [languages] = useState([
     {
       english: "English",
       native: "English",

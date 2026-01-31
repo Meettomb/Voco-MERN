@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import usePageTitle from '../../../../hooks/usePageTitle';
 
-export default function UpdateLearningLanguage() {
+export default function UpdateLearningLanguage() {  
+  usePageTitle("Update Learning Language");
+
   const navigate = useNavigate();
   const location = useLocation();
 

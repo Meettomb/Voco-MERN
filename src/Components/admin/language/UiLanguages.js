@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import usePageTitle from '../../../hooks/usePageTitle';
 
 export default function UiLanguages() {
-
+    usePageTitle("Supported UI Languages");
     const [search, setSearch] = useState("");
     const [formData, setFormData] = useState({
         english: "",

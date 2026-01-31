@@ -187,7 +187,6 @@ export default function AdminSidebar() {
             <div className="submenu">
               <Link to="words/add" onClick={handleNavClick}>Add Words</Link>
               <Link to="words/manage" onClick={handleNavClick}>Manage Words</Link>
-              <Link to="words/delete" onClick={handleNavClick}>Delete Words</Link>
             </div>
           )}
 

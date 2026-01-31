@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import usePageTitle from '../../../hooks/usePageTitle';
 
 const UI_LANGUAGES = ["en", "fr"];
 
 export default function AddWords() {
+    usePageTitle("Add Learn Words");
     const PlusIcon = () => (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path d="M12 5V19" stroke="currentColor" strokeWidth="2" />
