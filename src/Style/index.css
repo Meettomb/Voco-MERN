@@ -2254,6 +2254,7 @@ html {
   padding: 10px 12px;
   border-radius: 8px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .sidebar .nav .nav-item:hover {
@@ -4261,4 +4262,535 @@ svg {
   .addwords-page .addwords-page__add-btn {
     width: 100%;
   }
+}
+
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* ManageWords*/
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+/* Page Wrapper */
+.manage-words {
+  padding: 24px;
+  background: var(--color-bg-main);
+  height: auto;
+}
+
+/* Card */
+.manage-words .manage-words__card {
+  max-width: 1100px;
+  margin: auto;
+  background: var(--color-bg-card);
+  padding: 26px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+}
+
+/* Header */
+.manage-words .manage-words__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.manage-words .manage-words__header h2 {
+  color: var(--color-primary);
+  font-size: 22px;
+}
+
+/* Add Button */
+.manage-words .manage-words__add-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.manage-words .manage-words__add-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: white;
+  fill: none;
+  stroke-width: 2;
+}
+
+.manage-words .manage-words__add-btn:hover {
+  background: var(--btn-primary-hover);
+}
+
+/* Table Wrapper */
+.manage-words .manage-words__table-wrapper {
+  overflow-x: auto;
+}
+
+/* Table */
+.manage-words .manage-words__table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.manage-words .manage-words__table th {
+  background: var(--color-primary-light);
+  text-align: left;
+  padding: 12px;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.manage-words .manage-words__table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--color-border-light);
+  color: var(--color-text-secondary);
+}
+
+.manage-words .manage-words__table tr:hover {
+  background: var(--color-bg-hover);
+}
+
+/* Actions */
+.manage-words .manage-words__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.manage-words .manage-words__icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-medium);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.manage-words .manage-words__icon-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Edit */
+.manage-words .manage-words__icon-btn.edit {
+  color: var(--color-primary);
+}
+
+.manage-words .manage-words__icon-btn.edit svg {
+  stroke: var(--color-primary);
+}
+
+.manage-words .manage-words__icon-btn.edit:hover {
+  background: var(--color-primary-light);
+}
+
+/* Delete */
+.manage-words .manage-words__icon-btn.delete {
+  color: #ef4444;
+}
+
+.manage-words .manage-words__icon-btn.delete svg {
+  stroke: #ef4444;
+}
+
+.manage-words .manage-words__icon-btn.delete:hover {
+  background: #fee2e2;
+}
+/* Header Right Section */
+.manage-words .manage-words__header-right {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+/* Search */
+.manage-words .manage-words__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-light);
+  background: var(--color-bg-section);
+}
+
+.manage-words .manage-words__search svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--color-text-muted);
+  fill: none;
+  stroke-width: 2;
+}
+
+.manage-words .manage-words__search input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background: transparent;
+  width: 180px;
+  color: var(--color-text-primary);
+}
+
+.manage-words .manage-words__search input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+  .manage-words .manage-words__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+   .manage-words .manage-words__header-right {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .manage-words .manage-words__search input {
+    width: 100%;
+  }
+
+
+}
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* ViewWord*/
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+
+
+/* Page Wrapper */
+.view-word {
+  padding: 24px;
+  background: var(--color-bg-main);
+  height: auto;
+}
+
+/* Card */
+.view-word .view-word__card {
+  max-width: 600px;
+  margin: auto;
+  background: var(--color-bg-card);
+  padding: 26px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+}
+
+/* Header */
+.view-word .view-word__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.view-word .view-word__header h2 {
+  color: var(--color-primary);
+  font-size: 22px;
+}
+
+/* Actions */
+.view-word .view-word__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.view-word .view-word__icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-medium);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-word .view-word__icon-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Edit */
+.view-word .view-word__icon-btn.edit svg {
+  stroke: var(--color-primary);
+}
+
+.view-word .view-word__icon-btn.edit:hover {
+  background: var(--color-primary-light);
+}
+
+/* Delete */
+.view-word .view-word__icon-btn.delete svg {
+  stroke: #ef4444;
+}
+
+.view-word .view-word__icon-btn.delete:hover {
+  background: #fee2e2;
+}
+
+/* Content */
+.view-word .view-word__content {
+  display: grid;
+  gap: 16px;
+}
+
+/* Row */
+.view-word .view-word__row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.view-word .view-word__row span {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.view-word .view-word__row p {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+/* Back Button */
+.view-word .view-word__back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+.view-word .view-word__back-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 2;
+}
+
+.view-word .view-word__back-btn:hover {
+  background: var(--color-primary-light);
+}
+
+
+/* Responsive */
+@media (max-width: 600px) {
+
+  .view-word .view-word__card {
+    padding: 20px;
+  }
+
+  .view-word .view-word__header h2 {
+    font-size: 20px;
+  }
+
+}
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* EditWords*/
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* Page */
+.editwords-page {
+  padding: 24px;
+  background: var(--color-bg-main);
+  min-height: 100vh;
+}
+
+/* Card */
+.editwords-page .editwords-page__card {
+  max-width: 900px;
+  margin: auto;
+  background: var(--color-bg-card);
+  padding: 26px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+}
+
+/* Header */
+.editwords-page .editwords-page__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.editwords-page .editwords-page__header h2 {
+  font-size: 22px;
+  color: var(--color-primary);
+}
+
+/* Back Button */
+.editwords-page .editwords-page__back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.editwords-page .editwords-page__back-btn:hover {
+  background: var(--color-primary-light);
+}
+
+/* Field */
+.editwords-page .editwords-page__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.editwords-page .editwords-page__field label {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+/* Inputs */
+.editwords-page select,
+.editwords-page input {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-light);
+  font-size: 14px;
+}
+
+/* Difficulty Box */
+.editwords-page .editwords-page__difficulty-box {
+  border: 1px solid var(--color-border-light);
+  padding: 18px;
+  border-radius: 14px;
+  margin-bottom: 18px;
+}
+
+/* Difficulty Header */
+.editwords-page .editwords-page__difficulty-header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+/* Add Button */
+.editwords-page .editwords-page__add-btn {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--btn-secondary-border);
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.editwords-page .editwords-page__add-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Word Row */
+.editwords-page .editwords-page__word-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* Icon Button */
+.editwords-page .editwords-page__icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-light);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.editwords-page .editwords-page__icon-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+  fill: none;
+}
+
+/* Danger Icon */
+.editwords-page .editwords-page__icon-btn.danger svg {
+  stroke: #ef4444;
+}
+
+/* Save Button */
+.editwords-page .editwords-page__save-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.editwords-page .editwords-page__error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+  .editwords-page .editwords-page__difficulty-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .editwords-page .editwords-page__word-row {
+    grid-template-columns: 1fr;
+  }
+
 }

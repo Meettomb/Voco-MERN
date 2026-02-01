@@ -30,7 +30,9 @@ import AddWords from "./Components/admin/words/AddWords";
 import ViewAllLearningLanguages from "./Components/admin/language/learning-languages/ViewAllLearningLanguages";
 import ViewLearningLanguages from "./Components/admin/language/learning-languages/ViewLearningLanguages";
 import UpdateLearningLanguage from "./Components/admin/language/learning-languages/UpdateLearningLanguage";
-
+import ManageWords from "./Components/admin/words/ManageWords";
+import ViewWord from "./Components/admin/words/ViewWord";
+import EditWords from "./Components/admin/words/EditWords";
 
 function App() {
   const [authView, setAuthView] = useState(null);
@@ -71,6 +73,9 @@ function App() {
 
         {/* ======================= Manage Words ======================= */}
           <Route path="words/add" element={<AddWords />} />
+          <Route path="words/manage" element={<ManageWords />} />
+          <Route path="words/view" element={<ViewWord />} />
+          <Route path="words/edit" element={<EditWords />} />
         </Route>
 
         {/* Pages WITHOUT Header */}

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import usePageTitle from '../../../../hooks/usePageTitle';
+
 
 /* ================= UI LANGUAGES ================= */
 
@@ -33,7 +35,7 @@ const EyeIcon = () => (
 /* ================= COMPONENT ================= */
 
 export default function LearningLanguages() {
-
+  usePageTitle("Add Learning Languages");
   /* -------- STATES -------- */
 
   const [languages, setLanguages] = useState([]);

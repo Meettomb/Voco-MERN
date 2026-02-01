@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import usePageTitle from '../../../../hooks/usePageTitle';
 
 /* ========== SVG ICONS ========== */
 
@@ -36,7 +37,7 @@ const TrashIcon = () => (
 /* ========== COMPONENT ========== */
 
 export default function ViewLearningLanguages() {
-
+  usePageTitle("View Learning Language");
   const navigate = useNavigate();   // ✅ back navigation
   const [search, setSearch] = useState("");
 
