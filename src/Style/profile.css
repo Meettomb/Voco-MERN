@@ -1,0 +1,222 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+/* ============================
+   PROFILE PAGE ROOT
+============================ */
+
+.profile_main {
+  padding: 2rem;
+  background-color: var(--color-bg-light);
+}
+
+
+.profile_main .profile-hero {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-dark) 100%
+  );
+  border-radius: 24px;
+  padding: 3rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  animation: slideDown 0.6s ease-out;
+}
+
+.profile_main .profile-hero .hero-content {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+
+.profile_main .profile-hero .avatar-wrapper {
+  position: relative;
+}
+
+.profile_main .profile-hero .avatar-wrapper .avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  object-fit: cover;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: avatarPulse 3s ease-in-out infinite;
+}
+
+.profile_main .profile-hero .avatar-wrapper .level-badge {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-yellow),
+    var(--color-accent-orange)
+  );
+  border: 4px solid var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+}
+.profile_main .profile-hero .avatar-wrapper .level-badge svg {
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.profile_main .profile-hero .avatar-wrapper .level-badge:hover {
+  transform: scale(1.1);
+  transition: 0.3s ease;
+}
+
+
+.profile_main .profile-hero .hero-info {
+  flex: 1;
+  color: var(--color-text-inverse);
+}
+
+.profile_main .profile-hero .hero-info h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.profile_main .profile-hero .hero-info .language-tags {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+}
+.profile_main .profile-hero .hero-info .language-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile_main .profile-hero .hero-info .language-tag svg {
+  stroke: url(#targetGradient);
+}
+
+
+.profile_main .profile-hero .hero-info .language-tags span{
+   
+  color: var(--color-text-inverse);
+}
+
+.profile_main .profile-hero .hero-info .language-tag {
+  padding: 0.45rem 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.profile_main .profile-hero .hero-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1.2rem;
+}
+
+.profile_main .profile-hero .hero-stats .stat-item {
+  text-align: center;
+}
+
+.profile_main .profile-hero .hero-stats .stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.profile_main .profile-hero .hero-stats .stat-label {
+  font-size: 0.8rem;
+  opacity: 0.85;
+  letter-spacing: 1px;
+}
+
+
+.profile_main .profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes avatarPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+
+@media (max-width: 992px) {
+
+  .profile_main .profile-hero {
+    padding: 2rem;
+  }
+
+  .profile_main .profile-hero .hero-content {
+    gap: 1.5rem;
+  }
+
+  .profile_main .profile-hero .hero-info h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .profile_main .profile-hero .hero-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile_main .profile-hero .hero-stats {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .profile_main .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .profile_main .profile-hero {
+    padding: 1.5rem;
+  }
+
+  .profile_main .profile-hero .avatar-wrapper .avatar {
+    width: 110px;
+    height: 110px;
+  }
+
+  .profile_main .profile-hero .hero-info h1 {
+    font-size: 1.6rem;
+  }
+}

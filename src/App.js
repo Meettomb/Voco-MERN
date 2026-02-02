@@ -15,6 +15,7 @@ import Videos from "./Components/Videos";
 import VideoPlayer from "./Components/VideoPlayer";
 import McqsExam from "./Components/McqsExam";
 import ChooseLearningLanguage from "./Components/ChooseLearningLanguage";
+import Profile from "./Components/profile/Profile";
 
 // Admin Components
 import AdminHeader from "./Components/admin/AdminHeader";
@@ -49,6 +50,7 @@ function App() {
           <Route path="/video/:id" element={<VideoPlayer />} />
           <Route path="/mcqs-exam" element={<McqsExam />} />
           <Route path="/choose-learning-language" element={<ChooseLearningLanguage />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
 
         {/* Admin Pages WITH Admin Header + Sidebar */}

@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import logo from "../assets/images/Voco.png"; // adjust path if needed
+import { Link } from "react-router-dom";
 
 function Footer() {
   const { t } = useTranslation();
@@ -21,10 +22,32 @@ function Footer() {
         <div className="footer-column">
           <h4>{t("footer.sections.product")}</h4>
           <ul>
-            <li>{t("footer.links.words")}</li>
-            <li>{t("footer.links.videos")}</li>
-            <li>{t("footer.links.mcqs")}</li>
-            <li>{t("footer.links.progress")}</li>
+            <li>
+              <Link to="/choose-learning-language"
+                state={{ target: "learn-words" }}
+              >
+                {t("footer.links.words")}
+              </Link>
+            </li>
+            <li>
+              <Link to="/choose-learning-language"
+                state={{ target: "videos" }}
+              >
+                {t("footer.links.videos")}
+              </Link>
+            </li>
+            <li>
+              <Link to="/choose-learning-language"
+                state={{ target: "mcqs-exam" }}
+              >
+                {t("footer.links.mcqs")}
+              </Link>
+            </li>
+            <li>
+              <Link to="/progress">
+                {t("footer.links.progress")}
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -32,10 +55,18 @@ function Footer() {
         <div className="footer-column">
           <h4>{t("footer.sections.company")}</h4>
           <ul>
-            <li>{t("footer.links.about")}</li>
-            <li>{t("footer.links.contact")}</li>
-            <li>{t("footer.links.privacy")}</li>
-            <li>{t("footer.links.terms")}</li>
+            <li>
+              <Link to="/about">{t("footer.links.about")}</Link>
+            </li>
+            <li>
+              <Link to="/contact">{t("footer.links.contact")}</Link>
+            </li>
+            <li>
+              <Link to="/privacy">{t("footer.links.privacy")}</Link>
+            </li>
+            <li>
+              <Link to="/terms">{t("footer.links.terms")}</Link>
+            </li>
           </ul>
         </div>
 
