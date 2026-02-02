@@ -43,43 +43,45 @@ export default function AddWords() {
     /* ---------------- ADD ---------------- */
 
     const addDifficulty = () => {
-        setLearnWords([
-            ...learnWords,
-            { difficulty: "", words: [{ translations: { en: "", fr: "" } }] }
+        setLearnWords([  // Update learnWords state
+            ...learnWords, // Keep all existing difficulty groups
+            { difficulty: "", words: [{ translations: { en: "", fr: "" } }] } // Add a new empty difficulty with one word
         ]);
     };
 
     const addWord = (dIndex) => {
-        const copy = [...learnWords];
-        copy[dIndex].words.push({ translations: { en: "", fr: "" } });
-        setLearnWords(copy);
+        const copy = [...learnWords];  // Create a copy of learnWords array
+        copy[dIndex].words.push({ translations: { en: "", fr: "" } }); // Add a new empty word to the specified difficulty group
+        setLearnWords(copy); // Save updated array to state
     };
 
     /* ---------------- REMOVE ---------------- */
 
     const removeDifficulty = (dIndex) => {
-        if (learnWords.length === 1) return;
-        setLearnWords(learnWords.filter((_, i) => i !== dIndex));
+        if (learnWords.length === 1) return;   // Prevent removing the last remaining difficulty
+        setLearnWords(learnWords.filter((_, i) => i !== dIndex));  // Keep all difficulties except the one at dIndex
+        // _ means: element not needed 
+        // i is index
     };
 
     const removeWord = (dIndex, wIndex) => {
-        const copy = [...learnWords];
+        const copy = [...learnWords];  // Create copy of state
         if (copy[dIndex].words.length === 1) return;
-        copy[dIndex].words.splice(wIndex, 1);
-        setLearnWords(copy);
+        copy[dIndex].words.splice(wIndex, 1);  // Remove 1 word at position wIndex
+        setLearnWords(copy);  // Save updated data
     };
 
     /* ---------------- CHANGE ---------------- */
 
     const handleDifficultyChange = (i, value) => {
         const copy = [...learnWords];
-        copy[i].difficulty = value;
+        copy[i].difficulty = value;  // Set new difficulty value
         setLearnWords(copy);
     };
 
     const handleWordChange = (d, w, lang, value) => {
         const copy = [...learnWords];
-        copy[d].words[w].translations[lang] = value;
+        copy[d].words[w].translations[lang] = value; // Update selected language value
         setLearnWords(copy);
     };
 

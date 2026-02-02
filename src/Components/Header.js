@@ -4,7 +4,7 @@ import { COMPANY_NAME } from "../hooks/usePageTitle";
 import Logo from '../assets/images/Voco.png';
 import { useTranslation } from 'react-i18next';
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 
 function Header({ onOpen }) {
@@ -15,6 +15,8 @@ function Header({ onOpen }) {
   const { t, i18n } = useTranslation();
   const sideNavRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const target = location.state?.target;
 
 
   useEffect(() => {
@@ -76,15 +78,32 @@ function Header({ onOpen }) {
               </li>
 
               <li>
-                <Link to="/choose-learning-language" state={{ target: "learn-words" }}>{t("nav.learnWords")}</Link>
+                <Link to="/choose-learning-language"
+                  state={{ target: "learn-words" }}
+                  className={target === "learn-words" ? "active-link" : ""}
+                >
+                  {t("nav.learnWords")}
+                </Link>
               </li>
 
               <li>
-                <Link to="/choose-learning-language" state={{ target: "videos" }}>{t("nav.videos")}</Link>
+                <Link
+                  to="/choose-learning-language"
+                  state={{ target: "videos" }}
+                  className={target === "videos" ? "active-link" : ""}
+                >
+                  {t("nav.videos")}
+                </Link>
+
               </li>
 
               <li>
-                <Link to="/choose-learning-language" state={{ target: "mcqs-exam" }}>{t("nav.mcqs")}</Link>
+                <Link to="/choose-learning-language"
+                  state={{ target: "mcqs-exam" }}
+                  className={target === "mcqs-exam" ? "active-link" : ""}
+                >
+                  {t("nav.mcqs")}
+                </Link>
               </li>
 
               <li>

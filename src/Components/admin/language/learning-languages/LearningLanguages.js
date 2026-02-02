@@ -1,6 +1,5 @@
 import { useState } from "react";
-import usePageTitle from '../../../../hooks/usePageTitle';
-
+import usePageTitle from "../../../../hooks/usePageTitle";
 
 /* ================= UI LANGUAGES ================= */
 
@@ -25,27 +24,17 @@ const TrashIcon = () => (
   </svg>
 );
 
-const EyeIcon = () => (
-  <svg viewBox="0 0 24 24">
-    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-);
-
 /* ================= COMPONENT ================= */
 
 export default function LearningLanguages() {
   usePageTitle("Add Learning Languages");
-  /* -------- STATES -------- */
 
-  const [languages, setLanguages] = useState([]);
+  /* -------- STATES -------- */
 
   const [formData, setFormData] = useState({
     english: "",
     native: "",
-    chapters: [
-      { translations: { en: "", hi: "" } }
-    ]
+    chapters: [{ translations: { en: "", hi: "" } }]
   });
 
   const [error, setError] = useState("");
@@ -64,10 +53,7 @@ export default function LearningLanguages() {
   const addChapterField = () => {
     setFormData({
       ...formData,
-      chapters: [
-        ...formData.chapters,
-        { translations: { en: "", hi: "" } }
-      ]
+      chapters: [...formData.chapters, { translations: { en: "", hi: "" } }]
     });
   };
 
@@ -80,7 +66,7 @@ export default function LearningLanguages() {
     });
   };
 
-  /* -------- ADD LANGUAGE -------- */
+  /* -------- ADD LANGUAGE (VALIDATE + CONSOLE JSON) -------- */
 
   const addLanguage = () => {
 
@@ -98,39 +84,28 @@ export default function LearningLanguages() {
       }
     }
 
-    setLanguages([
-      ...languages,
-      {
-        id: Date.now(),
-        english: formData.english,
-        native: formData.native,
-        chapters: formData.chapters
-      }
-    ]);
+    const payload = {
+      english: formData.english,
+      native: formData.native,
+      chapters: formData.chapters
+    };
 
+    console.log(payload);
+
+    // Reset form
     setFormData({
       english: "",
       native: "",
-      chapters: [
-        { translations: { en: "", hi: "" } }
-      ]
+      chapters: [{ translations: { en: "", hi: "" } }]
     });
 
     setError("");
-  };
-
-  /* -------- REMOVE LANGUAGE -------- */
-
-  const removeLanguage = (index) => {
-    setLanguages(languages.filter((_, i) => i !== index));
   };
 
   /* ================= UI ================= */
 
   return (
     <div className="learning-languages-page">
-
-      {/* ================= ADD FORM ================= */}
 
       <div className="learning-languages-page__card">
 
@@ -207,64 +182,6 @@ export default function LearningLanguages() {
         </div>
 
       </div>
-
-      {/* ================= TABLE ================= */}
-
-      {languages.length > 0 && (
-
-        <div className="learning-languages-page__card">
-
-          <h3>Languages</h3>
-
-          <table className="learning-languages-page__table">
-
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>English</th>
-                <th>Native</th>
-                <th>Chapters</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-
-              {languages.map((lang, index) => (
-
-                <tr key={lang.id}>
-
-                  <td>{index + 1}</td>
-                  <td>{lang.english}</td>
-                  <td>{lang.native}</td>
-                  <td>{lang.chapters.length}</td>
-
-                  <td className="learning-languages-page__actions">
-
-                    <button className="learning-languages-page__view-btn">
-                      <EyeIcon /> View
-                    </button>
-
-                    <button
-                      className="learning-languages-page__icon-btn learning-languages-page__icon-btn--danger"
-                      onClick={() => removeLanguage(index)}
-                    >
-                      <TrashIcon />
-                    </button>
-
-                  </td>
-
-                </tr>
-
-              ))}
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      )}
 
     </div>
   );
