@@ -26,10 +26,36 @@ export default function ProfileHero() {
 
                     </div>
                     <div className="hero-info">
-                        <h1 id="userName">Maria Rodriguez</h1>
+                        <h1 id="userName">404 Name Not Found</h1>
                         <div className="language-tags">
-                            <span className="language-tag">🇪🇸 Native: Spanish</span>
-                            <span className="language-tag">🎯 Learning: English</span>
+                            <span className="language-tag">Native: Hindi</span><span className="language-tag">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="18"
+                                    height="18"
+                                    fill="none"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+
+                                    <defs>
+                                        <linearGradient id="targetGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stopColor="#ff7a18" />
+                                            <stop offset="100%" stopColor="#ff0000" />
+                                        </linearGradient>
+                                    </defs>
+
+                                    <circle cx="12" cy="12" r="10" stroke="url(#targetGradient)" />
+                                    <circle cx="12" cy="12" r="6" stroke="url(#targetGradient)" />
+                                    <circle cx="12" cy="12" r="2" stroke="url(#targetGradient)" />
+
+                                </svg>
+
+                                Learning: English
+                            </span>
+
                         </div>
                         <div className="hero-stats">
                             <div className="stat-item">

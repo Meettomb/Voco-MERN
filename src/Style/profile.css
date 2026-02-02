@@ -97,6 +97,17 @@
     justify-content: flex-start;
     margin-bottom: 1rem;
 }
+.profile_main .profile-hero .hero-info .language-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile_main .profile-hero .hero-info .language-tag svg {
+  stroke: url(#targetGradient);
+}
+
+
 .profile_main .profile-hero .hero-info .language-tags span{
    
   color: var(--color-text-inverse);
