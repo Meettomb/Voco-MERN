@@ -161,13 +161,17 @@ export default function AddWords() {
                             </button>
 
 
-                            <button
-                                type="button"
-                                className="addwords-page__icon-btn danger"
-                                onClick={() => removeDifficulty(dIndex)}
-                            >
-                                <TrashIcon />
-                            </button>
+                            {
+                                learnWords.length > 1 && (
+
+                                    <button
+                                        type="button"
+                                        className="addwords-page__icon-btn danger"
+                                        onClick={() => removeDifficulty(dIndex)}
+                                    >
+                                        <TrashIcon />
+                                    </button>
+                                )}
 
 
                         </div>
@@ -186,13 +190,16 @@ export default function AddWords() {
                                     />
                                 ))}
 
-                                <button
+                                {learnWords[dIndex].words.length > 1 && (
+                                    
+                                    <button
                                     type="button"
                                     className="addwords-page__icon-btn danger"
                                     onClick={() => removeWord(dIndex, wIndex)}
-                                >
+                                    >
                                     <CloseIcon />
                                 </button>
+                                )}
 
 
                             </div>
