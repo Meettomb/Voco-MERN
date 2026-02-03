@@ -109,7 +109,7 @@ export default function EditWords() {
 
     setError("");
     console.log("VALID DATA:", { chapterId, learnWords });
-     window.history.back();
+    window.history.back();
   };
 
   return (
@@ -173,12 +173,14 @@ export default function EditWords() {
                 <PlusIcon /> Add Word
               </button>
 
-              <button
-                className="editwords-page__icon-btn danger"
-                onClick={() => removeDifficulty(dIndex)}
-              >
-                <TrashIcon />
-              </button>
+              {learnWords.length > 1 && (
+                <button
+                  className="editwords-page__icon-btn danger"
+                  onClick={() => removeDifficulty(dIndex)}
+                >
+                  <TrashIcon />
+                </button>
+              )}
 
             </div>
 
@@ -196,12 +198,15 @@ export default function EditWords() {
                   />
                 ))}
 
+              {learnWords[dIndex].words.length > 1 && (
+
                 <button
-                  className="editwords-page__icon-btn danger"
-                  onClick={() => removeWord(dIndex, wIndex)}
+                className="editwords-page__icon-btn danger"
+                onClick={() => removeWord(dIndex, wIndex)}
                 >
                   <CloseIcon />
                 </button>
+                )}
 
               </div>
             ))}
