@@ -77,7 +77,7 @@ export default function Security() {
                 {/* ================= EMAIL SETTINGS ================= */}
                 <form onSubmit={handleEmailSubmit}>
 
-                    <h3 className="section-title">Email Settings</h3>
+                    <h3 className="section-title" style={{marginBottom:"20px"}}>Email Settings</h3>
 
                     <div className="form-group">
 
@@ -120,7 +120,7 @@ export default function Security() {
                 {/* ================= CHANGE PASSWORD ================= */}
                 <form onSubmit={handlePasswordSubmit}>
 
-                    <h3 className="section-title">Change Password</h3>
+                    <h3 className="section-title" style={{marginBottom:"20px"}}>Change Password</h3>
 
                     <div className="form-group">
 
