@@ -10,7 +10,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 function Header({ onOpen }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const isLoggedIn = true; // Replace with actual auth logic
+  const isLoggedIn = false; // Replace with actual auth logic
   const profileRef = useRef(null);
   const { t, i18n } = useTranslation();
   const sideNavRef = useRef(null);

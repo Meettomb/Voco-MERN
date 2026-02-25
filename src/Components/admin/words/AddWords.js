@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import usePageTitle from '../../../hooks/usePageTitle';
 
-const UI_LANGUAGES = ["en", "fr"];
+const UI_LANGUAGES = ["en", "hi"];
 
 export default function AddWords() {
     usePageTitle("Add Learn Words");
