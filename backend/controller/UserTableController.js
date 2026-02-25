@@ -187,3 +187,41 @@ export const getUiLanguage = async (req, res) => {
   }
 };
 
+// DELETE UI Languages
+
+export const deleteUiLanguageById = async (req, res) => {
+  try {
+    console.log("Deleting ID:", req.params.id);
+
+    const deletedLanguage = await UiLanguageModel.findByIdAndDelete(
+      req.params.id,
+    );
+
+    if (!deletedLanguage) {
+      return res.status(404).json({
+        status: 0,
+        message: "Language not found",
+      });
+    }
+
+    res.status(200).json({
+      status: 1,
+      message: "Language deleted successfully",
+      data: deletedLanguage,
+    });
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        status: 0,
+        message: "Invalid ID",
+      });
+    }
+
+    console.log("Delete Error:", error);
+
+    res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+  }
+};
