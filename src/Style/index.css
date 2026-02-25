@@ -89,6 +89,51 @@ a {
   --nav-auth-hover: #1e40af;
 }
 
+/* ==================================================================== */
+/* ==================================================================== */
+/* ==================================================================== */
+/* ============================= Global Css =========================== */
+/* ==================================================================== */
+/* ==================================================================== */
+/* ==================================================================== */
+
+.content-renderer img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.content-renderer img[data-align="center"] {
+  margin: 0 auto;
+}
+
+.content-renderer img[data-align="right"] {
+  margin-left: auto;
+}
+
+.content-renderer img[data-align="left"] {
+  margin-right: auto;
+}
+/*
+Whane i Loade Content from database and render it using dangerouslySetInnerHTML, i have to add this css to make the images responsive and aligned properly. 
+
+<div
+  className="content-renderer"
+  dangerouslySetInnerHTML={{
+    __html: DOMPurify.sanitize(html),
+  }}
+/> 
+
+*/
+
+/* ==================================================================== */
+/* ==================================================================== */
+/* ==================================================================== */
+/* ============================= Global Css End ======================= */
+/* ==================================================================== */
+/* ==================================================================== */
+/* ==================================================================== */
+
 body {
   background: var(--color-bg-main);
   font-family: 'Inter', sans-serif;
@@ -4084,6 +4129,7 @@ svg {
 /* ========================================================================================== */
 
 .addwords-page {
+  width: 100%;
   height: auto;
   background: var(--color-bg-main);
   display: flex;
@@ -4096,7 +4142,7 @@ svg {
 /* CARD */
 .addwords-page .addwords-page__card {
   width: 100%;
-  max-width: 640px;
+  /* max-width: 640px; */
   margin: 0 16px;  
   background: var(--color-bg-card);
   padding: 32px;
@@ -4118,6 +4164,9 @@ svg {
   border-radius: 8px;
   margin-bottom: 16px;
   font-size: 14px;
+  position: fixed;
+  top: 9.5%;
+  right: 5%;
 }
 
 /* FIELD */
@@ -4274,6 +4323,127 @@ svg {
   }
 }
 
+
+
+/* GRAMMAR BOX */
+.addwords-page .addwords-page__grammar-box {
+  border: 1px solid var(--color-border-light);
+  background: var(--color-bg-section);
+  padding: 18px;
+  border-radius: 12px;
+  margin-top: 18px;
+}
+
+/* HEADER */
+.addwords-page .addwords-page__grammar-header {
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 14px;
+  font-size: 15px;
+}
+
+/* LANGUAGE FIELD */
+.addwords-page .addwords-page__grammar-field {
+  margin-bottom: 16px;
+}
+
+/* LABEL */
+.addwords-page .addwords-page__grammar-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
+
+/* TEXTAREA */
+.addwords-page textarea {
+  width: calc(100% - 30px);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-light);
+  font-size: 14px;
+  resize: vertical;
+  min-height: 120px;
+  background: var(--color-bg-card);
+  transition: all 0.2s ease;
+}
+
+/* TEXTAREA HOVER */
+.addwords-page textarea:hover {
+  border-color: var(--color-primary);
+}
+
+/* TEXTAREA FOCUS */
+.addwords-page textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+
+
+
+
+.editor-wrapper {
+  border: 1px solid var(--color-border-light);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--color-bg-card);
+}
+
+.editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+  border-bottom: 1px solid var(--color-border-light);
+  background: var(--color-bg-section);
+}
+
+.editor-toolbar button {
+  background: white;
+  border: 1px solid var(--color-border-light);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.editor-toolbar button:hover {
+  background: var(--color-primary-light);
+}
+
+.editor-content {
+  min-height: 180px;   /* set default height */
+  padding: 12px;
+  outline: none;
+}
+
+.editor-content .ProseMirror {
+  min-height: 180px;
+}
+.editor-toolbar select {
+  border: 1px solid var(--color-border-light);
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.editor-toolbar button {
+  background: white;
+  border: 1px solid var(--color-border-light);
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.editor-toolbar button:hover {
+  background: var(--color-primary-light);
+}
+
+.editor-content {
+  min-height: 180px;
+  padding: 12px;
+}
 
 
 /* ========================================================================================== */
