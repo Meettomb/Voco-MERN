@@ -13,7 +13,7 @@ export default function AddWords() {
         hi: ""
     });
 
-    usePageTitle("Add Learn Words");
+    usePageTitle("Add Learning Words");
     const PlusIcon = () => (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path d="M12 5V19" stroke="currentColor" strokeWidth="2" />
@@ -154,7 +154,7 @@ export default function AddWords() {
         <div className="addwords-page">
             <div className="addwords-page__card">
 
-                <h2 className="addwords-page__title">Add Learn Words</h2>
+                <h2 className="addwords-page__title">Add Learning Words</h2>
 
                 {error && <div className="addwords-page__error">{error}</div>}
 
