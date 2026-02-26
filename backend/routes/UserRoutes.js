@@ -2,6 +2,7 @@ import express from "express";
 
 import { registerUser, getUserData, getUserDataById, deleteUserById } from "../controller/UserTableController.js"
 
+
 const route = express.Router()
 
 route.post('/registerUser', registerUser)
