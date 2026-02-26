@@ -216,9 +216,8 @@ export default function AdminSidebar() {
 
           {openMcqs && !collapsed && (
             <div className="submenu">
-              <Link to="mcqs/add" onClick={handleNavClick}>Add MCQs</Link>
-              <Link to="mcqs/manage" onClick={handleNavClick}>Manage MCQs</Link>
-              <Link to="mcqs/delete" onClick={handleNavClick}>Delete MCQs</Link>
+              <Link to="mcq/add" onClick={handleNavClick}>Add MCQs</Link>
+              <Link to="mcq/manage" onClick={handleNavClick}>Manage MCQs</Link>
             </div>
           )}
 

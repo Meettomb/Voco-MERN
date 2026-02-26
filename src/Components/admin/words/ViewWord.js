@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import usePageTitle from '../../../hooks/usePageTitle';
 
 export default function ViewWord() {
-  usePageTitle("View Learn Word");
+  usePageTitle("View Learning Word");
   return (
     <div className="view-word">
       <div className="view-word__card">

@@ -34,6 +34,9 @@ import UpdateLearningLanguage from "./Components/admin/language/learning-languag
 import ManageWords from "./Components/admin/words/ManageWords";
 import ViewWord from "./Components/admin/words/ViewWord";
 import EditWords from "./Components/admin/words/EditWords";
+import AddMcq from "./Components/admin/msq/AddMcq";
+import ManageMcq from "./Components/admin/msq/ManageMcq";
+import EditMcq from "./Components/admin/msq/EditMcq";
 
 function App() {
   const [authView, setAuthView] = useState(null);
@@ -78,6 +81,13 @@ function App() {
           <Route path="words/manage" element={<ManageWords />} />
           <Route path="words/view" element={<ViewWord />} />
           <Route path="words/edit" element={<EditWords />} />
+
+
+        {/* ======================= Manage Words ======================= */}
+          <Route path="mcq/add" element={<AddMcq />} />
+          <Route path="mcq/manage" element={<ManageMcq />} /> 
+          <Route path="mcq/edit" element={<EditMcq />} />
+        
         </Route>
 
         {/* Pages WITHOUT Header */}

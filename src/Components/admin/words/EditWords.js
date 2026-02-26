@@ -1,33 +1,20 @@
 import React, { useState } from "react";
 import usePageTitle from '../../../hooks/usePageTitle';
+import RichEditor from "../../RichEditor";
 
 const UI_LANGUAGES = ["en", "fr"];
 
 export default function EditWords() {
-  usePageTitle("Edit Learn Words");
-  const PlusIcon = () => (
-    <svg viewBox="0 0 24 24">
-      <path d="M12 5V19" />
-      <path d="M5 12H19" />
-    </svg>
-  );
+  usePageTitle("Edit Learning Words");
 
-  const TrashIcon = () => (
-    <svg viewBox="0 0 24 24">
-      <path d="M3 6h18" />
-      <path d="M8 6V4h8v2" />
-      <path d="M19 6l-1 14H6L5 6" />
-    </svg>
-  );
-
-  const CloseIcon = () => (
-    <svg viewBox="0 0 24 24">
-      <path d="M6 6L18 18" />
-      <path d="M6 18L18 6" />
-    </svg>
-  );
+  const [contentType, setContentType] = useState("text");
 
   const [chapterId, setChapterId] = useState("1");
+
+  const [grammarContent, setGrammarContent] = useState({
+    en: "",
+    fr: ""
+  });
 
   const [learnWords, setLearnWords] = useState([
     {
@@ -81,6 +68,13 @@ export default function EditWords() {
     setLearnWords(copy);
   };
 
+  const handleGrammarChange = (lang, value) => {
+    setGrammarContent(prev => ({
+      ...prev,
+      [lang]: value
+    }));
+  };
+
   /* ---------- VALIDATION ---------- */
 
   const validateForm = () => {
@@ -90,25 +84,43 @@ export default function EditWords() {
       return;
     }
 
-    for (let d of learnWords) {
-
-      if (!d.difficulty) {
-        setError("Please select difficulty for all groups.");
-        return;
+    if (contentType === "textarea") {
+      for (let lang of UI_LANGUAGES) {
+        if (!grammarContent[lang].trim()) {
+          setError("Please fill all grammar fields.");
+          return;
+        }
       }
+    }
 
-      for (let w of d.words) {
-        for (let lang of UI_LANGUAGES) {
-          if (!w.translations[lang]) {
-            setError("Please fill all word fields.");
-            return;
+    if (contentType === "text") {
+      for (let d of learnWords) {
+
+        if (!d.difficulty) {
+          setError("Please select difficulty for all groups.");
+          return;
+        }
+
+        for (let w of d.words) {
+          for (let lang of UI_LANGUAGES) {
+            if (!w.translations[lang]) {
+              setError("Please fill all word fields.");
+              return;
+            }
           }
         }
       }
     }
 
     setError("");
-    console.log("VALID DATA:", { chapterId, learnWords });
+
+    console.log("UPDATED DATA:", {
+      chapterId,
+      contentType,
+      grammarContent,
+      learnWords
+    });
+
     window.history.back();
   };
 
@@ -116,7 +128,6 @@ export default function EditWords() {
     <div className="editwords-page">
       <div className="editwords-page__card">
 
-        {/* Header */}
         <div className="editwords-page__header">
           <button
             className="editwords-page__back-btn"
@@ -124,16 +135,10 @@ export default function EditWords() {
           >
             ← Cancel
           </button>
-
-          <h2>Edit Learn Words</h2>
+          <h2>Edit Learning Words</h2>
         </div>
 
-        {/* Error */}
-        {error && (
-          <div className="editwords-page__error">
-            {error}
-          </div>
-        )}
+        {error && <div className="editwords-page__error">{error}</div>}
 
         {/* Chapter */}
         <div className="editwords-page__field">
@@ -148,78 +153,108 @@ export default function EditWords() {
           </select>
         </div>
 
-        {/* Difficulties */}
-        {learnWords.map((diff, dIndex) => (
-          <div key={dIndex} className="editwords-page__difficulty-box">
+        {/* Content Type */}
+        <div className="editwords-page__field">
+          <label>Content Type</label>
+          <select
+            value={contentType}
+            onChange={(e) => setContentType(e.target.value)}
+          >
+            <option value="text">Text Block</option>
+            <option value="textarea">Textarea (Grammar Detail)</option>
+          </select>
+        </div>
 
-            <div className="editwords-page__difficulty-header">
+        {/* Grammar Section */}
+        {contentType === "textarea" && (
+          <div className="editwords-page__grammar-box">
+            {UI_LANGUAGES.map(lang => (
+              <div key={lang} className="editwords-page__grammar-field">
+                <label>{lang.toUpperCase()} Explanation</label>
+                <RichEditor
+                  value={grammarContent[lang]}
+                  onChange={(value) =>
+                    handleGrammarChange(lang, value)
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        )}
 
-              <select
-                value={diff.difficulty}
-                onChange={(e) =>
-                  handleDifficultyChange(dIndex, e.target.value)
-                }
-              >
-                <option value="">Select Difficulty</option>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-              </select>
+        {/* Text Block Section */}
+        {contentType === "text" && (
+          <>
+            {learnWords.map((diff, dIndex) => (
+              <div key={dIndex} className="editwords-page__difficulty-box">
 
-              <button
-                className="editwords-page__add-btn"
-                onClick={() => addWord(dIndex)}
-              >
-                <PlusIcon /> Add Word
-              </button>
-
-              {learnWords.length > 1 && (
-                <button
-                  className="editwords-page__icon-btn danger"
-                  onClick={() => removeDifficulty(dIndex)}
-                >
-                  <TrashIcon />
-                </button>
-              )}
-
-            </div>
-
-            {diff.words.map((word, wIndex) => (
-              <div key={wIndex} className="editwords-page__word-row">
-
-                {UI_LANGUAGES.map(lang => (
-                  <input
-                    key={lang}
-                    placeholder={`${lang.toUpperCase()} Word`}
-                    value={word.translations[lang]}
+                <div className="editwords-page__difficulty-header">
+                  <select
+                    value={diff.difficulty}
                     onChange={(e) =>
-                      handleWordChange(dIndex, wIndex, lang, e.target.value)
+                      handleDifficultyChange(dIndex, e.target.value)
                     }
-                  />
+                  >
+                    <option value="">Select Difficulty</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </select>
+
+                  <button
+                    className="editwords-page__add-btn"
+                    onClick={() => addWord(dIndex)}
+                  >
+                    Add Word
+                  </button>
+
+                  {learnWords.length > 1 && (
+                    <button
+                      className="editwords-page__icon-btn danger"
+                      onClick={() => removeDifficulty(dIndex)}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+
+                {diff.words.map((word, wIndex) => (
+                  <div key={wIndex} className="editwords-page__word-row">
+
+                    {UI_LANGUAGES.map(lang => (
+                      <input
+                        key={lang}
+                        placeholder={`${lang.toUpperCase()} Word`}
+                        value={word.translations[lang]}
+                        onChange={(e) =>
+                          handleWordChange(dIndex, wIndex, lang, e.target.value)
+                        }
+                      />
+                    ))}
+
+                    {learnWords[dIndex].words.length > 1 && (
+                      <button
+                        className="editwords-page__icon-btn danger"
+                        onClick={() => removeWord(dIndex, wIndex)}
+                      >
+                        Remove
+                      </button>
+                    )}
+
+                  </div>
                 ))}
-
-              {learnWords[dIndex].words.length > 1 && (
-
-                <button
-                className="editwords-page__icon-btn danger"
-                onClick={() => removeWord(dIndex, wIndex)}
-                >
-                  <CloseIcon />
-                </button>
-                )}
 
               </div>
             ))}
 
-          </div>
-        ))}
-
-        <button
-          className="editwords-page__add-btn"
-          onClick={addDifficulty}
-        >
-          <PlusIcon /> Add Difficulty
-        </button>
+            <button
+              className="editwords-page__add-btn"
+              onClick={addDifficulty}
+            >
+              Add Difficulty
+            </button>
+          </>
+        )}
 
         <button
           className="editwords-page__save-btn"

@@ -89,6 +89,51 @@ a {
   --nav-auth-hover: #1e40af;
 }
 
+/* ==================================================================== */
+/* ==================================================================== */
+/* ==================================================================== */
+/* ============================= Global Css =========================== */
+/* ==================================================================== */
+/* ==================================================================== */
+/* ==================================================================== */
+
+.content-renderer img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.content-renderer img[data-align="center"] {
+  margin: 0 auto;
+}
+
+.content-renderer img[data-align="right"] {
+  margin-left: auto;
+}
+
+.content-renderer img[data-align="left"] {
+  margin-right: auto;
+}
+/*
+Whane i Loade Content from database and render it using dangerouslySetInnerHTML, i have to add this css to make the images responsive and aligned properly. 
+
+<div
+  className="content-renderer"
+  dangerouslySetInnerHTML={{
+    __html: DOMPurify.sanitize(html),
+  }}
+/> 
+
+*/
+
+/* ==================================================================== */
+/* ==================================================================== */
+/* ==================================================================== */
+/* ============================= Global Css End ======================= */
+/* ==================================================================== */
+/* ==================================================================== */
+/* ==================================================================== */
+
 body {
   background: var(--color-bg-main);
   font-family: 'Inter', sans-serif;
@@ -4084,6 +4129,7 @@ svg {
 /* ========================================================================================== */
 
 .addwords-page {
+  width: 100%;
   height: auto;
   background: var(--color-bg-main);
   display: flex;
@@ -4096,7 +4142,7 @@ svg {
 /* CARD */
 .addwords-page .addwords-page__card {
   width: 100%;
-  max-width: 640px;
+  /* max-width: 640px; */
   margin: 0 16px;  
   background: var(--color-bg-card);
   padding: 32px;
@@ -4118,6 +4164,9 @@ svg {
   border-radius: 8px;
   margin-bottom: 16px;
   font-size: 14px;
+  position: fixed;
+  top: 9.5%;
+  right: 5%;
 }
 
 /* FIELD */
@@ -4274,6 +4323,127 @@ svg {
   }
 }
 
+
+
+/* GRAMMAR BOX */
+.addwords-page .addwords-page__grammar-box {
+  border: 1px solid var(--color-border-light);
+  background: var(--color-bg-section);
+  padding: 18px;
+  border-radius: 12px;
+  margin-top: 18px;
+}
+
+/* HEADER */
+.addwords-page .addwords-page__grammar-header {
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 14px;
+  font-size: 15px;
+}
+
+/* LANGUAGE FIELD */
+.addwords-page .addwords-page__grammar-field {
+  margin-bottom: 16px;
+}
+
+/* LABEL */
+.addwords-page .addwords-page__grammar-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
+
+/* TEXTAREA */
+.addwords-page textarea {
+  width: calc(100% - 30px);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-light);
+  font-size: 14px;
+  resize: vertical;
+  min-height: 120px;
+  background: var(--color-bg-card);
+  transition: all 0.2s ease;
+}
+
+/* TEXTAREA HOVER */
+.addwords-page textarea:hover {
+  border-color: var(--color-primary);
+}
+
+/* TEXTAREA FOCUS */
+.addwords-page textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+
+
+
+
+.editor-wrapper {
+  border: 1px solid var(--color-border-light);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--color-bg-card);
+}
+
+.editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+  border-bottom: 1px solid var(--color-border-light);
+  background: var(--color-bg-section);
+}
+
+.editor-toolbar button {
+  background: white;
+  border: 1px solid var(--color-border-light);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.editor-toolbar button:hover {
+  background: var(--color-primary-light);
+}
+
+.editor-content {
+  min-height: 180px;   /* set default height */
+  padding: 12px;
+  outline: none;
+}
+
+.editor-content .ProseMirror {
+  min-height: 180px;
+}
+.editor-toolbar select {
+  border: 1px solid var(--color-border-light);
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.editor-toolbar button {
+  background: white;
+  border: 1px solid var(--color-border-light);
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.editor-toolbar button:hover {
+  background: var(--color-primary-light);
+}
+
+.editor-content {
+  min-height: 180px;
+  padding: 12px;
+}
 
 
 /* ========================================================================================== */
@@ -4810,3 +4980,494 @@ svg {
 /* ========================================================================================== */
 /* ========================================================================================== */
 
+
+
+
+
+
+
+
+
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* MCQs Add Page */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+
+.addmcq-page {
+  background: var(--color-bg-main);
+  padding: 40px;
+}
+
+.addmcq-page .addmcq-page__card {
+  background: var(--color-bg-card);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+}
+
+.addmcq-page__mcq-select-difficulty {
+  border: 1px solid var(--color-border-light);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.addmcq-page .addmcq-page__title {
+  color: var(--color-primary);
+  margin-bottom: 20px;
+}
+
+.addmcq-page .addmcq-page__field {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.addmcq-page .addmcq-page__field label {
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
+
+.addmcq-page .addmcq-page__field select {
+  padding: 10px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+}
+
+.addmcq-page .addmcq-page__field textarea {
+  background: #ffffff;
+  border: 1px solid var(--color-border-medium);
+  min-height: 110px;
+  resize: vertical;
+  font-size: 14px;
+}
+
+.addmcq-page .addmcq-page__field input {
+  background: #ffffff;
+  border: 1px solid var(--color-border-medium);
+  height: 40px;
+  font-size: 14px;
+}
+.addmcq-page .addmcq-page__mcq-box {
+  background: var(--color-bg-section);
+  border: 1px solid var(--color-border-light);
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow-sm);
+}
+
+.addmcq-page .addmcq-page__mcq-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.addmcq-page .addmcq-page__options-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.addmcq-page .addmcq-page__options-row input{
+  background: #ffffff;
+  border: 1px solid var(--color-border-medium);
+  height: 40px;
+  padding: 0 10px;
+  font-size: 16px;
+}
+.addmcq-page .addmcq-page__add-btn {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  padding: 10px 22px;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Hover */
+.addmcq-page .addmcq-page__add-btn:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-dark);
+  color: var(--color-primary-dark);
+}
+
+/* Active click */
+.addmcq-page .addmcq-page__add-btn:active {
+  transform: scale(0.97);
+}
+
+.addmcq-page .addmcq-page__save-btn {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0px 10px;
+}
+
+.addmcq-page .addmcq-page__danger-btn {
+  background: #991b1b;
+  color: var(--color-text-inverse);
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.addmcq-page .addmcq-page__error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  position: fixed;
+  top: 8%;
+  right: 5%;
+  z-index: 1000;
+}
+
+.addmcq-page .addmcq-page__field .rich-editor,
+.addmcq-page .addmcq-page__field .ProseMirror {
+  background: #ffffff;
+  min-height: 140px;
+  border: 1px solid var(--color-border-medium);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.addmcq-page .addmcq-page__field {
+  margin-bottom: 24px;
+}
+
+.addmcq-page .addmcq-page__mcq-header {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+/* Tabs container */
+.addmcq-page .addmcq-page__lang-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* Individual tab */
+.addmcq-page .addmcq-page__lang-tab {
+  padding: 8px 18px;
+  border: 1px solid var(--color-border-medium);
+  background: var(--color-bg-section);
+  color: var(--color-text-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+/* Active tab */
+.addmcq-page .addmcq-page__lang-tab.active {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-primary);
+}
+
+/* Hover */
+.addmcq-page .addmcq-page__lang-tab:hover {
+  background: var(--color-primary-light);
+}
+
+/* ===============================
+   Tablet Responsive
+=================================*/
+@media (max-width: 992px) {
+
+  .addmcq-page {
+    padding: 30px;
+  }
+
+  .addmcq-page .addmcq-page__card {
+    padding: 25px;
+  }
+
+  .addmcq-page .addmcq-page__mcq-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .addmcq-page__mcq-select-difficulty {
+    width: 100%;
+  }
+
+  .addmcq-page .addmcq-page__danger-btn {
+    width: 100%;
+  }
+
+}
+
+/* ===============================
+   Mobile Responsive
+=================================*/
+@media (max-width: 768px) {
+
+  .addmcq-page {
+    padding: 20px;
+  }
+
+  .addmcq-page .addmcq-page__card {
+    padding: 20px;
+  }
+
+  .addmcq-page .addmcq-page__title {
+    font-size: 20px;
+  }
+
+  .addmcq-page .addmcq-page__mcq-box {
+    padding: 18px;
+  }
+
+  .addmcq-page .addmcq-page__mcq-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .addmcq-page__mcq-select-difficulty {
+    width: 100%;
+  }
+
+  .addmcq-page .addmcq-page__danger-btn {
+    width: 100%;
+  }
+
+  .addmcq-page .addmcq-page__add-btn,
+  .addmcq-page .addmcq-page__save-btn {
+    width: 100%;
+    justify-content: center;
+    margin: 10px 0;
+  }
+
+}
+/* ===============================
+   Small Mobile
+=================================*/
+@media (max-width: 480px) {
+
+  .addmcq-page .addmcq-page__lang-tabs {
+    flex-wrap: wrap;
+  }
+
+  .addmcq-page .addmcq-page__lang-tab {
+    flex: 1 1 calc(50% - 5px);
+    text-align: center;
+  }
+
+  .addmcq-page .addmcq-page__field input,
+  .addmcq-page .addmcq-page__field select {
+    font-size: 14px;
+    height: 38px;
+  }
+
+  .addmcq-page .addmcq-page__field .ProseMirror {
+    min-height: 120px;
+  }
+
+}
+@media (max-width: 768px) {
+  .addmcq-page .addmcq-page__field .rich-editor,
+  .addmcq-page .addmcq-page__field .ProseMirror {
+    min-height: 120px;
+  }
+}
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* Manage MCQs Page */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+
+.managemcq-page {
+  background: var(--color-bg-main);
+  padding: 40px;
+}
+
+.managemcq-page .managemcq-page__card {
+  background: var(--color-bg-card);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+}
+
+.managemcq-page .managemcq-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.managemcq-page .managemcq-page__actions {
+  display: flex;
+  gap: 15px;
+}
+
+.managemcq-page .managemcq-page__actions input {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+}
+
+.managemcq-page .managemcq-page__add-btn {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.managemcq-page .managemcq-page__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+@media (max-width: 992px) {
+  .managemcq-page .managemcq-page__table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+.managemcq-page .managemcq-page__table th {
+  background: var(--color-primary-light);
+  text-align: left;
+  padding: 12px;
+}
+
+.managemcq-page .managemcq-page__table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Action buttons container */
+.managemcq-page .managemcq-page__action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+/* Base icon button */
+.managemcq-page .manage-mcq__icon-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--color-bg-hover);
+  border: 1px solid var(--color-border-light);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+/* SVG style */
+.managemcq-page .manage-mcq__icon-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+
+/* View + Edit (Blue) */
+.managemcq-page .manage-mcq__icon-btn.edit {
+  color: var(--color-primary);
+}
+
+/* Delete (Red) */
+.managemcq-page .manage-mcq__icon-btn.delete {
+  color: #ef4444;
+}
+
+/* Hover */
+.managemcq-page .manage-mcq__icon-btn:hover {
+  background: var(--color-primary-light);
+  transform: translateY(-1px);
+}
+
+/* Delete Hover */
+.managemcq-page .manage-mcq__icon-btn.delete:hover {
+  background: #fee2e2;
+}
+
+.managemcq-page .managemcq-page__no-data {
+  text-align: center;
+  padding: 20px;
+  color: var(--color-text-muted);
+}
+
+/* Header Responsive */
+@media (max-width: 768px) {
+  .managemcq-page .managemcq-page__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .managemcq-page .managemcq-page__actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .managemcq-page .managemcq-page__actions input {
+    width: 100%;
+  }
+
+  .managemcq-page .managemcq-page__add-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+
+  .managemcq-page .managemcq-page__table thead {
+    display: none;
+  }
+
+  .managemcq-page .managemcq-page__table,
+  .managemcq-page .managemcq-page__table tbody,
+  .managemcq-page .managemcq-page__table tr,
+  .managemcq-page .managemcq-page__table td {
+    display: block;
+    width: 100%;
+  }
+
+  .managemcq-page .managemcq-page__table tr {
+    background: var(--color-bg-section);
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .managemcq-page .managemcq-page__table td {
+    border: none;
+    padding: 6px 0;
+  }
+
+  .managemcq-page .managemcq-page__action-buttons {
+    margin-top: 10px;
+  }
+}
