@@ -97,9 +97,13 @@ export const getUserDataById = async (req, res) => {
 
 export const deleteUserById = async (req, res) => {
   try {
-    const deletedUser = await UserModel.findByIdAndDelete(req.params.id);
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      { isActive: false },
+      { new: true }
+    );
 
-    if (!deletedUser) {
+    if (!updatedUser) {
       return res.status(404).json({
         status: 0,
         message: "User not found",
@@ -108,10 +112,12 @@ export const deleteUserById = async (req, res) => {
 
     res.status(200).json({
       status: 1,
-      message: "User deleted successfully",
-      data: deletedUser,
+      message: "User deactivated successfully",
+      data: updatedUser,
     });
+
   } catch (error) {
+
     if (error.name === "CastError") {
       return res.status(400).json({
         status: 0,
@@ -120,6 +126,79 @@ export const deleteUserById = async (req, res) => {
     }
 
     console.error(error);
+
+    res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+  }
+};
+
+export const updateUserRoleById = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+    const { role } = req.body;
+
+    if (!role) {
+      return res.status(400).json({
+        status: 0,
+        message: "Role is required",
+      });
+    }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      id,
+      { role: role },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        status: 0,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      status: 1,
+      message: "User role updated successfully",
+      data: updatedUser,
+    });
+
+  } catch (error) {
+
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        status: 0,
+        message: "Invalid user ID",
+      });
+    }
+
+    console.error(error);
+
+    res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+  }
+};
+
+export const getActiveUsers = async (req, res) => {
+  try {
+
+    const users = await UserModel.find({ isActive: true });
+
+    res.status(200).json({
+      status: 1,
+      message: "Active users fetched successfully",
+      data: users,
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
     res.status(500).json({
       status: 0,
       message: "Server error",

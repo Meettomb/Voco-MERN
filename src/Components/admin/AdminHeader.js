@@ -91,7 +91,6 @@ export default function AdminSidebar() {
             <div className="submenu">
               <Link to="users/all-users" onClick={handleNavClick}>All Users</Link>
               <Link to="users/active-users" onClick={handleNavClick}>Active Users</Link>
-              <Link to="users/blocked-users" onClick={handleNavClick}>Blocked Users</Link>
             </div>
           )}
 
