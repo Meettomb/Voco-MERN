@@ -10,12 +10,13 @@ const learningWordsSchema = new mongoose.Schema(
 
         contentType: {
             type: String,
-            required: true, 
+            required: true,
         },
 
         grammarContent: {
-            type: String,
-            default: "",
+            type: Map,
+            of: String,
+            default: {}
         },
 
         difficulties: [

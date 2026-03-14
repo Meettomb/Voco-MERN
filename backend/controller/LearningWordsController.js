@@ -21,9 +21,8 @@ export const addLearningWord = async (req, res) => {
 
         if (contentType === "TextArea") {
 
-            let finalGrammar = grammarContent || "";
+            let finalGrammar = { ...grammarContent };
 
-            // replace images
             if (req.files && req.files.length > 0) {
 
                 req.files.forEach(file => {
@@ -31,29 +30,27 @@ export const addLearningWord = async (req, res) => {
                     const fullURL =
                         `${req.protocol}://${req.get("host")}/uploads/images/${file.filename}`;
 
-                    const regex = new RegExp(
-                        `src="${file.originalname}"`,
-                        "g"
-                    );
+                    Object.keys(finalGrammar).forEach(lang => {
 
-                    finalGrammar = finalGrammar.replace(
-                        regex,
-                        `src="${fullURL}"`
-                    );
+                        const regex = new RegExp(
+                            `src="${file.originalname}"`,
+                            "g"
+                        );
+
+                        finalGrammar[lang] =
+                            finalGrammar[lang].replace(
+                                regex,
+                                `src="${fullURL}"`
+                            );
+                    });
 
                 });
-            }
-
-            // ✅ clean escaped characters safely
-            if (typeof finalGrammar === "string") {
-                finalGrammar = finalGrammar
-                    .replace(/\\n/g, "")
-                    .replace(/\\"/g, '"');
             }
 
             data.grammarContent = finalGrammar;
             data.difficulties = [];
         }
+
 
         /* -------- TEXTBLOCK -------- */
 
@@ -110,33 +107,42 @@ export const deleteLearningWordById = async (req, res) => {
             });
         }
 
-        /* -------- DELETE IMAGES -------- */
+        /* -------- DELETE IMAGES (multi-language) -------- */
 
         if (learningWord.grammarContent) {
 
-            const regex = /src="([^"]+)"/g;
+            Object.keys(learningWord.grammarContent).forEach(lang => {
 
-            let match;
+                const text = learningWord.grammarContent[lang];
 
-            while ((match = regex.exec(learningWord.grammarContent)) !== null) {
+                if (!text) return;
 
-                const imageURL = match[1];
+                const regex = /src="([^"]+)"/g;
 
-                // convert URL to file path
-                const filePath = imageURL.replace(
-                    `${req.protocol}://${req.get("host")}/`,
-                    ""
-                );
+                let match;
 
-                const fullPath = path.join(
-                    process.cwd(),
-                    filePath
-                );
+                while ((match = regex.exec(text)) !== null) {
 
-                if (fs.existsSync(fullPath)) {
-                    fs.unlinkSync(fullPath);
+                    const imageURL = match[1];
+
+                    const filePath = imageURL.replace(
+                        `${req.protocol}://${req.get("host")}/`,
+                        ""
+                    );
+
+                    const fullPath = path.join(
+                        process.cwd(),
+                        filePath
+                    );
+
+                    if (fs.existsSync(fullPath)) {
+                        fs.unlinkSync(fullPath);
+                    }
+
                 }
-            }
+
+            });
+
         }
 
         /* -------- DELETE DB -------- */
@@ -171,16 +177,18 @@ export const updateLearningWordById = async (req, res) => {
             });
         }
 
-        /* ---------- get body safely (important for multer) ---------- */
+        /* ---------- get body safely ---------- */
 
         const chapterId = req.body.chapterId || oldData.chapterId;
         const contentType = req.body.contentType || oldData.contentType;
+
         const grammarContent =
             req.body.grammarContent ?? oldData.grammarContent;
+
         const difficulties =
             req.body.difficulties ?? oldData.difficulties;
 
-        let finalGrammar = grammarContent || "";
+        let finalGrammar = { ...(grammarContent || {}) };
 
         /* ---------- replace new images ---------- */
 
@@ -191,69 +199,91 @@ export const updateLearningWordById = async (req, res) => {
                 const fullURL =
                     `${req.protocol}://${req.get("host")}/uploads/images/${file.filename}`;
 
-                const regex = new RegExp(
-                    `src="${file.originalname}"`,
-                    "g"
-                );
+                Object.keys(finalGrammar).forEach(lang => {
 
-                finalGrammar = finalGrammar.replace(
-                    regex,
-                    `src="${fullURL}"`
-                );
+                    if (!finalGrammar[lang]) return;
+
+                    const regex = new RegExp(
+                        `src="${file.originalname}"`,
+                        "g"
+                    );
+
+                    finalGrammar[lang] =
+                        finalGrammar[lang].replace(
+                            regex,
+                            `src="${fullURL}"`
+                        );
+
+                });
 
             });
         }
 
         /* ---------- clean escaped chars ---------- */
 
-        if (typeof finalGrammar === "string") {
-            finalGrammar = finalGrammar
-                .replace(/\\n/g, "")
-                .replace(/\\"/g, '"');
-        }
+        Object.keys(finalGrammar).forEach(lang => {
+
+            if (typeof finalGrammar[lang] === "string") {
+
+                finalGrammar[lang] =
+                    finalGrammar[lang]
+                        .replace(/\\n/g, "")
+                        .replace(/\\"/g, '"');
+
+            }
+
+        });
 
         /* ---------- delete removed images ---------- */
 
         if (oldData.grammarContent) {
 
-            const oldImgs =
-                oldData.grammarContent.match(/src="([^"]+)"/g) || [];
+            Object.keys(oldData.grammarContent).forEach(lang => {
 
-            const newImgs =
-                finalGrammar.match(/src="([^"]+)"/g) || [];
+                const oldText = oldData.grammarContent[lang] || "";
+                const newText = finalGrammar[lang] || "";
 
-            const oldList = oldImgs.map(x =>
-                x.replace(/src="|"/g, "")
-            );
+                const oldImgs =
+                    oldText.match(/src="([^"]+)"/g) || [];
 
-            const newList = newImgs.map(x =>
-                x.replace(/src="|"/g, "")
-            );
+                const newImgs =
+                    newText.match(/src="([^"]+)"/g) || [];
 
-            oldList.forEach(img => {
+                const oldList = oldImgs.map(x =>
+                    x.replace(/src="|"/g, "")
+                );
 
-                if (!newList.includes(img)) {
+                const newList = newImgs.map(x =>
+                    x.replace(/src="|"/g, "")
+                );
 
-                    const filePath = img.replace(
-                        `${req.protocol}://${req.get("host")}/`,
-                        ""
-                    );
+                oldList.forEach(img => {
 
-                    const fullPath = path.join(
-                        process.cwd(),
-                        filePath
-                    );
+                    if (!newList.includes(img)) {
 
-                    if (fs.existsSync(fullPath)) {
-                        fs.unlinkSync(fullPath);
+                        const filePath = img.replace(
+                            `${req.protocol}://${req.get("host")}/`,
+                            ""
+                        );
+
+                        const fullPath = path.join(
+                            process.cwd(),
+                            filePath
+                        );
+
+                        if (fs.existsSync(fullPath)) {
+                            fs.unlinkSync(fullPath);
+                        }
+
                     }
 
-                }
+                });
 
             });
+
         }
 
-        /* ---------- prepare update data ---------- */
+        /* ---------- prepare update ---------- */
 
         let data = {
             chapterId,
@@ -269,7 +299,7 @@ export const updateLearningWordById = async (req, res) => {
 
         if (contentType === "TextBlock") {
 
-            data.grammarContent = "";
+            data.grammarContent = {};
             data.difficulties = difficulties;
 
         }
@@ -295,3 +325,4 @@ export const updateLearningWordById = async (req, res) => {
 
     }
 };
+
