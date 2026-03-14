@@ -100,3 +100,64 @@ export const deleteUiLanguageById = async (req, res) => {
     });
   }
 };
+
+
+// UPDATE UI Language By ID
+
+export const updateUiLanguageById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const updatedLanguage = await UiLanguageModel.findByIdAndUpdate(
+      id,
+      {
+        code: req.body.code,
+        englishName: req.body.englishName,
+        nativeName: req.body.nativeName,
+        isActive: req.body.isActive,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedLanguage) {
+      return res.status(404).json({
+        status: 0,
+        message: "Language not found",
+      });
+    }
+
+    res.status(200).json({
+      status: 1,
+      message: "Language updated successfully",
+      data: updatedLanguage,
+    });
+
+  } catch (error) {
+
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+
+      return res.status(409).json({
+        status: 0,
+        message: `${field} already exists`,
+      });
+    }
+
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        status: 0,
+        message: "Invalid ID",
+      });
+    }
+
+    console.log("Update Error:", error);
+
+    res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+  }
+};
