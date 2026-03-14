@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
 const userSchema = mongoose.Schema({
-    "username": {
+    username: {
         type: String,
         required: [true, "Username is Required"],
         trim: true,
         minlength: [3, "Username must be at least 3 characters"]
     },
-    "email": {
+    email: {
         type: String,
         required: [true, "Email is Required"],
         unique: true,
@@ -18,7 +18,7 @@ const userSchema = mongoose.Schema({
             "Please enter a valid email address"
         ]
     },
-    "phoneNumber": {
+    phoneNumber: {
         type: String,
         required: [true, "Phone Number is Required"],
         unique: true,
@@ -28,20 +28,20 @@ const userSchema = mongoose.Schema({
             "Phone number must be exactly 10 digits"
         ]
     },
-    "password": {
+    password: {
         type: String,
         required: [true, "Password is Required"],
         minlength: [6, "Password must be at least 6 characters"]
     },
-    "uiSupportLangauge": {
+    uiSupportLangauge: {
         type: String,
         default: "English"
     },
-    "learningLanguages": {
+    learningLanguages: {
         type: [String],   // array of strings
         default: []       // not required
     },
-    "isActive": {
+    isActive: {
         type: Boolean,
         default: true
     }

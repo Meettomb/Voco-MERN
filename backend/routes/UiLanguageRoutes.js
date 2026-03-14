@@ -1,9 +1,12 @@
 import express from "express";
-import { addUiLaunguage, getUiLanguage, deleteUiLanguageById } from "../controller/UiLaunguageController.js";
+import { addUiLaunguage, getUiLanguage, deleteUiLanguageById, updateUiLanguageById } from "../controller/UiLaunguageController.js";
 
-const route = express.Router()
+const UiLanguageRoutes = express.Router()
 
 // UI Languages
-route.post("/addUiLaunguage", addUiLaunguage)
-route.get("/getUiLanguage", getUiLanguage)
-route.delete("/deleteUiLanguage/:id", deleteUiLanguageById);
+UiLanguageRoutes.post("/addUiLaunguage", addUiLaunguage)
+UiLanguageRoutes.get("/getUiLanguage", getUiLanguage)
+UiLanguageRoutes.delete("/deleteUiLanguage/:id", deleteUiLanguageById);
+UiLanguageRoutes.put("/updateUiLanguageById/:id", updateUiLanguageById);
+
+export default UiLanguageRoutes;
