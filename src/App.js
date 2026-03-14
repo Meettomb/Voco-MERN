@@ -24,7 +24,6 @@ import AllUsers from "./Components/admin/users/AllUsers";
 import UserDetailView from "./Components/admin/users/manage_users/UserDetailView";
 import UpdateUserDetails from "./Components/admin/users/manage_users/UpdateUserDetails";
 import ActiveUsers from "./Components/admin/users/ActiveUsers";
-import BlockedUsers from "./Components/admin/users/BlockedUsers";
 import UiLanguages from "./Components/admin/language/UiLanguages";
 import LearningLanguages from "./Components/admin/language/learning-languages/LearningLanguages";
 import AddWords from "./Components/admin/words/AddWords";
@@ -64,7 +63,6 @@ function App() {
           {/* //======================= Manage Users ======================= */}
           <Route path="users/all-users" element={<AllUsers />} />
           <Route path="users/active-users" element={<ActiveUsers />} />
-          <Route path="users/blocked-users" element={<BlockedUsers />} />
           <Route path="users/manage-users/user-detail-view" element={<UserDetailView />} />
           <Route path="users/manage-users/update-user-details" element={<UpdateUserDetails />} />
 
