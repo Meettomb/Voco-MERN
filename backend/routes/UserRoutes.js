@@ -1,6 +1,14 @@
 import express from "express";
 
-import { registerUser, getUserData, getUserDataById, deleteUserById, updateUserRoleById, getActiveUsers } from "../controller/UserTableController.js"
+import { 
+    registerUser, 
+    getUserData, 
+    getUserDataById, 
+    deleteUserById, 
+    updateUserRoleById, 
+    getActiveUsers,
+    updateUserPersonalDetailById
+} from "../controller/UserTableController.js"
 
 
 const route = express.Router()
@@ -11,5 +19,13 @@ route.get('/getUserDataById/:id', getUserDataById)
 route.put('/deleteUserById/:id', deleteUserById)
 route.put('/updateUserRoleById/:id', updateUserRoleById)
 route.get('/getActiveUsers', getActiveUsers)
+
+
+// --------------------------------------------------
+// Profile Settings - Personal Details
+// -------------------------
+route.put('/updateUserPersonalDetailById/:id', updateUserPersonalDetailById)
+
+
 
 export default route

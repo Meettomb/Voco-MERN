@@ -49,7 +49,11 @@ const userSchema = mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
-    }
+    },
+    phoneNumberVerified: {
+        type: Boolean,
+        default: false
+    },
 }, { timestamps: true })
 
 

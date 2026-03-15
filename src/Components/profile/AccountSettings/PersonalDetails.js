@@ -9,7 +9,7 @@ export default function PersonalDetails() {
 
     // Form values
     const [formData, setFormData] = useState({
-        fullName: "",
+        username: "",
         phone: ""
     });
 
@@ -57,8 +57,8 @@ export default function PersonalDetails() {
     const validateForm = () => {
         let newErrors = {};
 
-        if (!formData.fullName.trim()) {
-            newErrors.fullName = "Full name is required";
+        if (!formData.username.trim()) {
+            newErrors.username = "Username is required";
         }
 
         if (!formData.phone.trim()) {
@@ -101,7 +101,7 @@ export default function PersonalDetails() {
                     {/* ================= ROW 1 ================= */}
                     <div className="form-row">
 
-                        {/* FULL NAME */}
+                        {/* Username */}
                         <div className="form-group">
                             <label className="form-label">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
@@ -109,20 +109,20 @@ export default function PersonalDetails() {
                                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                                     <circle cx="12" cy="7" r="4" />
                                 </svg>
-                                Full Name
+                                Username
                             </label>
 
                             <input
                                 type="text"
-                                name="fullName"
+                                name="username"
                                 className="form-input"
-                                placeholder="Enter your full name"
-                                value={formData.fullName}
+                                placeholder="Enter your Username"
+                                value={formData.username}
                                 onChange={handleChange}
                             />
 
-                            {errors.fullName && (
-                                <p className="error-text">{errors.fullName}</p>
+                            {errors.username && (
+                                <p className="error-text">{errors.username}</p>
                             )}
                         </div>
 
