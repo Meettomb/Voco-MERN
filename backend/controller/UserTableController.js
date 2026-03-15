@@ -205,3 +205,95 @@ export const getActiveUsers = async (req, res) => {
     });
   }
 };
+
+
+// ===================================================
+// ===================================================
+// ==================== Profile ======================
+// ===================================================
+// ===================================================
+// ===================================================
+
+export const updateUserPersonalDetailById = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // Check if user exists/ Get old data for validation
+    const oldUserData = await UserModel.findById(id);
+    if (!oldUserData) {
+      return res.status(404).json({
+        status: 0,
+        message: "User Not Found",
+      })
+    }
+    const updateData = {
+      username: req.body.username,
+      phoneNumber: req.body.phoneNumber,
+      learningLanguages: req.body.learningLanguages,
+    }
+
+    // If phone number is being updated, reset phone verification status
+    if (req.body.phoneNumber && req.body.phoneNumber !== oldUserData.phoneNumber) {
+      updateData.phoneNumberVerified = false; // reset phone verification if phone number is changed
+    }
+    const updateUserPersonalDetailById = await UserModel.findByIdAndUpdate(
+      id, 
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+
+    if (!updateUserPersonalDetailById) {
+      res.status(404).json({
+        status: 0,
+        message: "User Not Found",
+      })
+    }
+    res.status(200).json({
+      status: 1,
+      message: "Data Update Successfully",
+      data: updateUserPersonalDetailById
+    })
+
+  }
+  catch (error) {
+    // Validation errors
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        status: 0,
+        message: error.message,
+      });
+    }
+    else if (error.name === "CastError") {
+      return res.status(400).json({
+        status: 0,
+        message: "Invalid User ID",
+      })
+    }
+    else if (error.name === "MongoError" && error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+
+      return res.status(409).json({
+        status: 0,
+        message: `${field} already exists`,
+      });
+    } else if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+
+      return res.status(409).json({
+        status: 0,
+        message: `${field} already exists`,
+      });
+    }
+    else {
+      console.log(error)
+    }
+  }
+};
+
+export const updateUserPasswordById = async (req, res) => {
+  try {
+
+  }
+  catch (error) {}
+}
