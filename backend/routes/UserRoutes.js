@@ -19,7 +19,7 @@ route.get('/getUserData', getUserData)
 route.get('/getUserDataById/:id', getUserDataById)
 route.patch('/deleteUserById/:id', deleteUserById)
 route.patch('/updateUserRoleById/:id', updateUserRoleById)
-route.patch("/updateUserPasswordById", updateUserPasswordById);
+route.patch("/updateUserPasswordById/:id", updateUserPasswordById);
 route.get('/getActiveUsers', getActiveUsers)
 
 
