@@ -237,7 +237,7 @@ export const updateUserPersonalDetailById = async (req, res) => {
       updateData.phoneNumberVerified = false; // reset phone verification if phone number is changed
     }
     const updateUserPersonalDetailById = await UserModel.findByIdAndUpdate(
-      id, 
+      id,
       updateData,
       { new: true, runValidators: true }
     );
@@ -292,63 +292,65 @@ export const updateUserPersonalDetailById = async (req, res) => {
 };
 
 export const updateUserPasswordById = async (req, res) => {
-   try {
-     const { userId, currentPassword, newPassword, confirmPassword } = req.body;
+  try {
+    const id = req.params.id;
 
-     if (!userId || !currentPassword || !newPassword || !confirmPassword) {
-       return res.status(400).json({
-         status: 0,
-         message: "All fields are required",
-       });
-     }
+    const oldUserPassword = await UserModel.findById(id).select("password");
+    const currentPassword = req.body.currentPassword;
+    const newPassword = req.body.newPassword;
+    const confirmPassword = req.body.confirmPassword;
 
-     if (newPassword !== confirmPassword) {
-       return res.status(400).json({
-         status: 0,
-         message: "New password and confirm password do not match",
-       });
-     }
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({
+        status: 0,
+        message: "All fields are required",
+      });
+    }
+    if (!oldUserPassword) {
+      return res.status(404).json({
+        status: 0,
+        message: "User Not Found",
+      })
+    }
 
-     // Fetch user (reuse your existing getUserDataById logic if needed)
-     const user = await UserModel.findById(userId);
-     if (!user) {
-       return res.status(404).json({
-         status: 0,
-         message: "User not found",
-       });
-     }
+    const isPasswordMatch = await bcrypt.compare(currentPassword, oldUserPassword.password);
+    if (!isPasswordMatch) {
+      return res.status(400).json({
+        status: 0,
+        message: "Old password not matched for this user",
+      })
+    }
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        status: 0,
+        message: "New password and confirm password do not match",
+      });
+    }
 
-     // Compare current password
-     const isMatch = await bcrypt.compare(currentPassword, user.password);
-     if (!isMatch) {
-       return res.status(400).json({
-         status: 0,
-         message: "Current password is incorrect",
-       });
-     }
+    // Hash and save new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const updatePassword = await UserModel.findByIdAndUpdate(
+      id,
+      { password: hashedPassword },
+      { new: true }
+    );
 
-     // Hash and save new password
-     const hashedPassword = await bcrypt.hash(newPassword, 10);
-     user.password = hashedPassword;
-
-     const savedUser = await user.save();
-
-     return res.status(200).json({
-       status: 1,
-       message: "Password successfully updated",
-       data: savedUser,
-     });
-   } catch (error) {
-     if (error.name === "CastError") {
-       return res.status(400).json({
-         status: 0,
-         message: "Invalid user ID",
-       });
-     }
-     console.error(error);
-     return res.status(500).json({
-       status: 0,
-       message: "Server error",
-     });
-   }
+    return res.status(200).json({
+      status: 1,
+      message: "Password successfully updated",
+      data: updatePassword,
+    });
+  } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        status: 0,
+        message: "Invalid user ID",
+      });
+    }
+    console.error(error);
+    return res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+  }
 }
