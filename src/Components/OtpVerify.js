@@ -14,7 +14,11 @@ function OtpVerify() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { email } = location.state || {};
+  const savedData =
+    location.state ||
+    JSON.parse(localStorage.getItem("otpData") || "{}");
+
+  const { email } = savedData;
 
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(0);
@@ -22,22 +26,33 @@ function OtpVerify() {
   const [messageType, setMessageType] = useState(""); // success | error
 
   useEffect(() => {
-    const expiry = localStorage.getItem("otpExpiry");
 
-    if (!expiry) return;
+    const updateTimer = () => {
 
-    const interval = setInterval(() => {
-      const remaining = Math.floor((expiry - Date.now()) / 1000);
+      const expiry = localStorage.getItem("otpExpiry");
+
+      if (!expiry) {
+        setTimer(0);
+        return;
+      }
+
+      const remaining = Math.floor(
+        (parseInt(expiry) - Date.now()) / 1000
+      );
 
       if (remaining <= 0) {
         setTimer(0);
-        clearInterval(interval);
       } else {
         setTimer(remaining);
       }
-    }, 1000);
+    };
+
+    updateTimer();
+
+    const interval = setInterval(updateTimer, 1000);
 
     return () => clearInterval(interval);
+
   }, []);
   useEffect(() => {
     if (!message) return;
@@ -50,7 +65,16 @@ function OtpVerify() {
     return () => clearTimeout(timer);
   }, [message]);
 
+  useEffect(() => {
 
+    const expiry = localStorage.getItem("otpExpiry");
+
+    if (!expiry) {
+      const newExpiry = Date.now() + 120000;
+      localStorage.setItem("otpExpiry", newExpiry.toString());
+    }
+
+  }, []);
 
   const handleChange = (value, index) => {
     if (!/^[0-9]?$/.test(value)) return;
@@ -99,7 +123,7 @@ function OtpVerify() {
 
       if (data.status === 1) {
         localStorage.removeItem("otpExpiry");
-
+      localStorage.removeItem("otpData");
         setMessage("Registration successful");
         setMessageType("success");
 
@@ -121,7 +145,7 @@ function OtpVerify() {
 
   const handleResendOtp = async () => {
 
-    if (timer !== 0) return;
+    if (timer > 0) return;
 
     try {
 
@@ -129,30 +153,37 @@ function OtpVerify() {
 
       const { data } = await axios.post(
         "http://localhost:5000/api/userModel/sendOtp",
-        location.state // resend same data
+        savedData
       );
 
       setLoading(false);
 
       if (data.status === 1) {
+
         setMessage("New OTP sent");
         setMessageType("success");
 
         const newExpiry = Date.now() + 120000;
-        localStorage.setItem("otpExpiry", newExpiry);
-        setTimer(120);
+
+        localStorage.setItem("otpExpiry", newExpiry.toString());
+        // do NOT trust setTimer only
+        setTimer(Math.floor((newExpiry - Date.now()) / 1000));
+
       } else {
+
         setMessage(data.message);
         setMessageType("error");
+
       }
 
     } catch (err) {
+
       setLoading(false);
       setMessage("Server error");
       setMessageType("error");
+
     }
   };
-
   return (
     <>
 

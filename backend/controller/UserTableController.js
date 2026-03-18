@@ -430,7 +430,8 @@ export const sendOtp = async (req, res) => {
     await sendMail(
       email,
       "OTP Verification",
-      `Your OTP is ${otp}. Valid for 2 minutes.`
+      "otp",
+      otp
     );
 
     res.json({
@@ -491,7 +492,8 @@ export const verifyOtp = async (req, res) => {
     await sendMail(
       email,
       "Registration Successful",
-      "Your registration has been completed successfully."
+      "success",
+      null
     );
 
     delete otpStore[email];

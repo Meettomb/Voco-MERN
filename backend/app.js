@@ -25,4 +25,5 @@ app.get("/", (req, res) => {
   res.send("Voco Backend Server Running");
 });
 
+app.use("/images", express.static("public"));
 export default app;
