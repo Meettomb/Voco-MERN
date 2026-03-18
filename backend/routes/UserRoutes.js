@@ -12,6 +12,9 @@ import {
 } from "../controller/UserTableController.js";
 
 
+import { sendOtp, verifyOtp } from "../controller/UserTableController.js";
+
+
 const route = express.Router()
 
 route.post('/registerUser', registerUser)
@@ -29,5 +32,11 @@ route.get('/getActiveUsers', getActiveUsers)
 route.put('/updateUserPersonalDetailById/:id', updateUserPersonalDetailById)
 
 
+// --------------------------------------------------
+// OTP
+// -------------------------
+
+route.post("/sendOtp", sendOtp);
+route.post("/verifyOtp", verifyOtp);
 
 export default route
