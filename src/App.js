@@ -17,6 +17,10 @@ import McqsExam from "./Components/McqsExam";
 import ChooseLearningLanguage from "./Components/ChooseLearningLanguage";
 import Profile from "./Components/profile/Profile";
 
+import EnterEmail from "./Components/forgotPassword/EnterEmail";
+import ForgotPasswordOtpVerify from "./Components/forgotPassword/ForgotPasswordOtpVerify";
+import EnterNewPassword from "./Components/forgotPassword/EnterNewPassword";
+
 // Admin Components
 import AdminHeader from "./Components/admin/AdminHeader";
 import Dashboard from "./Components/admin/Dashboard";
@@ -91,6 +95,9 @@ function App() {
         {/* Pages WITHOUT Header */}
         <Route path="/OtpVerify" element={<OtpVerify />} />
         <Route path="/select-learning-langauge" element={<SelectLearningLanguage />} />
+        <Route path="/forgot-password/enter-email" element={<EnterEmail />} />
+        <Route path="/forgot-password/otp-verify" element={<ForgotPasswordOtpVerify />} />
+        <Route path="/forgot-password/enter-new-password" element={<EnterNewPassword />} />
 
       </Routes>
 

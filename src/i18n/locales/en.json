@@ -92,6 +92,7 @@
     "loginButton": "Login",
     "noAccount": "Don’t have an account?",
     "register": "Register",
+    "forgotPassword": "Forgot Password?",
     "errors": {
       "emailRequired": "Email is required",
       "emailInvalid": "Please enter a valid email address",
@@ -206,5 +207,33 @@
     "yourScore": "Your Score:",
     "answerAll": "Please answer all questions before submitting.",
     "close": "Close"
+  },
+  "EnterEmail": {
+    "title": "Reset Password",
+    "subtitle": "Enter your email to receive a password reset link",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter email",
+    "sendButton": "Send Reset Link",
+    "backToLogin": "Back to Login",
+    "errors": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email address"
+    }
+  },
+  "EnterNewPassword": {
+    "title": "Set New Password",
+    "subtitle": "Enter your new password below",
+    "passwordLabel": "New Password",
+    "passwordPlaceholder": "Enter new password",
+    "confirmPasswordLabel": "Confirm New Password",
+    "confirmPasswordPlaceholder": "Re-enter new password",
+    "resetButton": "Reset Password",
+    "backToLogin": "Back to Login",
+    "errors": {
+      "passwordRequired": "Password is required",
+      "passwordLength": "Password must be at least 6 characters",
+      "confirmPasswordRequired": "Confirm password is required",
+      "passwordMismatch": "Passwords do not match"
+    }
   }
 }

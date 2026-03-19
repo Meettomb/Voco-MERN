@@ -1285,7 +1285,14 @@ html {
 /* SignInPopup and RegisterPopup */
 /* ========================================================================================== */
 /* ========================================================================================== */
-
+.forgotPassword{
+  display: flex;
+  justify-content: center;
+}
+.forgotPassword a{
+  color: var(--color-primary);
+  text-align: center;
+}
 /* Overlay */
 .signin-overlay {
   position: fixed;
@@ -5499,4 +5506,308 @@ svg {
   .managemcq-page .managemcq-page__action-buttons {
     margin-top: 10px;
   }
+}
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* EnterEmail */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+
+.enteremail-page {
+  min-height: 100vh;
+  background: var(--color-bg-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* card */
+
+.enteremail-page .enteremail-page__card {
+  width: 400px;
+  padding: 40px;
+  background: var(--color-bg-card);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+}
+
+/* title */
+
+.enteremail-page .enteremail-page__title {
+  color: var(--color-text-primary);
+  margin-bottom: 5px;
+}
+
+.enteremail-page .enteremail-page__subtitle {
+  color: var(--color-text-secondary);
+  margin-bottom: 20px;
+}
+
+/* field */
+
+.enteremail-page .enteremail-page__field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.enteremail-page .enteremail-page__label {
+  margin-bottom: 5px;
+  color: var(--color-text-secondary);
+}
+
+/* input */
+
+.enteremail-page .enteremail-page__input {
+  padding: 10px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  outline: none;
+}
+
+.enteremail-page .enteremail-page__input:focus {
+  border-color: var(--color-primary);
+}
+
+/* error */
+
+.enteremail-page .enteremail-page__error {
+  color: red;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* button */
+
+.enteremail-page .enteremail-page__btn {
+  width: 100%;
+  padding: 10px;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.enteremail-page .enteremail-page__btn:hover {
+  background: var(--btn-primary-hover);
+}
+.enteremail-page .enteremail-page__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.enteremail-page .enteremail-page__backBtn {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.enteremail-page .enteremail-page__backBtn:hover {
+  color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+
+  .enteremail-page .enteremail-page__card {
+    width: 90%;
+    padding: 30px;
+  }
+
+  .enteremail-page .enteremail-page__title {
+    font-size: 22px;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .enteremail-page {
+    padding: 15px;
+  }
+
+  .enteremail-page .enteremail-page__card {
+    width: 100%;
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .enteremail-page .enteremail-page__title {
+    font-size: 20px;
+  }
+
+  .enteremail-page .enteremail-page__subtitle {
+    font-size: 14px;
+  }
+
+  .enteremail-page .enteremail-page__input {
+    padding: 9px;
+    font-size: 14px;
+  }
+
+  .enteremail-page .enteremail-page__btn {
+    padding: 9px;
+    font-size: 14px;
+  }
+
+}
+
+@media (max-width: 360px) {
+
+  .enteremail-page .enteremail-page__card {
+    padding: 15px;
+  }
+
+  .enteremail-page .enteremail-page__title {
+    font-size: 18px;
+  }
+
+}
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* EnterNewPassword */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+
+.newpass-page {
+  min-height: 100vh;
+  background: var(--color-bg-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.newpass-page .newpass-page__card {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  background: var(--color-bg-card);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+}
+
+.newpass-page .newpass-page__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.newpass-page .newpass-page__title {
+  color: var(--color-text-primary);
+}
+
+.newpass-page .newpass-page__subtitle {
+  margin-bottom: 20px;
+  color: var(--color-text-secondary);
+}
+
+.newpass-page .newpass-page__field {
+  margin-bottom: 15px;
+}
+
+.newpass-page .newpass-page__label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.newpass-page .newpass-page__inputWrap {
+  position: relative;
+}
+
+.newpass-page .newpass-page__input {
+  width: 100%;
+  height: 42px;
+  padding: 0 45px 0 10px; /* increase space for icon */
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+/* eye button */
+
+.newpass-page .newpass-page__eye {
+  position: absolute;
+  right: 12px; /* keep inside input */
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* icon */
+
+.newpass-page .newpass-page__eye svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+.newpass-page .newpass-page__error {
+  color: red;
+  font-size: 13px;
+}
+
+.newpass-page .newpass-page__btn {
+  width: 100%;
+  padding: 10px;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  border-radius: 6px;
+}
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 768px) {
+
+  .newpass-page .newpass-page__card {
+    max-width: 90%;
+    padding: 30px;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .newpass-page {
+    padding: 15px;
+  }
+
+  .newpass-page .newpass-page__card {
+    max-width: 100%;
+    padding: 20px;
+  }
+
+  .newpass-page .newpass-page__input {
+    height: 38px;
+    font-size: 14px;
+  }
+
+  .newpass-page .newpass-page__btn {
+    height: 38px;
+    font-size: 14px;
+  }
+
+}
+
+@media (max-width: 360px) {
+
+  .newpass-page .newpass-page__card {
+    padding: 15px;
+  }
+
 }

@@ -57,6 +57,28 @@ export const sendMail = async (to, subject, type, value) => {
 
   }
 
+  // ✅ RESET PASSWORD MAIL
+if (type === "reset") {
+
+  content = `
+  <h2>Password Reset Successful</h2>
+
+  <div style="
+    font-size:20px;
+    background:#2563eb;
+    color:white;
+    padding:20px;
+    border-radius:8px;
+    display:inline-block;
+  ">
+    Your password has been reset successfully
+  </div>
+
+  <p>If this was not you, please contact support.</p>
+  `;
+
+}
+
   const html = `
   <table width="100%" cellpadding="0" cellspacing="0"
     style="background:#f2f4f8;padding:40px 0;font-family:Arial">

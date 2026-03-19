@@ -11,7 +11,7 @@ function FullScreenLoader() {
           <span></span>
         </div>
 
-        <p>Loading content</p>
+        <p>Loading...</p>
       </div>
     </div>
   );

@@ -458,7 +458,7 @@ export const verifyOtp = async (req, res) => {
     if (!record) {
       return res.json({
         status: 0,
-        message: "OTP expired",
+        message: "No OTP request found for this email",
       });
     }
 
