@@ -197,6 +197,11 @@ function SignInPopup({ onClose, onOpenRegister }) {
               {t("signIn.loginButton")}
             </button>
 
+            <p className="forgotPassword">
+              <a href="/forgot-password/enter-email" className="forgot-link">
+                {t("signIn.forgotPassword")}
+              </a>
+            </p>
             <p className="signin-register">
               {t("signIn.noAccount")}{" "}
               <span
