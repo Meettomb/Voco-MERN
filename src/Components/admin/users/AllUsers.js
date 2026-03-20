@@ -1,10 +1,52 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import usePageTitle from '../../../hooks/usePageTitle';
+import axios from 'axios';
 
 
 export default function AllUsers() {
   usePageTitle("All Users");
+
+  const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    // Fetch users from API
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const respnce = await axios.get("http://localhost:5000/api/userModel/getUserData/");
+      setUsers(respnce.data.data);
+      console.log(respnce.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  }
+
+  const handleSearch = async (value) => {
+
+    setSearch(value);
+
+    try {
+
+      if (value.trim() === "") {
+        fetchUsers();
+        return;
+      }
+
+      const res = await axios.get(
+        `http://localhost:5000/api/userModel/searchUsers?keyword=${value}`
+      );
+
+      setUsers(res.data.data);
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="users-page">
 
@@ -16,6 +58,8 @@ export default function AllUsers() {
           type="text"
           placeholder="Search users..."
           className="users-search"
+          value={search}
+          onChange={(e) => handleSearch(e.target.value)}
         />
       </div>
 
@@ -35,43 +79,40 @@ export default function AllUsers() {
 
           <tbody>
 
-            <tr>
-              <td>1</td>
-              <td>John Doe</td>
-              <td>john@example.com</td>
-              <td>
-                <span className="badge active">Active</span>
-              </td>
-              <td className="actions">
+            {users.length === 0 ? (
+              <tr>
+                <td colSpan="5" className="no-data">
+                  No record found
+                </td>
+              </tr>
+            ) : (
+              users.map((user) => (
+                <tr key={user._id}>
+                  <td>{user._id}</td>
+                  <td>{user.username}</td>
+                  <td>{user.email}</td>
 
-                {/* View */}
-                <Link to="/admin/users/manage-users/user-detail-view">
-                  <svg viewBox="0 0 24 24">
-                    <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" />
-                  </svg>
-                </Link>
+                  <td>
+                    {user.isActive ? (
+                      <span className="badge active">Active</span>
+                    ) : (
+                      <span className="badge deleted">Deleted</span>
+                    )}
+                  </td>
 
-              </td>
-            </tr>
+                  <td className="actions">
+                    <Link
+                      to={`/admin/users/manage-users/user-detail-view/${user._id}`}
+                    >
+                      <svg viewBox="0 0 24 24">
+                        <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" />
+                      </svg>
+                    </Link>
+                  </td>
 
-            <tr>
-              <td>2</td>
-              <td>Meet Patel</td>
-              <td>meet@example.com</td>
-              <td>
-                <span className="badge inactive">Inactive</span>
-              </td>
-              <td className="actions">
-
-                {/* View */}
-                <Link to="/admin/users/manage-users/user-detail-view">
-                  <svg viewBox="0 0 24 24">
-                    <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" />
-                  </svg>
-                </Link>
-
-              </td>
-            </tr>
+                </tr>
+              ))
+            )}
 
           </tbody>
 

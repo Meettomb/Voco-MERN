@@ -67,8 +67,8 @@ function App() {
           {/* //======================= Manage Users ======================= */}
           <Route path="users/all-users" element={<AllUsers />} />
           <Route path="users/active-users" element={<ActiveUsers />} />
-          <Route path="users/manage-users/user-detail-view" element={<UserDetailView />} />
-          <Route path="users/manage-users/update-user-details" element={<UpdateUserDetails />} />
+          <Route path="users/manage-users/user-detail-view/:id" element={<UserDetailView />} />
+          <Route path="users/manage-users/update-user-details/:id" element={<UpdateUserDetails />} />
 
         {/* ======================= Manage Languages ======================= */}
           <Route path="language/ui-languages" element={<UiLanguages />} />
