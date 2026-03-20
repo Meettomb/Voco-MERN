@@ -110,11 +110,21 @@ export const getUserDataById = async (req, res) => {
   }
 };
 
-export const deleteUserById = async (req, res) => {
+export const updateUserActiveStatus = async (req, res) => {
   try {
+
+    const { isActive } = req.body;
+
+    if (typeof isActive === "undefined") {
+      return res.status(400).json({
+        status: 0,
+        message: "isActive is required",
+      });
+    }
+
     const updatedUser = await UserModel.findByIdAndUpdate(
       req.params.id,
-      { isActive: false },
+      { isActive: isActive },
       { new: true }
     );
 
@@ -127,11 +137,15 @@ export const deleteUserById = async (req, res) => {
 
     res.status(200).json({
       status: 1,
-      message: "User deactivated successfully",
+      message: isActive
+        ? "User activated successfully"
+        : "User deactivated successfully",
       data: updatedUser,
     });
 
   } catch (error) {
+
+    console.error("updateUserActiveStatus error:", error);
 
     if (error.name === "CastError") {
       return res.status(400).json({
@@ -139,8 +153,6 @@ export const deleteUserById = async (req, res) => {
         message: "Invalid user ID",
       });
     }
-
-    console.error(error);
 
     res.status(500).json({
       status: 0,
@@ -221,6 +233,44 @@ export const getActiveUsers = async (req, res) => {
   }
 };
 
+
+export const searchUsers = async (req, res) => {
+  try {
+
+    const { keyword } = req.query;
+
+    if (!keyword) {
+      return res.status(200).json({
+        status: 1,
+        message: "No keyword",
+        data: [],
+      });
+    }
+
+    const users = await UserModel.find({
+      $or: [
+        { username: { $regex: keyword, $options: "i" } },
+        { email: { $regex: keyword, $options: "i" } },
+        { phoneNumber: { $regex: keyword, $options: "i" } },
+      ],
+    });
+
+    res.status(200).json({
+      status: 1,
+      message: "Users found",
+      data: users,
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+  }
+};
 
 // ===================================================
 // ===================================================

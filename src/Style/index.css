@@ -2750,7 +2750,12 @@ html {
 /* ========================================================================================== */
 /* ========================================================================================== */
 
-
+.no-data {
+  text-align: center;
+  padding: 20px;
+  font-weight: 600;
+  color: #888;
+}
 .users-page {
   display: flex;
   flex-direction: column;
@@ -2820,15 +2825,19 @@ html {
 }
 
 .badge.active {
-  background: var(--color-accent-green);
+  background: #22c55e; /* green */
 }
 
 .badge.inactive {
-  background: #f59e0b;
+  background: #f59e0b; /* orange */
 }
 
 .badge.blocked {
-  background: #ef4444;
+  background: #ef4444; /* red */
+}
+
+.badge.deleted {
+  background: #6b7280; /* gray */
 }
 
 /* Actions */
@@ -2875,11 +2884,57 @@ html {
 /* UsersDetailView */
 /* ========================================================================================== */
 /* ========================================================================================== */
+.phone-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
+.verify-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.verify-icon.success {
+  fill: #22c55e;
+}
+
+.verify-icon.warning {
+  fill: #f59e0b;
+}
 .user-detail-page {
   padding: 24px;
   max-width: 800px;
   margin: auto;
+}
+
+.toggle-switch {
+  width: 40px;
+  height: 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  transition: 0.3s;
+}
+
+.toggle-switch.on {
+  background: #22c55e;
+  justify-content: flex-end;
+}
+
+.toggle-switch.off {
+  background: #ef4444;
+  justify-content: flex-start;
+}
+
+.toggle-circle {
+  width: 15px;
+  height: 15px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.3s;
 }
 
 /* Header */
