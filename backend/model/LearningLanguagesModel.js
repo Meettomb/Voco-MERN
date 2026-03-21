@@ -23,12 +23,11 @@ const LearningLanguagesModel = new mongoose.Schema(
 
         chapters: [
             {
-                translations: {
-                    type: Map,
-                    of: String,
-                },
-            },
-        ],
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "chapters",
+                require:[true, "Chapter id is Required"]
+            }
+        ]
     },
     {
         timestamps: true,

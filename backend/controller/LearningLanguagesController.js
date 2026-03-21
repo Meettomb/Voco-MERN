@@ -1,5 +1,6 @@
 import LearningLanguagesModel from '../model/LearningLanguagesModel.js';
 import mongoose from "mongoose";
+import ChapterModel from "../model/ChapterModel.js";
 
 export const addLearningLanguages = async (req, res) => {
     try {
@@ -22,28 +23,50 @@ export const addLearningLanguages = async (req, res) => {
             });
         }
 
-        const newLearningLanguages = new LearningLanguagesModel({
+        // 1. save language first
+        const language = await LearningLanguagesModel.create({
             english,
             native,
             code,
-            chapters
+            chapters: []
         });
 
-        const saveLearningLanguages = await newLearningLanguages.save();
+        // 2. save chapters
+        let chapterIds = [];
+
+        if (chapters && chapters.length > 0) {
+
+            for (let ch of chapters) {
+
+                const newChapter = await ChapterModel.create({
+                    languageId: language._id,
+                    translations: ch.translations,
+                });
+
+                chapterIds.push(newChapter._id);
+            }
+        }
+
+        // 3. update language with chapter ids
+
+        language.chapters = chapterIds;
+        await language.save();
 
         res.status(201).json({
             status: 1,
-            message: "Learning Language Added Successfully",
-            data: saveLearningLanguages,
+            message: "Language + chapters saved",
+            data: language,
         });
 
     } catch (error) {
+
         console.log(error);
 
-        return res.status(500).json({
+        res.status(500).json({
             status: 0,
             message: "Server error",
         });
+
     }
 };
 
@@ -52,6 +75,7 @@ export const getAllLearningLanguages = async (req, res) => {
 
         const data = await LearningLanguagesModel
             .find()
+            .populate("chapters")
             .sort({ createdAt: -1 });
 
         if (!data || data.length === 0) {
@@ -99,7 +123,7 @@ export const getLearningLanguagesById = async (req, res) => {
             });
         }
 
-        const data = await LearningLanguagesModel.findById(id);
+        const data = await LearningLanguagesModel.findById(id).populate("chapters");
 
         if (!data) {
             return res.status(404).json({
@@ -134,52 +158,9 @@ export const getLearningLanguagesById = async (req, res) => {
 };
 
 export const deleteLearningLangaugebyId = async (req, res) => {
-
-    try {
-
-        const deleteLangauge = await LearningLanguagesModel.findByIdAndDelete(req.params.id)
-
-        if (!deleteLangauge) {
-            return res.status(404).json({
-                status: 0,
-                message: "Language not found",
-            });
-        }
-
-        res.status(200).json({
-            status: 1,
-            message: "Language deleted successfully",
-            data: deleteLangauge,
-        });
-    } catch (error) {
-
-        if (error.name === "CastError") {
-            return res.status(400).json({
-                status: 0,
-                message: "Invalid ID",
-            });
-        }
-
-        console.log("Delete Error:", error);
-
-        res.status(500).json({
-            status: 0,
-            message: "Server error",
-        });
-    }
-}
-
-export const deleteLearningLangaugeChapterbyId = async (req, res) => {
   try {
 
-    const { langId, chapterId } = req.params;
-
-    if (!langId || !chapterId) {
-      return res.status(400).json({
-        status: 0,
-        message: "IDs required",
-      });
-    }
+    const langId = req.params.id;
 
     const language = await LearningLanguagesModel.findById(langId);
 
@@ -190,16 +171,57 @@ export const deleteLearningLangaugeChapterbyId = async (req, res) => {
       });
     }
 
+    // delete chapters
+    await ChapterModel.deleteMany({
+      languageId: langId
+    });
+
+    // delete language
+    await LearningLanguagesModel.findByIdAndDelete(langId);
+
+    res.json({
+      status: 1,
+      message: "Language deleted",
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+
+  }
+};
+export const deleteLearningLangaugeChapterbyId = async (req, res) => {
+  try {
+
+    const { langId, chapterId } = req.params;
+
+    const language = await LearningLanguagesModel.findById(langId);
+
+    if (!language) {
+      return res.status(404).json({
+        status: 0,
+        message: "Language not found",
+      });
+    }
+
+    // remove from language
     language.chapters = language.chapters.filter(
-      ch => ch._id.toString() !== chapterId
+      id => id.toString() !== chapterId
     );
 
     await language.save();
 
+    // delete from chapter collection
+    await ChapterModel.findByIdAndDelete(chapterId);
+
     res.json({
       status: 1,
-      message: "Chapter deleted successfully",
-      data: language,
+      message: "Chapter deleted",
     });
 
   } catch (error) {
@@ -218,7 +240,6 @@ export const updateLearningLangauge = async (req, res) => {
   try {
 
     const { id } = req.params;
-
     const { english, native, code, chapters } = req.body;
 
     if (!id) {
@@ -228,14 +249,8 @@ export const updateLearningLangauge = async (req, res) => {
       });
     }
 
-    if (!english || !native || !code) {
-      return res.status(400).json({
-        status: 0,
-        message: "Required fields missing",
-      });
-    }
-
-    const language = await LearningLanguagesModel.findById(id);
+    const language =
+      await LearningLanguagesModel.findById(id);
 
     if (!language) {
       return res.status(404).json({
@@ -244,21 +259,41 @@ export const updateLearningLangauge = async (req, res) => {
       });
     }
 
-    // update fields
+    // update basic fields
     language.english = english;
     language.native = native;
     language.code = code;
 
+    // if chapters sent → recreate chapters
     if (chapters) {
-      language.chapters = chapters;
+
+      // delete old chapters
+      await ChapterModel.deleteMany({
+        languageId: id
+      });
+
+      let chapterIds = [];
+
+      for (let ch of chapters) {
+
+        const newChapter =
+          await ChapterModel.create({
+            languageId: id,
+            translations: ch.translations
+          });
+
+        chapterIds.push(newChapter._id);
+      }
+
+      language.chapters = chapterIds;
     }
 
-    const updated = await language.save();
+    await language.save();
 
-    res.status(200).json({
+    res.json({
       status: 1,
-      message: "Language updated successfully",
-      data: updated,
+      message: "Language updated",
+      data: language,
     });
 
   } catch (error) {

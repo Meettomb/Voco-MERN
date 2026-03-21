@@ -38,10 +38,15 @@ const userSchema = mongoose.Schema({
         default: "English"
     },
     learningLanguages: {
-        type: [String],   // array of strings
-        default: []       // not required
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "learning_languages"
+            }
+        ],
+        default: []
     },
-    role:{
+    role: {
         type: String,
         enum: ["user", "admin"],
         default: "user"

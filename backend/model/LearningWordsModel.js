@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const learningWordsSchema = new mongoose.Schema(
     {
         chapterId: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref:"chapters",
             required: [true, "Chapter ID is Required"],
             trim: true
         },

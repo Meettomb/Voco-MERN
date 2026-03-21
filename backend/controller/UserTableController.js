@@ -62,7 +62,7 @@ export const registerUser = async (req, res) => {
 
 export const getUserData = async (req, res) => {
   try {
-    const users = await UserModel.find();
+    const users = await UserModel.find().populate("learningLanguages");
 
     res.status(200).json({
       status: 1,
@@ -80,7 +80,9 @@ export const getUserData = async (req, res) => {
 
 export const getUserDataById = async (req, res) => {
   try {
-    const user = await UserModel.findById(req.params.id);
+    const user = await UserModel
+      .findById(req.params.id)
+      .populate("learningLanguages");
 
     if (!user) {
       return res.status(404).json({
@@ -214,7 +216,10 @@ export const updateUserRoleById = async (req, res) => {
 export const getActiveUsers = async (req, res) => {
   try {
 
-    const users = await UserModel.find({ isActive: true });
+    const users = await UserModel
+      .find({ isActive: true })
+
+      .populate("learningLanguages");
 
     res.status(200).json({
       status: 1,
@@ -253,7 +258,9 @@ export const searchUsers = async (req, res) => {
         { email: { $regex: keyword, $options: "i" } },
         { phoneNumber: { $regex: keyword, $options: "i" } },
       ],
-    });
+    })
+
+      .populate("learningLanguages");
 
     res.status(200).json({
       status: 1,
@@ -294,7 +301,10 @@ export const updateUserPersonalDetailById = async (req, res) => {
     const updateData = {
       username: req.body.username,
       phoneNumber: req.body.phoneNumber,
-      learningLanguages: req.body.learningLanguages,
+    };
+
+    if (req.body.learningLanguages) {
+      updateData.learningLanguages = req.body.learningLanguages;
     }
 
     // If phone number is being updated, reset phone verification status
