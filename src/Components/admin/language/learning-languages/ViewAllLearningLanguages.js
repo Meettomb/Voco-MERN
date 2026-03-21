@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import usePageTitle from '../../../../hooks/usePageTitle';
+import axios from "axios";
 
 /* Icons */
 
@@ -21,75 +22,159 @@ const TrashIcon = () => (
 export default function ViewAllLearningLanguages() {
   usePageTitle("View All Learning Languages");
 
-  const [languages] = useState([
-    {
-      english: "English",
-      native: "English",
-      chapters: [{}, {}]
-    },
-    {
-      english: "Hindi",
-      native: "हिंदी",
-      chapters: [{}, {}]
+  const [languages, setLanguages] = useState(null);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
+
+  const location = useLocation();
+
+   useEffect(() => {
+
+    if (location.state?.message) {
+
+      setMessage(location.state.message);
+      setMessageType(location.state.type);
+
+      // remove state from history
+      window.history.replaceState({}, document.title);
+
+      const timer = setTimeout(() => {
+        setMessage("");
+        setMessageType("");
+      }, 3000);
+      return () => clearTimeout(timer);
     }
-  ]);
+
+  }, [location.state]);
+
+  useEffect(() => {
+
+    if (message) {
+
+      const timer = setTimeout(() => {
+        setMessage("");
+        setMessageType("");
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+
+  }, [message]);
+
+  useEffect(() => {
+    getAllLearningLanguages();
+  }, []);
+
+  const getAllLearningLanguages = async () => {
+    try {
+
+      const response = await axios.get("http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages");
+      setLanguages(response.data.data)
+    }
+    catch (error) {
+
+    }
+  }
+
+  const deleteLearningLangaugebyId = async (id) => {
+    try {
+
+      const responce = await axios.delete(`http://localhost:5000/api/LearningLanguagesModel/deleteLearningLangaugebyId/${id}`);
+      if (responce.data.status === 1) {
+        setMessage(responce.data.message);
+        setMessageType("success");
+        getAllLearningLanguages();
+      }
+      else {
+        setMessage(responce.data.message || "Faild to Delete Learning Langauge");
+        setMessageType("error");
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
-    <div className="learning-languages-page">
+    <>
+      {message && (
+        <p
+          className={`app-message ${messageType === "success" ? "success" : "error"
+            }`}
+        >
+          {message}
+        </p>
+      )}
+      <div className="learning-languages-page">
 
-      <div className="learning-languages-page__card">
+        <div className="learning-languages-page__card">
 
-        <h2>Languages</h2>
+          <h2>Languages</h2>
 
-        <table className="learning-languages-page__table">
+          <table className="learning-languages-page__table">
 
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>English</th>
-              <th>Native</th>
-              <th>Chapters</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            {languages.map((lang, i) => (
-
-              <tr key={i}>
-
-                <td>{i + 1}</td>
-                <td>{lang.english}</td>
-                <td>{lang.native}</td>
-                <td>{lang.chapters.length}</td>
-
-                <td>
-                  <div className="learning-languages-page__table-actions">
-
-                    <Link to="/admin/language/learning-languages/view-learning-languages" className="learning-languages-page__view-btn">
-                      <EyeIcon />
-                      View
-                    </Link>
-
-                    <button className="learning-languages-page__icon-btn learning-languages-page__icon-btn--danger">
-                      <TrashIcon />
-                    </button>
-
-                  </div>
-                </td>
-
-
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>English</th>
+                <th>Native</th>
+                <th>Code</th>
+                <th>Chapters</th>
+                <th>Actions</th>
               </tr>
+            </thead>
 
-            ))}
+            <tbody>
+              {languages && languages.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="no-data">
+                    No record found
+                  </td>
+                </tr>
+              ) : (
 
-          </tbody>
+                languages?.map((lang, index) => (
 
-        </table>
+                  <tr key={lang._id}>
+
+                    <td>{index + 1}</td>
+                    <td>{lang?.english}</td>
+                    <td>{lang?.native}</td>
+                    <td>{lang?.code}</td>
+                    <td>{lang?.chapters.length || 0}</td>
+
+                    <td>
+                      <div className="learning-languages-page__table-actions">
+
+                        <Link to={`/admin/language/learning-languages/view-learning-languages/${lang._id}`} className="learning-languages-page__view-btn">
+                          <EyeIcon />
+                          View
+                        </Link>
+
+                        <button className="learning-languages-page__icon-btn learning-languages-page__icon-btn--danger"
+                          onClick={() => deleteLearningLangaugebyId(lang._id)}>
+                          <TrashIcon />
+                        </button>
+
+                      </div>
+                    </td>
+
+
+                  </tr>
+
+                ))
+
+              )}
+
+
+            </tbody>
+
+          </table>
+
+        </div>
 
       </div>
 
-    </div>
+    </>
   );
 }

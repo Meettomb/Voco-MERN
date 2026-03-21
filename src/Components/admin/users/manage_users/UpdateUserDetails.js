@@ -1,5 +1,5 @@
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
 import usePageTitle from "../../../../hooks/usePageTitle";
 import axios from "axios";
 
@@ -27,10 +27,6 @@ export default function UpdateUserDetails() {
   };
 
   useEffect(() => {
-    fetchUserDetails()
-  }, [id]);
-
-  useEffect(() => {
 
     if (message) {
 
@@ -44,22 +40,32 @@ export default function UpdateUserDetails() {
 
   }, [message]);
 
-  const fetchUserDetails = async () => {
+  const fetchUserDetails = useCallback(async () => {
     try {
-      const responce = await axios.get(`http://localhost:5000/api/userModel/getUserDataById/${id}`);
+      const responce = await axios.get(
+        `http://localhost:5000/api/userModel/getUserDataById/${id}`
+      );
 
-      setUser(responce.data.data);
-      setFormData({
-        role: responce.data.data.role
-      });
-      console.log(responce.data.data);
+      if (responce.data.status === 1) {
+        setUser(responce.data.data);
+        setFormData({
+          role: responce.data.data.role
+        });
+      }
+
     } catch (error) {
       console.error("Error fetching user details:", error);
     }
-  }
+  }, [id]);
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, [fetchUserDetails]);
 
   // Save button
   const handleSave = async () => {
+
+    setError(""); // clear old error
 
     // Validation
     if (!formData.role) {
@@ -68,26 +74,43 @@ export default function UpdateUserDetails() {
     }
 
     try {
-      const response = await axios.patch(`http://localhost:5000/api/userModel/updateUserRoleById/${id}`, {
-        role: formData.role
-      });
 
-      navigate(
-        `/admin/users/manage-users/user-detail-view/${id}`,
+      const response = await axios.patch(
+        `http://localhost:5000/api/userModel/updateUserRoleById/${id}`,
         {
-          state: {
-            message: "User role updated successfully!",
-            type: "success",
-          },
+          role: formData.role
         }
       );
 
+      if (response?.data?.status === 1) {
+
+        navigate(
+          `/admin/users/manage-users/user-detail-view/${id}`,
+          {
+            replace: true,
+            state: {
+              message: response.data.message || "User role updated successfully!",
+              type: "success",
+            },
+          }
+        );
+
+      } else {
+
+        setError(response.data.message || "Failed to update role");
+        setMessage(response.data.message || "Failed to update role");
+        setMessageType("error");
+
+      }
+
     } catch (err) {
+
+      console.log(err);
+
       setError("Failed to update user role");
       setMessage("Failed to update user role");
       setMessageType("error");
 
-      return;
     }
   };
 

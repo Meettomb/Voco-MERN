@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import usePageTitle from '../../../../hooks/usePageTitle';
+import axios from "axios";
 
 /* ========== SVG ICONS ========== */
 
@@ -39,85 +40,205 @@ const TrashIcon = () => (
 export default function ViewLearningLanguages() {
   usePageTitle("View Learning Language");
   const navigate = useNavigate();   // ✅ back navigation
-  const [search, setSearch] = useState("");
+  // const [search, setSearch] = useState("");
+
+  const { id } = useParams();
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
+
 
   // Static sample data
-  const language = {
-    english: "Hindi",
-    native: "हिंदी",
-    chapters: [
-      { id: 1, name: "मूल बातें" },
-      { id: 2, name: "अभिवादन" },
-      { id: 3, name: "संख्या" }
-    ]
+  const [language, setLangauage] = useState(null);
+
+  useEffect(() => {
+    getLearningLanguagesById();
+  }, [id]);
+
+  useEffect(() => {
+
+    if (message) {
+
+      const timer = setTimeout(() => {
+        setMessage("");
+        setMessageType("");
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+
+  }, [message]);
+
+
+  const getLearningLanguagesById = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/LearningLanguagesModel/getLearningLanguagesById/${id}`);
+      if (response.data.status === 1) {
+        setLangauage(response.data.data);
+      }
+      else {
+        setMessage(response.data.message || "Faild to get data")
+        messageType("error");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const deleteLearningLangaugeChapterbyId = async (langId, chapterId) => {
+    try {
+
+      const response = await axios.delete(
+        `http://localhost:5000/api/LearningLanguagesModel/deleteLearningLangaugeChapterbyId/${langId}/${chapterId}`
+      );
+
+      if (response.data.status === 1) {
+
+        setMessage(response.data.message);
+        setMessageType("success");
+
+        getLearningLanguagesById(); // refresh list
+
+      } else {
+
+        setMessage(
+          response.data.message || "Failed to delete chapter"
+        );
+
+        setMessageType("error");
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const filteredChapters = language.chapters.filter(ch =>
-    ch.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const deleteLearningLangaugebyId = async (id) => {
+    try {
+
+      const responce = await axios.delete(`http://localhost:5000/api/LearningLanguagesModel/deleteLearningLangaugebyId/${id}`);
+      if (responce.data.status === 1) {
+        setMessage(responce.data.message);
+        setMessageType("success");
+        navigate("/admin/language/learning-languages/view-all-learning-languages",
+          {
+            replace: true,
+            state: {
+              message: "Learning Langauge Deleted!",
+              type: "success",
+            },
+          }
+        );
+      }
+      else {
+        setMessage(responce.data.message || "Faild to Delete Learning Langauge");
+        setMessageType("error");
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
-    <div className="view-lang-page">
-
-      {/* HEADER */}
-      <div className="view-lang-page__header">
-
-        {/* BACK BUTTON */}
-        <button
-          className="view-lang-page__back-btn"
-          onClick={() => navigate(-1)}
+    <>
+      {message && (
+        <p
+          className={`app-message ${messageType === "success" ? "success" : "error"
+            }`}
         >
-          <BackIcon />
-        </button>
+          {message}
+        </p>
+      )}
 
-        <h2>
-          {language.english} ({language.native})
-        </h2>
+      <div className="view-lang-page">
 
-        <div className="view-lang-page__actions">
+        {/* HEADER */}
+        <div className="view-lang-page__header">
 
-          <div className="view-lang-page__search">
-            <SearchIcon />
-            <input
-              placeholder="Search chapter..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-
-          <Link to="/admin/language/learning-languages/update-learning-language" className="view-lang-page__icon-btn edit">
-            <EditIcon />
-          </Link>
-
-          <button className="view-lang-page__icon-btn delete">
-            <TrashIcon />
+          {/* BACK BUTTON */}
+          <button
+            className="view-lang-page__back-btn"
+            onClick={() => navigate(-1)}
+          >
+            <BackIcon />
           </button>
 
+          <h2>
+            {language?.english} ({language?.native})
+          </h2>
+
+          <div className="view-lang-page__actions">
+
+            {/* <div className="view-lang-page__search">
+              <SearchIcon />
+              <input
+                placeholder="Search chapter..."
+              // value={search}
+              // onChange={(e) => setSearch(e.target.value)}
+              />
+            </div> */}
+
+            <Link
+              to={`/admin/language/learning-languages/update-learning-language/${id}`}
+              className="view-lang-page__icon-btn edit"
+            >
+              <EditIcon />
+            </Link>
+
+            <button className="view-lang-page__icon-btn delete"
+              onClick={() => deleteLearningLangaugebyId(id)} title="Delete langauge">
+              <TrashIcon />
+            </button>
+          </div>
+
         </div>
 
-      </div>
+        {/* CARD */}
+        <div className="view-lang-page__card">
 
-      {/* CARD */}
-      <div className="view-lang-page__card">
+          <h3>Chapters</h3>
 
-        <h3>Chapters</h3>
+          <div className="view-lang-page__list">
+            <div className="view-lang-page__list">
 
-        <div className="view-lang-page__list">
+              {!language?.chapters || language.chapters.length === 0 ? (
 
-          {filteredChapters.map(ch => (
-            <div key={ch.id} className="view-lang-page__item">
+                <div className="no-data">
+                  No record found
+                </div>
 
-              <span>Chapter {ch.id}</span>
+              ) : (
 
-              <p>{ch.name}</p>
+                language.chapters.map((ch, index) => (
+
+                  <div key={index} className="view-lang-page__item">
+
+                    <span>Chapter {index + 1}</span>
+
+                    <div>
+                      {Object.values(ch.translations).map((t, i) => (
+                        <div key={i}>{t}</div>
+                      ))}
+                    </div>
+                    <button className="view-lang-page__icon-btn delete"
+                      onClick={() => deleteLearningLangaugeChapterbyId(language._id, ch._id)}>
+                      <TrashIcon />
+                    </button>
+                  </div>
+
+
+                ))
+
+              )}
 
             </div>
-          ))}
+
+
+          </div>
 
         </div>
 
       </div>
-
-    </div>
+    </>
   );
 }

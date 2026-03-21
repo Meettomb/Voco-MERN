@@ -1,20 +1,57 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import usePageTitle from '../../../../hooks/usePageTitle';
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
-export default function UpdateLearningLanguage() {  
+export default function UpdateLearningLanguage() {
   usePageTitle("Update Learning Language");
+  const { id } = useParams();
 
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const existingData = location.state?.language || {
-    languageEn: "",
-    languageNative: "",
-    chapters: [{ en: "", native: "" }]
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
+
+  const [formData, setFormData] = useState({
+    english: "",
+    native: "",
+    code: "",
+    chapters: []
+  });
+  const [uiLanguages, setUiLanguages] = useState([]);
+  useEffect(() => {
+    fetchUiLanguages();
+    getLanguageById();
+  }, [id]);
+
+  const fetchUiLanguages = async () => {
+    const res = await axios.get(
+      "http://localhost:5000/api/UiLanguageModel/getUiLanguage"
+    );
+
+    if (res.data.status === 1) {
+      setUiLanguages(res.data.data);
+    }
   };
 
-  const [formData, setFormData] = useState(existingData);
+
+  const getLanguageById = async () => {
+    try {
+
+      const res = await axios.get(
+        `http://localhost:5000/api/LearningLanguagesModel/getLearningLanguagesById/${id}`
+      );
+
+      if (res.data.status === 1) {
+        setFormData(res.data.data);
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const [errors, setErrors] = useState({});
 
   /* ---------------- INPUT HANDLERS ---------------- */
@@ -23,55 +60,119 @@ export default function UpdateLearningLanguage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleChapterChange = (i, field, value) => {
-    const updated = [...formData.chapters];
-    updated[i][field] = value;
-    setFormData({ ...formData, chapters: updated });
+  const handleChapterChange = (cIndex, lang, value) => {
+    const copy = [...formData.chapters];
+    copy[cIndex].translations[lang] = value;
+
+    setFormData({
+      ...formData,
+      chapters: copy,
+    });
+  };
+
+  const createEmptyTranslations = () => {
+    const obj = {};
+
+    uiLanguages.forEach(l => {
+      obj[l.code] = "";
+    });
+
+    return obj;
   };
 
   const addChapter = () => {
     setFormData({
       ...formData,
-      chapters: [...formData.chapters, { en: "", native: "" }]
+      chapters: [
+        ...formData.chapters,
+        { translations: createEmptyTranslations() }
+      ]
     });
   };
 
   const removeChapter = (i) => {
-    const updated = [...formData.chapters];
-    updated.splice(i, 1);
-    setFormData({ ...formData, chapters: updated });
+    const copy = [...formData.chapters];
+    copy.splice(i, 1);
+
+    setFormData({
+      ...formData,
+      chapters: copy
+    });
   };
 
   /* ---------------- VALIDATION ---------------- */
 
   const validate = () => {
+
     let temp = {};
 
-    if (!formData.languageEn.trim())
-      temp.languageEn = "Language (English) is required";
+    if (!formData.english?.trim()) {
+      temp.english = "Language (English) is required";
+    }
 
-    if (!formData.languageNative.trim())
-      temp.languageNative = "Language (Native) is required";
+    if (!formData.native?.trim()) {
+      temp.native = "Language (Native) is required";
+    }
 
-    formData.chapters.forEach((c, i) => {
-      if (!c.en.trim()) temp[`chEn${i}`] = "Required";
-      if (!c.native.trim()) temp[`chNative${i}`] = "Required";
+    if (!formData.code?.trim()) {
+      temp.code = "Language Code is required";
+    }
+
+    // validate chapters
+    formData.chapters.forEach((ch, cIndex) => {
+
+      uiLanguages.forEach(lang => {
+
+        const value = ch.translations?.[lang.code];
+
+        if (!value || !value.trim()) {
+          temp[`ch_${cIndex}_${lang.code}`] = "Required";
+        }
+
+      });
+
     });
 
     setErrors(temp);
+
     return Object.keys(temp).length === 0;
   };
 
   /* ---------------- SUBMIT ---------------- */
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
 
-    console.log("Updated Data:", formData);
-    navigate(-1);
+    if (!validate()) {
+      return;
+    }
+
+    try {
+
+      const res = await axios.put(
+        `http://localhost:5000/api/LearningLanguagesModel/updateLearningLangauge/${id}`,
+        formData
+      );
+
+      if (res.data.status === 1) {
+
+        navigate(
+          `/admin/language/learning-languages/view-learning-languages/${id}`,
+          {
+            replace: true,
+            state: {
+              setMessage: res.data.message,
+              setMessageType: "success",
+            },
+          }
+        );
+
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
   };
-
   /* ---------------- UI ---------------- */
 
   return (
@@ -105,9 +206,9 @@ export default function UpdateLearningLanguage() {
           {/* LANGUAGE EN */}
           <input
             type="text"
-            name="languageEn"
+            name="english"
+            value={formData.english}
             placeholder="Language (English)"
-            value={formData.languageEn}
             onChange={handleChange}
           />
           {errors.languageEn && <p className="error">{errors.languageEn}</p>}
@@ -115,54 +216,60 @@ export default function UpdateLearningLanguage() {
           {/* LANGUAGE NATIVE */}
           <input
             type="text"
-            name="languageNative"
+            name="native"
+            value={formData.native}
             placeholder="Language (Native)"
-            value={formData.languageNative}
             onChange={handleChange}
           />
           {errors.languageNative && <p className="error">{errors.languageNative}</p>}
 
+          <input
+            type="text"
+            name="code"
+            value={formData.code}
+            onChange={handleChange}
+            placeholder="Language Code"
+          />
+
           <h4 className="UpdateUpdateLearningLanguageh4">Chapters</h4>
 
-          {formData.chapters.map((ch, i) => (
-            <div key={i} className="chapter-row">
+          {formData.chapters.map((ch, cIndex) => (
 
-              <input
-                type="text"
-                placeholder={`Chapter ${i + 1} (en)`}
-                value={ch.en}
-                onChange={(e) =>
-                  handleChapterChange(i, "en", e.target.value)
-                }
-              />
-              {errors[`chEn${i}`] && <p className="error">{errors[`chEn${i}`]}</p>}
+            <div key={cIndex} className="chapter-row">
 
-              <input
-                type="text"
-                placeholder={`Chapter ${i + 1} (native)`}
-                value={ch.native}
-                onChange={(e) =>
-                  handleChapterChange(i, "native", e.target.value)
-                }
-              />
-              {errors[`chNative${i}`] && <p className="error">{errors[`chNative${i}`]}</p>}
+              {uiLanguages.map(lang => (
 
-              {formData.chapters.length > 1 && (
-                <button
-                  type="button"
-                  className="delete-btn"
-                  onClick={() => removeChapter(i)}
-                >
-                  <svg viewBox="0 0 24 24">
-                    <path d="M3 6h18" />
-                    <path d="M8 6v14" />
-                    <path d="M16 6v14" />
-                    <path d="M5 6l1-2h12l1 2" />
-                  </svg>
-                </button>
-              )}
+                <input
+                  key={lang.code}
+                  placeholder={`Chapter ${cIndex + 1} (${lang.code})`}
+                  value={ch.translations?.[lang.code] || ""}
+                  onChange={(e) =>
+                    handleChapterChange(
+                      cIndex,
+                      lang.code,
+                      e.target.value
+                    )
+                  }
+                />
+
+              ))}
+
+              <button
+                type="button"
+                className="delete-btn"
+                onClick={() => removeChapter(cIndex)}
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14H6L5 6" />
+                  <path d="M10 11v6" />
+                  <path d="M14 11v6" />
+                  <path d="M9 6V4h6v2" />
+                </svg>
+              </button>
 
             </div>
+
           ))}
 
           {/* ACTIONS */}

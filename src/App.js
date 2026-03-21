@@ -75,8 +75,8 @@ function App() {
 
           <Route path="language/learning-languages/add" element={<LearningLanguages />} />
           <Route path="language/learning-languages/view-all-learning-languages" element={<ViewAllLearningLanguages />} />
-          <Route path="language/learning-languages/view-learning-languages" element={<ViewLearningLanguages />} />
-          <Route path="language/learning-languages/update-learning-language" element={<UpdateLearningLanguage />} />
+          <Route path="language/learning-languages/view-learning-languages/:id" element={<ViewLearningLanguages />} />
+          <Route path="language/learning-languages/update-learning-language/:id" element={<UpdateLearningLanguage />} />
 
         {/* ======================= Manage Words ======================= */}
           <Route path="words/add" element={<AddWords />} />
