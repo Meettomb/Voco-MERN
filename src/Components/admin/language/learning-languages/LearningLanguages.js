@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import usePageTitle from "../../../../hooks/usePageTitle";
+import axios from "axios";
 
 /* ================= UI LANGUAGES ================= */
 
-const UI_LANGUAGES = ["en", "hi"];
+// const UI_LANGUAGES = ["en", "hi"];
 
 /* ================= SVG ICONS ================= */
 
@@ -30,14 +31,70 @@ export default function LearningLanguages() {
   usePageTitle("Add Learning Languages");
 
   /* -------- STATES -------- */
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
+  const [error, setError] = useState("");
+  const [uiLanguages, setUiLanguages] = useState([]);
+  useEffect(() => {
+    fetchLanguages();
+  }, []);
+
+  const fetchLanguages = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/UiLanguageModel/getUiLanguage"
+      );
+
+      if (res.data.status === 1) {
+        setUiLanguages(res.data.data);
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const createEmptyTranslations = (langs) => {
+    const obj = {};
+    langs.forEach(l => {
+      obj[l.code] = "";
+    });
+    return obj;
+  };
+
 
   const [formData, setFormData] = useState({
     english: "",
     native: "",
-    chapters: [{ translations: { en: "", hi: "" } }]
+    code: "",
+    chapters: []
   });
 
-  const [error, setError] = useState("");
+  useEffect(() => {
+    if (uiLanguages.length > 0) {
+      setFormData({
+        english: "",
+        native: "",
+        code: "",
+        chapters: [
+          { translations: createEmptyTranslations(uiLanguages) }
+        ]
+      });
+    }
+  }, [uiLanguages]);
+
+  useEffect(() => {
+
+    if (message) {
+
+      const timer = setTimeout(() => {
+        setMessage("");
+        setMessageType("");
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+
+  }, [message]);
 
   /* -------- CHAPTER CHANGE -------- */
 
@@ -53,7 +110,10 @@ export default function LearningLanguages() {
   const addChapterField = () => {
     setFormData({
       ...formData,
-      chapters: [...formData.chapters, { translations: { en: "", hi: "" } }]
+      chapters: [
+        ...formData.chapters,
+        { translations: createEmptyTranslations(uiLanguages) }
+      ]
     });
   };
 
@@ -68,7 +128,7 @@ export default function LearningLanguages() {
 
   /* -------- ADD LANGUAGE (VALIDATE + CONSOLE JSON) -------- */
 
-  const addLanguage = () => {
+  const addLanguage = async () => {
 
     if (!formData.english.trim())
       return setError("Enter language English name");
@@ -76,9 +136,12 @@ export default function LearningLanguages() {
     if (!formData.native.trim())
       return setError("Enter language Native name");
 
+    if (!formData.code.trim())
+      return setError("Enter language Code");
+
     for (let ch of formData.chapters) {
-      for (let lang of UI_LANGUAGES) {
-        if (!ch.translations[lang].trim()) {
+      for (let lang of uiLanguages) {
+        if (!ch.translations[lang.code].trim()) {
           return setError("Fill all chapter language fields");
         }
       }
@@ -87,102 +150,158 @@ export default function LearningLanguages() {
     const payload = {
       english: formData.english,
       native: formData.native,
+      code: formData.code,
       chapters: formData.chapters
     };
 
-    console.log(payload);
+    try {
 
-    // Reset form
-    setFormData({
-      english: "",
-      native: "",
-      chapters: [{ translations: { en: "", hi: "" } }]
-    });
+      const response = await axios.post(
+        "http://localhost:5000/api/LearningLanguagesModel/addLearningLanguages",
+        payload
+      );
 
-    setError("");
+      if (response?.data?.status === 1) {
+
+        setMessage(response.data.message);
+        setMessageType("success");
+
+        // ✅ reset only on success
+        setFormData({
+          english: "",
+          native: "",
+          code: "",
+          chapters: [
+            {
+              translations: createEmptyTranslations(uiLanguages)
+            }
+          ]
+        });
+
+        setError("");
+
+      } else {
+
+        setMessage(response.data.message || "Failed to add learning language");
+        setMessageType("error");
+
+      }
+
+    } catch (error) {
+
+      console.error("Error adding language:", error);
+
+      if (error.response?.data?.message) {
+        setMessage(error.response.data.message);
+      } else {
+        setMessage("Server error");
+      }
+
+      setMessageType("error");
+
+    }
   };
 
   /* ================= UI ================= */
 
   return (
-    <div className="learning-languages-page">
+    <>
+      {message && (
+        <p
+          className={`app-message ${messageType === "success" ? "success" : "error"
+            }`}
+        >
+          {message}
+        </p>
+      )}
 
-      <div className="learning-languages-page__card">
+      <div className="learning-languages-page">
 
-        <h2>Add New Language</h2>
+        <div className="learning-languages-page__card">
 
-        {error && (
-          <div className="learning-languages-page__error">
-            {error}
-          </div>
-        )}
+          <h2>Add New Language</h2>
 
-        <input
-          placeholder="Language (English)"
-          value={formData.english}
-          onChange={e =>
-            setFormData({ ...formData, english: e.target.value })
-          }
-        />
+          {error && (
+            <div className="learning-languages-page__error">
+              {error}
+            </div>
+          )}
 
-        <input
-          placeholder="Language (Native)"
-          value={formData.native}
-          onChange={e =>
-            setFormData({ ...formData, native: e.target.value })
-          }
-        />
+          <input
+            placeholder="Language (English)"
+            name="english"
+            value={formData.english}
+            onChange={e =>
+              setFormData({ ...formData, english: e.target.value })
+            }
+          />
 
-        <h4>Chapters</h4>
+          <input
+            placeholder="Language (Native)"
+            value={formData.native}
+            onChange={e =>
+              setFormData({ ...formData, native: e.target.value })
+            }
+          />
+          <input
+            placeholder="Language Code"
+            value={formData.code}
+            onChange={e =>
+              setFormData({ ...formData, code: e.target.value })
+            }
+          />
 
-        {formData.chapters.map((chapter, cIndex) => (
+          <h4>Chapters</h4>
 
-          <div key={cIndex} className="learning-languages-page__chapter-box">
+          {formData.chapters.map((chapter, cIndex) => (
 
-            {UI_LANGUAGES.map(lang => (
+            <div key={cIndex} className="learning-languages-page__chapter-box">
 
-              <input
-                key={lang}
-                placeholder={`Chapter ${cIndex + 1} (${lang})`}
-                value={chapter.translations[lang]}
-                onChange={(e) =>
-                  handleChapterChange(cIndex, lang, e.target.value)
-                }
-              />
+              {uiLanguages.map(lang => (
 
-            ))}
+                <input
+                  key={lang.code}
+                  placeholder={`Chapter ${cIndex + 1} (${lang.code})`}
+                  value={chapter.translations[lang.code]}
+                  onChange={(e) =>
+                    handleChapterChange(cIndex, lang.code, e.target.value)
+                  }
+                />
+
+              ))}
+
+              <button
+                className="learning-languages-page__icon-btn learning-languages-page__icon-btn--danger"
+                onClick={() => removeChapterField(cIndex)}
+              >
+                <TrashIcon />
+              </button>
+
+            </div>
+
+          ))}
+
+          <div className="learning-languages-page__form-actions">
 
             <button
-              className="learning-languages-page__icon-btn learning-languages-page__icon-btn--danger"
-              onClick={() => removeChapterField(cIndex)}
+              className="learning-languages-page__secondary-btn"
+              onClick={addChapterField}
             >
-              <TrashIcon />
+              <PlusIcon /> Add Chapter
+            </button>
+
+            <button
+              className="learning-languages-page__primary-btn"
+              onClick={addLanguage}
+            >
+              Add Language
             </button>
 
           </div>
 
-        ))}
-
-        <div className="learning-languages-page__form-actions">
-
-          <button
-            className="learning-languages-page__secondary-btn"
-            onClick={addChapterField}
-          >
-            <PlusIcon /> Add Chapter
-          </button>
-
-          <button
-            className="learning-languages-page__primary-btn"
-            onClick={addLanguage}
-          >
-            Add Language
-          </button>
-
         </div>
 
       </div>
-
-    </div>
+    </>
   );
 }

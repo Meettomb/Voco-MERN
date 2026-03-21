@@ -40,11 +40,8 @@ export const addUiLaunguage = async (req, res) => {
 
 export const getUiLanguage = async (req, res) => {
   try {
-    console.log("Fetching all UI Languages...");
 
     const languages = await UiLanguageModel.find().sort({ createdAt: -1 });
-
-    console.log("Languages Found:", languages.length);
 
     res.status(200).json({
       status: 1,
@@ -52,7 +49,6 @@ export const getUiLanguage = async (req, res) => {
       data: languages,
     });
   } catch (error) {
-    console.log("ERROR IN GET UI LANGUAGE:");
     console.log(error);
 
     res.status(500).json({
@@ -66,8 +62,6 @@ export const getUiLanguage = async (req, res) => {
 
 export const deleteUiLanguageById = async (req, res) => {
   try {
-    console.log("Deleting ID:", req.params.id);
-
     const deletedLanguage = await UiLanguageModel.findByIdAndDelete(
       req.params.id,
     );
@@ -159,5 +153,59 @@ export const updateUiLanguageById = async (req, res) => {
       status: 0,
       message: "Server error",
     });
+  }
+};
+
+export const filterUiLanguages = async (req, res) => {
+  try {
+
+    const { search } = req.query;
+
+    let filter = {};
+
+    if (search) {
+
+      filter = {
+        $or: [
+          {
+            englishName: {
+              $regex: search,
+              $options: "i",
+            },
+          },
+          {
+            nativeName: {
+              $regex: search,
+              $options: "i",
+            },
+          },
+          {
+            code: {
+              $regex: search,
+              $options: "i",
+            },
+          },
+        ],
+      };
+
+    }
+
+    const languages = await UiLanguageModel.find(filter);
+
+    return res.status(200).json({
+      status: 1,
+      message: "Filtered languages",
+      data: languages,
+    });
+
+  } catch (error) {
+
+    console.error("Error filtering languages:", error);
+
+    return res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+
   }
 };
