@@ -43,11 +43,11 @@ function Footer() {
                 {t("footer.links.mcqs")}
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link to="/progress">
                 {t("footer.links.progress")}
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
 
