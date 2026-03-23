@@ -6,7 +6,13 @@
 a {
   text-decoration: none;
 }
+.green {
+  color: #22c55e;
+}
 
+.red {
+  color: #ef4444;
+}
 :root {
   /* =========================
      Brand & Primary Colors
@@ -4914,6 +4920,33 @@ svg {
     font-size: 20px;
   }
 
+}
+
+.view-word .view-word__word-block {
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--color-border-light);
+}
+
+.view-word .view-word__word-block:last-child {
+  border-bottom: none;
+}
+
+.view-word .view-word__section {
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.view-word .view-word__section:last-child {
+  border-bottom: none;
+}
+
+.view-word .view-word__difficulty {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: var(--color-primary);
 }
 
 /* ========================================================================================== */

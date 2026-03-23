@@ -106,9 +106,9 @@ function Header({ onOpen }) {
                 </Link>
               </li>
 
-              <li>
+              {/* <li>
                 <Link to="/progress">{t("nav.progress")}</Link>
-              </li>
+              </li> */}
 
               <li>
                 <select
@@ -320,14 +320,14 @@ function Header({ onOpen }) {
               </Link>
             </li>
 
-            <li>
+            {/* <li>
               <Link to="/progress" onClick={() => setMenuOpen(false)}>
                 <svg viewBox="0 -960 960 960">
                   <path d="M200-160v-80h560v80H200Zm0-160v-360h80v360h-80Zm200 0v-480h80v480h-80Zm200 0v-240h80v240h-80Z" />
                 </svg>
                 {t("nav.progress")}
               </Link>
-            </li>
+            </li> */}
           </ul>
 
 

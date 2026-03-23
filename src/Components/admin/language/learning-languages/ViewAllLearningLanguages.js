@@ -72,7 +72,7 @@ export default function ViewAllLearningLanguages() {
       setLanguages(response.data.data)
     }
     catch (error) {
-
+      console.log(error)
     }
   }
 

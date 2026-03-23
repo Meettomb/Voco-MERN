@@ -5,7 +5,8 @@ import {
     getLearningLanguagesById,
     deleteLearningLangaugebyId,
     deleteLearningLangaugeChapterbyId,
-    updateLearningLangauge
+    updateLearningLangauge,
+    getAllChapters
 } from "../controller/LearningLanguagesController.js"
 
 const LearningLanguagesRoutes = express.Router();
@@ -15,6 +16,10 @@ LearningLanguagesRoutes.get("/getLearningLanguagesById/:id", getLearningLanguage
 LearningLanguagesRoutes.delete("/deleteLearningLangaugebyId/:id", deleteLearningLangaugebyId);
 LearningLanguagesRoutes.delete("/deleteLearningLangaugeChapterbyId/:langId/:chapterId", deleteLearningLangaugeChapterbyId);
 LearningLanguagesRoutes.put("/updateLearningLangauge/:id", updateLearningLangauge);
+
+// Chapters
+LearningLanguagesRoutes.get("/getAllChapters", getAllChapters);
+
 
 
 export default LearningLanguagesRoutes;
