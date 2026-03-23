@@ -220,7 +220,7 @@ export default function AdminSidebar() {
             </div>
           )}
 
-
+{/* 
           <Link to="/admin/settings" className="nav-item" onClick={handleNavClick}>
             <svg viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="3" />
@@ -228,7 +228,7 @@ export default function AdminSidebar() {
             </svg>
 
             {!collapsed && <span>Settings</span>}
-          </Link>
+          </Link> */}
 
         </nav>
 

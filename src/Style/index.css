@@ -6,7 +6,13 @@
 a {
   text-decoration: none;
 }
+.green {
+  color: #22c55e;
+}
 
+.red {
+  color: #ef4444;
+}
 :root {
   /* =========================
      Brand & Primary Colors
