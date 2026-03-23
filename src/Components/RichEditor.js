@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
@@ -6,6 +6,7 @@ import Underline from "@tiptap/extension-underline";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Extension } from "@tiptap/core";
 import Image from "@tiptap/extension-image";
+import axios from "axios";
 
 /* ---------------- FONT SIZE EXTENSION ---------------- */
 const CopyIcon = () => (
@@ -171,6 +172,7 @@ const ResizableImage = Image.extend({
 /* ---------------- COMPONENT ---------------- */
 
 export default function RichEditor({ value, onChange }) {
+
     const fileInputRef = useRef(null);
     const [showHtmlPreview, setShowHtmlPreview] = useState(false);
 
@@ -192,27 +194,104 @@ export default function RichEditor({ value, onChange }) {
             onChange(editor.getHTML());
         },
     });
+    useEffect(() => {
+
+        if (!editor) return;
+
+        let oldImages = [];
+
+        const getImages = () => {
+
+            const html = editor.getHTML();
+
+            const imgs =
+                [...html.matchAll(/src="([^"]+)"/g)]
+                    .map(m => m[1]);
+
+            return imgs;
+
+        };
+
+        oldImages = getImages();
+
+        editor.on("update", async () => {
+
+            const newImages = getImages();
+
+            const removed =
+                oldImages.filter(
+                    img => !newImages.includes(img)
+                );
+
+            for (let img of removed) {
+
+                try {
+
+                    await axios.delete(
+                        "http://localhost:5000/api/LearningWordsModel/deleteImage",
+                        {
+                            data: { url: img }
+                        }
+                    );
+
+                } catch (err) {
+                    console.log(err);
+                }
+
+            }
+
+            oldImages = newImages;
+
+        });
+
+    }, [editor]);
 
     if (!editor) return null;
 
     /* ---------------- IMAGE UPLOAD (Blob URL) ---------------- */
 
-    const handleImageUpload = event => {
+    const handleImageUpload = async (event) => {
+
         const file = event.target.files[0];
         if (!file) return;
 
-        const previewUrl = URL.createObjectURL(file); // temporary blob preview
-        const fileName = file.name;                   // actual filename
+        try {
 
-        editor
-            .chain()
-            .focus()
-            .setImage({
-                src: fileName,     // ✅ store filename ONLY
-                preview: previewUrl, // temporary preview
-                width: "300px",
-            })
-            .run();
+            const formData = new FormData();
+
+            formData.append("image", file);
+
+            const res = await axios.post(
+                "http://localhost:5000/api/LearningWordsModel/uploadImage",
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }
+            );
+
+            if (res.data.status === 1) {
+
+                const imageUrl = res.data.url;
+
+                editor
+                    .chain()
+                    .focus()
+                    .setImage({
+                        src: imageUrl,   // ✅ correct
+                        width: "300px",
+                    })
+                    .run();
+
+            }
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+
     };
 
     const setFontSize = size => {

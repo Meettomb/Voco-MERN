@@ -2,6 +2,13 @@ import mongoose from "mongoose";
 
 const learningWordsSchema = new mongoose.Schema(
     {
+        learningWordsLangauge:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref:"learning_languages",
+            required: [true, "Lerning Langaue is Required"],
+            trim: true
+        },
+        
         chapterId: {
             type: mongoose.Schema.Types.ObjectId,
             ref:"chapters",

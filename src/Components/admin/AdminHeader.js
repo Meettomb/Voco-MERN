@@ -185,7 +185,7 @@ export default function AdminSidebar() {
           {openWords && !collapsed && (
             <div className="submenu">
               <Link to="words/add" onClick={handleNavClick}>Add Words</Link>
-              <Link to="words/manage" onClick={handleNavClick}>Manage Words</Link>
+              <Link to="words/ViewLanguages" onClick={handleNavClick}>Manage Words</Link>
             </div>
           )}
 

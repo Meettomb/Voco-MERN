@@ -1,17 +1,164 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import usePageTitle from '../../../hooks/usePageTitle';
 import RichEditor from "../../RichEditor";
+import FullScreenLoader from "../../FullScreenLoader";
 
-const UI_LANGUAGES = ["en", "hi"];
+// const UI_LANGUAGES = ["en", "hi"];
 
 export default function AddWords() {
+    const [loading, setLoading] = useState(false);
     const [contentType, setContentType] = useState("text");
     // "text" | "textarea"
+    const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState("");
 
-    const [grammarContent, setGrammarContent] = useState({
-        en: "",
-        hi: ""
-    });
+    const [uiLanguages, setUiLanguages] = useState([]);
+    const [grammarContent, setGrammarContent] = useState({});
+
+    const [isAllLanguage, setIsAllLanguage] = useState(false);
+    const [newChapter, setNewChapter] = useState({});
+
+    const createEmptyTranslations = () => {
+        const obj = {};
+
+        uiLanguages.forEach(lang => {
+            obj[lang] = "";
+        });
+
+        return obj;
+    };
+    useEffect(() => {
+
+        if (message) {
+
+            const timer = setTimeout(() => {
+                setMessage("");
+                setMessageType("");
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+
+    }, [message]);
+
+    useEffect(() => {
+
+        const getLanguages = async () => {
+
+            try {
+
+                const res = await axios.get(
+                    "http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages"
+                );
+
+                if (res.data.status === 1) {
+
+                    setLanguages(res.data.data);
+
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
+
+        };
+
+        getLanguages();
+
+    }, []);
+
+    const handleLanguageChange = (id) => {
+
+        setLanguageId(id);
+
+        if (id === "all") {
+
+            setIsAllLanguage(true);
+            setChapters([]);
+
+            const obj = {};
+
+            uiLanguages.forEach(l => {
+                obj[l] = "";
+            });
+
+            setNewChapter(obj);
+
+            return;
+        }
+
+        setIsAllLanguage(false);
+
+        const lang = languages.find(l => l._id === id);
+
+        if (lang) {
+            setChapters(lang.chapters);
+        } else {
+            setChapters([]);
+        }
+
+    };
+
+
+    useEffect(() => {
+
+        const getUiLanguages = async () => {
+
+            try {
+
+                const res = await axios.get(
+                    "http://localhost:5000/api/UiLanguageModel/getUiLanguage"
+                );
+
+                if (res.data.status === 1) {
+
+                    // assuming language has code field
+                    const codes = res.data.data.map(l => l.code);
+
+                    setUiLanguages(codes);
+
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
+
+        };
+
+        getUiLanguages();
+
+    }, []);
+
+    useEffect(() => {
+
+        if (uiLanguages.length === 0) return;
+
+        const grammarObj = {};
+
+        uiLanguages.forEach(lang => {
+            grammarObj[lang] = "";
+        });
+
+        setGrammarContent(grammarObj);
+
+        setLearnWords([
+            {
+                difficulty: "",
+                words: [
+                    {
+                        translations: { ...grammarObj }
+                    }
+                ]
+            }
+        ]);
+
+    }, [uiLanguages]);
+
+    // const [chapters, setChapters] = useState([]);
+    const [languages, setLanguages] = useState([]);
+    const [chapters, setChapters] = useState([]);
+    const [languageId, setLanguageId] = useState("");
 
     usePageTitle("Add Learning Words");
     const PlusIcon = () => (
@@ -38,31 +185,40 @@ export default function AddWords() {
 
 
 
-    const chapters = [
-        { id: "1", name: "Chapter 1" },
-        { id: "2", name: "Chapter 2" }
-    ];
 
     const [chapterId, setChapterId] = useState("");
-    const [learnWords, setLearnWords] = useState([
-        { difficulty: "", words: [{ translations: { en: "", hi: "" } }] }
-    ]);
+    const [learnWords, setLearnWords] = useState([]);
 
     const [error, setError] = useState("");
+
+
 
     /* ---------------- ADD ---------------- */
 
     const addDifficulty = () => {
-        setLearnWords([  // Update learnWords state
-            ...learnWords, // Keep all existing difficulty groups
-            { difficulty: "", words: [{ translations: { en: "", hi: "" } }] } // Add a new empty difficulty with one word
+
+        setLearnWords([
+            ...learnWords,
+            {
+                difficulty: "",
+                words: [
+                    { translations: createEmptyTranslations() }
+                ]
+            }
         ]);
+
     };
 
     const addWord = (dIndex) => {
-        const copy = [...learnWords];  // Create a copy of learnWords array
-        copy[dIndex].words.push({ translations: { en: "", hi: "" } }); // Add a new empty word to the specified difficulty group
-        setLearnWords(copy); // Save updated array to state
+
+        const copy = [...learnWords];
+
+        copy[dIndex].words.push({
+            translations: createEmptyTranslations()
+        });
+
+        setLearnWords(copy);
+
     };
 
     /* ---------------- REMOVE ---------------- */
@@ -105,204 +261,425 @@ export default function AddWords() {
 
     /* ---------------- VALIDATE ---------------- */
 
-    const validateForm = () => {
+    const validateForm = async () => {
+        // console.log("submit clicked");
+        if (loading) return;
+        if (!languageId) {
+            setError("Please select language");
+            return;
+        }
 
-        if (!chapterId) {
+        if (!isAllLanguage && !chapterId) {
             setError("Please select a chapter.");
             return;
         }
 
-        // If textarea selected → validate grammar only
+        // ALL LANGUAGE VALIDATION
+        if (isAllLanguage) {
+
+            for (let lang of uiLanguages) {
+
+                if (!newChapter[lang] || !newChapter[lang].trim()) {
+                    setError("Fill all chapter names");
+                    return;
+                }
+
+            }
+
+        }
+
+        // TEXTAREA validation
         if (contentType === "textarea") {
-            for (let lang of UI_LANGUAGES) {
-                if (!grammarContent[lang].trim()) {
+
+            for (let lang of uiLanguages) {
+
+                if (!grammarContent[lang] || !grammarContent[lang].trim()) {
                     setError("Please fill all grammar language fields.");
                     return;
                 }
+
             }
+
         }
 
-        // If text block selected → validate word groups
+        // TEXT BLOCK validation
         if (contentType === "text") {
+
+            if (learnWords.length === 0) {
+                setError("Add at least one difficulty.");
+                return;
+            }
+
             for (let d of learnWords) {
+
                 if (!d.difficulty) {
-                    setError("Please select difficulty for all groups.");
+                    setError("Please select difficulty.");
                     return;
                 }
 
                 for (let w of d.words) {
-                    for (let lang of UI_LANGUAGES) {
+
+                    for (let lang of uiLanguages) {
+
                         if (!w.translations[lang]) {
-                            setError("Please fill all language word fields.");
+                            setError("Fill all language words.");
                             return;
                         }
+
                     }
+
                 }
+
             }
+
         }
 
         setError("");
+        setLoading(true);
 
-        console.log({
-            chapterId,
-            contentType,
-            grammarContent,
-            learnWords
+        try {
+
+            let formData = new FormData();
+
+            let finalChapterId = chapterId;
+            let finalLanguageId = languageId;
+
+            // ✅ IMPORTANT
+            formData.append("isAllLanguage", isAllLanguage);
+            formData.append(
+                "translations",
+                JSON.stringify(newChapter)
+            );
+
+            formData.append("chapterId", finalChapterId);
+            formData.append(
+                "learningWordsLangauge",
+                finalLanguageId
+            );
+
+            // TEXT BLOCK
+            if (contentType === "text") {
+
+                formData.append("contentType", "TextBlock");
+
+                const difficulties = learnWords.map(d => ({
+                    level: d.difficulty,
+                    words: d.words.map(w => ({
+                        ...w.translations
+                    }))
+                }));
+
+                formData.append(
+                    "difficulties",
+                    JSON.stringify(difficulties)
+                );
+
+            }
+
+            // TEXTAREA
+            if (contentType === "textarea") {
+
+                formData.append("contentType", "TextArea");
+
+                formData.append(
+                    "grammarContent",
+                    JSON.stringify(grammarContent)
+                );
+
+            }
+
+            const response = await axios.post(
+                "http://localhost:5000/api/LearningWordsModel/addLearningWord",
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }
+            );
+
+            if (response.data.status === 1) {
+
+                setMessage(response.data.message);
+                setMessageType("success");
+
+                resetForm();
+
+            } else {
+
+                setMessage(response.data.message);
+                setMessageType("error");
+
+            }
+
+        } catch (error) {
+
+            console.log(error);
+
+            setMessage("Server error");
+            setMessageType("error");
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    };
+    const resetForm = () => {
+
+        setChapterId("");
+        setContentType("text");
+
+        // reset grammar
+        const grammarObj = {};
+
+        uiLanguages.forEach(lang => {
+            grammarObj[lang] = "";
         });
+
+        setGrammarContent(grammarObj);
+
+        // reset words
+        setLearnWords([
+            {
+                difficulty: "",
+                words: [
+                    {
+                        translations: { ...grammarObj }
+                    }
+                ]
+            }
+        ]);
+
     };
 
     return (
-        <div className="addwords-page">
-            <div className="addwords-page__card">
+        <>
+            {loading && <FullScreenLoader />}
+            {message && (
+                <p
+                    className={`app-message ${messageType === "success" ? "success" : "error"
+                        }`}
+                >
+                    {message}
+                </p>
+            )}
 
-                <h2 className="addwords-page__title">Add Learning Words</h2>
+            <div className="addwords-page">
+                <div className="addwords-page__card">
 
-                {error && <div className="addwords-page__error">{error}</div>}
+                    <h2 className="addwords-page__title">Add Learning Words</h2>
 
-                {/* Chapter */}
-                <div className="addwords-page__field">
-                    <label>Select Chapter</label>
-                    <select value={chapterId} onChange={(e) => setChapterId(e.target.value)}>
-                        <option value="">Choose Chapter</option>
-                        {chapters.map(c => (
-                            <option key={c.id} value={c.id}>{c.name}</option>
-                        ))}
-                    </select>
-                </div>
+                    {error && <div className="addwords-page__error">{error}</div>}
 
-                {/* Content Type */}
-                <div className="addwords-page__field">
-                    <label>Select Content Type</label>
-                    <select
-                        value={contentType}
-                        onChange={(e) => setContentType(e.target.value)}
-                    >
-                        <option value="text">Text Block</option>
-                        <option value="textarea">Textarea (Grammar Detail)</option>
-                    </select>
-                </div>
+                    {/* Leangauge */}
+                    <div className="addwords-page__field">
+                        <label>Select Language</label>
 
-                {/* Grammar Section (Only when Textarea selected) */}
-                {contentType === "textarea" && (
-                    <div className="addwords-page__grammar-box">
+                        <select
+                            value={languageId}
+                            onChange={(e) => handleLanguageChange(e.target.value)}
+                        >
 
-                        <div className="addwords-page__grammar-header">
-                            Grammar Details
-                        </div>
+                            <option value="">Choose Language</option>
 
-                        {UI_LANGUAGES.map(lang => (
-                            <div key={lang} className="addwords-page__grammar-field">
-                                <label className="addwords-page__grammar-label">
-                                    {lang.toUpperCase()} Explanation
-                                </label>
+                            {languages.map(lang => (
+                                <option key={lang._id} value={lang._id}>
+                                    {lang.english}
+                                </option>
+                            ))}
+                            <option value="all">All Language</option>
 
-                                <RichEditor
-                                    value={grammarContent[lang]}
-                                    onChange={(value) =>
-                                        handleGrammarChange(lang, value)
-                                    }
-                                />
-                            </div>
-                        ))}
+                        </select>
 
                     </div>
-                )}
-                {contentType === "text" && (
-                    <>
-                        {/* Difficulties */}
-                        {learnWords.map((diff, dIndex) => (
-                            <div key={dIndex} className="addwords-page__difficulty-box">
 
-                                <div className="addwords-page__difficulty-header">
+                    {isAllLanguage && (
 
-                                    <select
-                                        value={diff.difficulty}
-                                        onChange={(e) =>
-                                            handleDifficultyChange(dIndex, e.target.value)
+                        <div className="addwords-page__grammar-box">
+
+                            <div className="addwords-page__grammar-header">
+                                New Chapter Name
+                            </div>
+
+                            {uiLanguages.map(lang => (
+
+                                <input
+                                    key={lang}
+                                    placeholder={`Chapter name ${lang}`}
+                                    value={newChapter[lang] || ""}
+                                    onChange={(e) =>
+                                        setNewChapter({
+                                            ...newChapter,
+                                            [lang]: e.target.value
+                                        })
+                                    }
+                                />
+
+                            ))}
+
+                        </div>
+
+                    )}
+
+                    {/* Chapter */}
+                    <div className="addwords-page__field">
+                        <label>Select Chapter</label>
+
+                        <select
+                            value={chapterId}
+                            onChange={(e) => setChapterId(e.target.value)}
+                        >
+
+                            <option value="">Choose Chapter</option>
+
+                            {chapters.map(c => (
+                                <option key={c._id} value={c._id}>
+                                    {c.translations?.en}
+                                </option>
+                            ))}
+
+                        </select>
+
+                    </div>
+
+                    {/* Content Type */}
+                    <div className="addwords-page__field">
+                        <label>Select Content Type</label>
+                        <select
+                            value={contentType}
+                            onChange={(e) => setContentType(e.target.value)}
+                        >
+                            <option value="text">Text Block</option>
+                            <option value="textarea">Textarea (Grammar Detail)</option>
+                        </select>
+                    </div>
+
+                    {/* Grammar Section (Only when Textarea selected) */}
+                    {contentType === "textarea" && (
+                        <div className="addwords-page__grammar-box">
+
+                            <div className="addwords-page__grammar-header">
+                                Grammar Details
+                            </div>
+
+                            {uiLanguages.map(lang => (
+                                <div key={lang} className="addwords-page__grammar-field">
+                                    <label className="addwords-page__grammar-label">
+                                        {lang.toUpperCase()} Explanation
+                                    </label>
+
+                                    <RichEditor
+                                        value={grammarContent[lang]}
+                                        onChange={(value) =>
+                                            handleGrammarChange(lang, value)
                                         }
-                                    >
-                                        <option value="">Select Difficulty</option>
-                                        <option value="easy">Easy</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="hard">Hard</option>
-                                    </select>
-
-                                    <button
-                                        type="button"
-                                        className="addwords-page__add-btn"
-                                        onClick={() => addWord(dIndex)}
-                                    >
-                                        <PlusIcon />
-                                        <span>Add Word</span>
-                                    </button>
-
-
-                                    {
-                                        learnWords.length > 1 && (
-
-                                            <button
-                                                type="button"
-                                                className="addwords-page__icon-btn danger"
-                                                onClick={() => removeDifficulty(dIndex)}
-                                            >
-                                                <TrashIcon />
-                                            </button>
-                                        )}
-
-
+                                    />
                                 </div>
+                            ))}
 
-                                {diff.words.map((word, wIndex) => (
-                                    <div key={wIndex} className="addwords-page__word-row">
+                        </div>
+                    )}
+                    {contentType === "text" && (
+                        <>
+                            {/* Difficulties */}
+                            {learnWords.map((diff, dIndex) => (
+                                <div key={dIndex} className="addwords-page__difficulty-box">
 
-                                        {UI_LANGUAGES.map(lang => (
-                                            <input
-                                                key={lang}
-                                                placeholder={`${lang.toUpperCase()} Word`}
-                                                value={word.translations[lang]}
-                                                onChange={(e) =>
-                                                    handleWordChange(dIndex, wIndex, lang, e.target.value)
-                                                }
-                                            />
-                                        ))}
+                                    <div className="addwords-page__difficulty-header">
 
-                                        {learnWords[dIndex].words.length > 1 && (
+                                        <select
+                                            value={diff.difficulty}
+                                            onChange={(e) =>
+                                                handleDifficultyChange(dIndex, e.target.value)
+                                            }
+                                        >
+                                            <option value="">Select Difficulty</option>
+                                            <option value="easy">Easy</option>
+                                            <option value="medium">Medium</option>
+                                            <option value="hard">Hard</option>
+                                        </select>
 
-                                            <button
-                                                type="button"
-                                                className="addwords-page__icon-btn danger"
-                                                onClick={() => removeWord(dIndex, wIndex)}
-                                            >
-                                                <CloseIcon />
-                                            </button>
-                                        )}
+                                        <button
+                                            type="button"
+                                            className="addwords-page__add-btn"
+                                            onClick={() => addWord(dIndex)}
+                                        >
+                                            <PlusIcon />
+                                            <span>Add Word</span>
+                                        </button>
+
+
+                                        {
+                                            learnWords.length > 1 && (
+
+                                                <button
+                                                    type="button"
+                                                    className="addwords-page__icon-btn danger"
+                                                    onClick={() => removeDifficulty(dIndex)}
+                                                >
+                                                    <TrashIcon />
+                                                </button>
+                                            )}
 
 
                                     </div>
-                                ))}
 
-                            </div>
-                        ))}
+                                    {diff.words.map((word, wIndex) => (
+                                        <div key={wIndex} className="addwords-page__word-row">
 
-                        <button
-                            type="button"
-                            className="addwords-page__add-btn"
-                            onClick={addDifficulty}
-                        >
+                                            {uiLanguages.map(lang => (
+                                                <input
+                                                    key={lang}
+                                                    placeholder={`${lang.toUpperCase()} Word`}
+                                                    value={word.translations[lang]}
+                                                    onChange={(e) =>
+                                                        handleWordChange(dIndex, wIndex, lang, e.target.value)
+                                                    }
+                                                />
+                                            ))}
 
-                            <PlusIcon /> Add Difficulty
-                        </button>
-                    </>
-                )}
-                <button
-                    type="button"
-                    className="addwords-page__save-btn"
-                    onClick={validateForm}
-                >
-                    Save Words
-                </button>
+                                            {learnWords[dIndex].words.length > 1 && (
 
+                                                <button
+                                                    type="button"
+                                                    className="addwords-page__icon-btn danger"
+                                                    onClick={() => removeWord(dIndex, wIndex)}
+                                                >
+                                                    <CloseIcon />
+                                                </button>
+                                            )}
+
+
+                                        </div>
+                                    ))}
+
+                                </div>
+                            ))}
+
+                            <button
+                                type="button"
+                                className="addwords-page__add-btn"
+                                onClick={addDifficulty}
+                            >
+
+                                <PlusIcon /> Add Difficulty
+                            </button>
+                        </>
+                    )}
+                    <button
+                        type="button"
+                        className="addwords-page__save-btn"
+                        disabled={loading}
+                        onClick={validateForm}
+                    >
+                        {loading ? "Saving..." : "Save Words"}
+                    </button>
+
+                </div>
             </div>
-        </div>
+
+        </>
     );
 }

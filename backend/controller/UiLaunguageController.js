@@ -41,7 +41,7 @@ export const addUiLaunguage = async (req, res) => {
 export const getUiLanguage = async (req, res) => {
   try {
 
-    const languages = await UiLanguageModel.find().sort({ createdAt: -1 });
+    const languages = await UiLanguageModel.find().sort({ createdAt: 1 });
 
     res.status(200).json({
       status: 1,

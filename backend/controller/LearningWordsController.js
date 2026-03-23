@@ -1,82 +1,180 @@
 import LearningWord from "../model/LearningWordsModel.js";
+import LearningLanguagesModel from "../model/LearningLanguagesModel.js";
+import ChapterModel from "../model/ChapterModel.js";
 import fs from "fs";
 import path from "path";
 
 export const addLearningWord = async (req, res) => {
+
     try {
 
-        const {
+        let {
             chapterId,
             contentType,
-            grammarContent,
-            difficulties
+            learningWordsLangauge,
+            isAllLanguage
         } = req.body;
 
-        let data = {
-            chapterId,
-            contentType,
-        };
 
-        /* -------- TEXTAREA -------- */
+        /* ===========================
+           PARSE JSON
+        =========================== */
 
-        if (contentType === "TextArea") {
+        let translations = req.body.translations;
+        if (translations) {
+            translations = JSON.parse(translations);
+        }
 
-            let finalGrammar = { ...grammarContent };
+        let grammarContent = req.body.grammarContent;
+        if (grammarContent) {
+            grammarContent = JSON.parse(grammarContent);
+        }
 
-            if (req.files && req.files.length > 0) {
+        let difficulties = req.body.difficulties;
+        if (difficulties) {
+            difficulties = JSON.parse(difficulties);
+        }
 
-                req.files.forEach(file => {
 
-                    const fullURL =
-                        `${req.protocol}://${req.get("host")}/uploads/images/${file.filename}`;
+        /* ===========================
+           ALL LANGUAGE MODE
+        =========================== */
 
-                    Object.keys(finalGrammar).forEach(lang => {
+        if (isAllLanguage === "true") {
 
-                        const regex = new RegExp(
-                            `src="${file.originalname}"`,
-                            "g"
-                        );
+            const languages = await LearningLanguagesModel.find();
 
-                        finalGrammar[lang] =
-                            finalGrammar[lang].replace(
-                                regex,
-                                `src="${fullURL}"`
-                            );
-                    });
-
+            if (!languages.length) {
+                return res.json({
+                    status: 0,
+                    message: "No languages found"
                 });
             }
 
-            data.grammarContent = finalGrammar;
-            data.difficulties = [];
+            let savedData = [];
+
+            for (let lang of languages) {
+
+                console.log("Saving for:", lang.english);
+
+
+                /* ---------- create / get chapter ---------- */
+
+                const chapter = await ChapterModel.findOneAndUpdate(
+                    {
+                        languageId: lang._id,
+                        translations: translations
+                    },
+                    {
+                        languageId: lang._id,
+                        translations: translations
+                    },
+                    {
+                        new: true,
+                        upsert: true
+                    }
+                );
+
+
+                /* ---------- add chapter to language ---------- */
+
+                if (!lang.chapters.includes(chapter._id)) {
+                    lang.chapters.push(chapter._id);
+                    await lang.save();
+                }
+
+
+                /* ---------- prepare learning word ---------- */
+
+                let data = {
+                    chapterId: chapter._id,
+                    learningWordsLangauge: lang._id,
+                    contentType
+                };
+
+
+                if (contentType === "TextArea") {
+
+                    data.grammarContent = grammarContent;
+                    data.difficulties = [];
+
+                }
+
+
+                if (contentType === "TextBlock") {
+
+                    data.grammarContent = {};
+                    data.difficulties = difficulties;
+
+                }
+
+
+                const learningWord = await LearningWord.create(data);
+
+                savedData.push(learningWord);
+
+            }
+
+
+            return res.json({
+                status: 1,
+                message: "Saved for all languages",
+                data: savedData
+            });
+
         }
 
 
-        /* -------- TEXTBLOCK -------- */
+        /* ===========================
+           NORMAL MODE
+        =========================== */
+
+        let data = {
+            chapterId,
+            learningWordsLangauge,
+            contentType
+        };
+
+
+        if (contentType === "TextArea") {
+
+            data.grammarContent = grammarContent;
+            data.difficulties = [];
+
+        }
+
 
         if (contentType === "TextBlock") {
 
-            data.grammarContent = "";
+            data.grammarContent = {};
             data.difficulties = difficulties;
+
         }
 
-        const learningWord = new LearningWord(data);
 
-        await learningWord.save();
+        const learningWord = await LearningWord.create(data);
 
-        res.status(201).json({
-            message: "Learning word added",
+
+        return res.json({
+            status: 1,
+            message: "Saved",
             data: learningWord
         });
 
-    } catch (error) {
 
-        res.status(400).json({
-            message: error.message
+    } catch (err) {
+
+        console.log(err);
+
+        return res.json({
+            status: 0,
+            message: err.message
         });
 
     }
+
 };
+
 
 export const getLearningWords = async (req, res) => {
     try {
@@ -163,105 +261,142 @@ export const deleteLearningWordById = async (req, res) => {
 };
 
 
-
 export const updateLearningWordById = async (req, res) => {
+
     try {
 
         const { id } = req.params;
 
-        const oldData = await LearningWord.findById(id);
+        let {
+            chapterId,
+            contentType,
+            learningWordsLangauge,
+            isAllLanguage
+        } = req.body;
 
-        if (!oldData) {
-            return res.status(404).json({
-                message: "Learning word not found"
-            });
-        }
 
-        /* ---------- get body safely ---------- */
+        /* ========= PARSE ========= */
 
-        const chapterId = req.body.chapterId || oldData.chapterId;
-        const contentType = req.body.contentType || oldData.contentType;
+        let translations = req.body.translations;
+        if (translations) translations = JSON.parse(translations);
 
-        const grammarContent =
-            req.body.grammarContent ?? oldData.grammarContent;
+        let grammarContent = req.body.grammarContent;
+        if (grammarContent) grammarContent = JSON.parse(grammarContent);
 
-        const difficulties =
-            req.body.difficulties ?? oldData.difficulties;
+        let difficulties = req.body.difficulties;
 
-        let finalGrammar = { ...(grammarContent || {}) };
+        if (difficulties) {
 
-        /* ---------- replace new images ---------- */
+            difficulties = JSON.parse(difficulties);
 
-        if (req.files && req.files.length > 0) {
-
-            req.files.forEach(file => {
-
-                const fullURL =
-                    `${req.protocol}://${req.get("host")}/uploads/images/${file.filename}`;
-
-                Object.keys(finalGrammar).forEach(lang => {
-
-                    if (!finalGrammar[lang]) return;
-
-                    const regex = new RegExp(
-                        `src="${file.originalname}"`,
-                        "g"
-                    );
-
-                    finalGrammar[lang] =
-                        finalGrammar[lang].replace(
-                            regex,
-                            `src="${fullURL}"`
-                        );
-
-                });
-
-            });
-        }
-
-        /* ---------- clean escaped chars ---------- */
-
-        Object.keys(finalGrammar).forEach(lang => {
-
-            if (typeof finalGrammar[lang] === "string") {
-
-                finalGrammar[lang] =
-                    finalGrammar[lang]
-                        .replace(/\\n/g, "")
-                        .replace(/\\"/g, '"');
-
+            if (!Array.isArray(difficulties)) {
+                difficulties = [difficulties];
             }
 
+            difficulties = difficulties.map(d => ({
+                level: d.level,
+                words: (d.words || []).map(w => ({ ...w }))
+            }));
+
+        }
+
+
+        const doc = await LearningWord.findById(id);
+
+        if (!doc) {
+
+            return res.json({
+                status: 0,
+                message: "Word not found"
+            });
+
+        }
+
+
+        /* ========= NORMAL ========= */
+
+        doc.chapterId = chapterId;
+        doc.learningWordsLangauge = learningWordsLangauge;
+        doc.contentType = contentType;
+
+
+        if (contentType === "TextArea") {
+
+            doc.grammarContent = grammarContent || {};
+            doc.difficulties = [];
+
+        }
+
+
+        if (contentType === "TextBlock") {
+
+            doc.grammarContent = {};
+            doc.difficulties = difficulties || [];
+
+        }
+
+
+        await doc.save();
+
+
+        return res.json({
+            status: 1,
+            message: "Updated successfully",
+            data: doc
         });
 
-        /* ---------- delete removed images ---------- */
+    }
+    catch (err) {
 
-        if (oldData.grammarContent) {
+        console.log(err);
 
-            Object.keys(oldData.grammarContent).forEach(lang => {
+        return res.json({
+            status: 0,
+            message: err.message
+        });
 
-                const oldText = oldData.grammarContent[lang] || "";
-                const newText = finalGrammar[lang] || "";
+    }
 
-                const oldImgs =
-                    oldText.match(/src="([^"]+)"/g) || [];
+};
 
-                const newImgs =
-                    newText.match(/src="([^"]+)"/g) || [];
 
-                const oldList = oldImgs.map(x =>
-                    x.replace(/src="|"/g, "")
-                );
+export const deleteLearningWordsByChapterId = async (req, res) => {
+    try {
 
-                const newList = newImgs.map(x =>
-                    x.replace(/src="|"/g, "")
-                );
+        const { chapterId } = req.params;
 
-                oldList.forEach(img => {
+        const words = await LearningWord.find({
+            chapterId: chapterId
+        });
 
-                    if (!newList.includes(img)) {
+        if (!words.length) {
+            return res.status(404).json({
+                message: "No words found for this chapter"
+            });
+        }
 
-                        const filePath = img.replace(
+
+        /* -------- delete images -------- */
+
+        for (let learningWord of words) {
+
+            if (learningWord.grammarContent) {
+
+                Object.keys(learningWord.grammarContent).forEach(lang => {
+
+                    const text = learningWord.grammarContent[lang];
+
+                    if (!text) return;
+
+                    const regex = /src="([^"]+)"/g;
+
+                    let match;
+
+                    while ((match = regex.exec(text)) !== null) {
+
+                        const imageURL = match[1];
+
+                        const filePath = imageURL.replace(
                             `${req.protocol}://${req.get("host")}/`,
                             ""
                         );
@@ -279,42 +414,20 @@ export const updateLearningWordById = async (req, res) => {
 
                 });
 
-            });
+            }
 
         }
 
-        /* ---------- prepare update ---------- */
 
-        let data = {
-            chapterId,
-            contentType
-        };
+        /* -------- delete DB -------- */
 
-        if (contentType === "TextArea") {
+        await LearningWord.deleteMany({
+            chapterId: chapterId
+        });
 
-            data.grammarContent = finalGrammar;
-            data.difficulties = [];
-
-        }
-
-        if (contentType === "TextBlock") {
-
-            data.grammarContent = {};
-            data.difficulties = difficulties;
-
-        }
-
-        /* ---------- update ---------- */
-
-        const updated = await LearningWord.findByIdAndUpdate(
-            id,
-            data,
-            { new: true }
-        );
 
         res.status(200).json({
-            message: "Learning word updated",
-            data: updated
+            message: "All words deleted for this chapter"
         });
 
     } catch (error) {
@@ -325,4 +438,3 @@ export const updateLearningWordById = async (req, res) => {
 
     }
 };
-

@@ -76,7 +76,7 @@ export const getAllLearningLanguages = async (req, res) => {
         const data = await LearningLanguagesModel
             .find()
             .populate("chapters")
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: 1 });
 
         if (!data || data.length === 0) {
             return res.status(404).json({
@@ -306,4 +306,80 @@ export const updateLearningLangauge = async (req, res) => {
     });
 
   }
+};
+
+// get chapters
+export const getAllChapters = async (req, res) => {
+  try {
+
+    const chapters = await ChapterModel
+      .find()
+      .select("_id translations") // ✅ only needed fields
+      .sort({ createdAt: 1 });
+
+    if (!chapters.length) {
+      return res.status(404).json({
+        status: 0,
+        message: "No chapters found",
+      });
+    }
+
+    res.json({
+      status: 1,
+      message: "Chapters fetched",
+      data: chapters,
+    });
+
+  } catch (error) {
+
+    console.log("getAllChapters error:", error);
+
+    res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+
+  }
+};
+
+
+export const createChapterForAllLanguages = async (req, res) => {
+
+    try {
+
+        const { translations } = req.body;
+
+        const languages = await LearningLanguagesModel.find();
+
+        let createdChapterId = null;
+
+        for (let lang of languages) {
+
+            const chapter = await ChapterModel.create({
+                languageId: lang._id,
+                translations
+            });
+
+            if (!createdChapterId) {
+                createdChapterId = chapter._id;
+            }
+
+            lang.chapters.push(chapter._id);
+            await lang.save();
+        }
+
+        res.json({
+            status: 1,
+            chapterId: createdChapterId
+        });
+
+    } catch (err) {
+
+        res.json({
+            status: 0,
+            message: err.message
+        });
+
+    }
+
 };
