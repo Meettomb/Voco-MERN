@@ -7,6 +7,7 @@ import mcqRoute from "./routes/McqsRoutes.js";
 import ForgotPasswordRoutes from "./routes/ForgotPasswordRoutes.js";
 import LearningLanguagesRoutes from "./routes/LearningLanguagesRoutes.js";
 import DashboardRoutes from "./routes/DashboardRoutes.js";
+import ChapterRoutes from "./routes/ChapterRoutes.js";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/McqsModel", mcqRoute);
 app.use("/api/ForgotPassword", ForgotPasswordRoutes);
 app.use("/api/LearningLanguagesModel", LearningLanguagesRoutes);
 app.use("/api/dashboard", DashboardRoutes);
+app.use("/api/ChapterModel", ChapterRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "Backend is running" });

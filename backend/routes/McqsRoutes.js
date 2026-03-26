@@ -5,7 +5,9 @@ import {
     deleteMcqsById,
     getAllMcqs,
     getAllMcqsByDifficulty,
-    updateMcqsById
+    updateMcqsById,
+    getMcqsById,
+    searchMcqs
 } from "../controller/McqsController.js";
 
 const mcqRoute = express.Router();
@@ -15,5 +17,7 @@ mcqRoute.delete("/deleteMcqsById/:id", deleteMcqsById);
 mcqRoute.get("/getAllMcqs", getAllMcqs);
 mcqRoute.get("/getAllMcqsByDifficulty/:difficultyLevel", getAllMcqsByDifficulty);
 mcqRoute.patch("/updateMcqsById/:id", imageUpload.array("image"), updateMcqsById);
+mcqRoute.get("/getMcqsById/:id", getMcqsById);
+mcqRoute.get("/searchMcqs", searchMcqs);
 
 export default mcqRoute;

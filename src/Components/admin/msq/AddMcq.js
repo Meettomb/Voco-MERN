@@ -1,39 +1,115 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import usePageTitle from "../../../hooks/usePageTitle";
 import RichEditor from "../../RichEditor";
-
-const UI_LANGUAGES = ["en", "hi"];
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function AddMcq() {
   usePageTitle("Add MCQs");
-  const [activeLang, setActiveLang] = useState(UI_LANGUAGES[0]);
-  const chapters = [
-    { id: "1", name: "Chapter 1" },
-    { id: "2", name: "Chapter 2" }
-  ];
+  const navigate = useNavigate();
+  const [uiLanguages, setUiLanguages] = useState([]);
+  const [activeLang, setActiveLang] = useState("");
 
-  const createEmptyMcq = () => ({
-    difficulty: "",
-    question: { en: "", hi: "" },
-    options: [
-      { en: "", hi: "" },
-      { en: "", hi: "" },
-      { en: "", hi: "" },
-      { en: "", hi: "" }
-    ],
-    correctAnswer: { en: "", hi: "" }
-  });
+  const [chapters, setChapters] = useState([]);
+  const [selectedChapter, setSelectedChapter] = useState("");
 
-  const [chapterId, setChapterId] = useState("");
   const [error, setError] = useState("");
 
-  const [mcqs, setMcqs] = useState([createEmptyMcq()]);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
+
+
+  const [mcqs, setMcqs] = useState([]);
+  useEffect(() => {
+
+    const fetchChapters = async () => {
+
+      const res = await axios.get(
+        // "http://localhost:5000/api/chapters/getUniqueChapters"
+        "http://localhost:5000/api/ChapterModel/getUniqueChapters"
+      );
+
+      setChapters(res.data.data);
+
+    };
+
+    fetchChapters();
+
+  }, []);
+  useEffect(() => {
+
+    const fetchLanguages = async () => {
+
+      try {
+
+        const res = await axios.get(
+          "http://localhost:5000/api/UiLanguageModel/getUiLanguage"
+        );
+
+        const data = res.data.data || [];
+
+        setUiLanguages(data);
+
+        if (data.length > 0) {
+          setActiveLang(data[0].code);
+        }
+
+      } catch (err) {
+        console.log(err);
+      }
+
+    };
+
+    fetchLanguages();
+
+  }, []);
+
+  useEffect(() => {
+
+    if (uiLanguages.length > 0 && mcqs.length === 0) {
+      setMcqs([createEmptyMcq()]);
+    }
+
+  }, [uiLanguages]);
+
+  const createEmptyMcq = () => {
+
+    const question = {};
+    const correctAnswer = {};
+    const options = [];
+
+    uiLanguages.forEach(lang => {
+      question[lang.code] = "";
+      correctAnswer[lang.code] = "";
+    });
+
+    for (let i = 0; i < 4; i++) {
+
+      const opt = {};
+
+      uiLanguages.forEach(lang => {
+        opt[lang.code] = "";
+      });
+
+      options.push(opt);
+    }
+
+    return {
+      difficulty: "",
+      question,
+      options,
+      correctAnswer
+    };
+
+  };
+
+
 
   /* ---------- ADD MCQ ---------- */
 
-  const addMcq = () => {
-    setMcqs(prev => [...prev, createEmptyMcq()]);
-  };
+  // const addMcq = () => {
+  //   setMcqs(prev => [...prev, createEmptyMcq()]);
+  // };
 
   /* ---------- REMOVE MCQ ---------- */
 
@@ -70,177 +146,243 @@ export default function AddMcq() {
 
   /* ---------- VALIDATION ---------- */
 
-  const validateForm = () => {
-    if (!chapterId) {
+  const validateForm = async () => {
+
+    if (!selectedChapter) {
       setError("Please select chapter.");
       return;
     }
 
     for (let mcq of mcqs) {
+
       if (!mcq.difficulty) {
         setError("Please select difficulty for all MCQs.");
         return;
       }
 
-      for (let lang of UI_LANGUAGES) {
+      for (let lang of uiLanguages) {
 
-        if (!mcq.question[lang]?.trim()) {
-          setError(`Question missing in ${lang.toUpperCase()}.`);
+        const code = lang.code;
+
+        if (!mcq.question[code]?.trim()) {
+          setError(`Question missing in ${lang.code.toUpperCase()}.`);
           return;
         }
 
-        const options = mcq.options.map(o => o[lang]?.trim());
+        const options = mcq.options.map(o => o[code]?.trim());
 
         if (options.some(opt => !opt)) {
-          setError(`All 4 options required in ${lang.toUpperCase()}.`);
+          setError(`All 4 options required in ${lang.code.toUpperCase()}.`);
           return;
         }
 
-        const correct = mcq.correctAnswer[lang]?.trim();
+        const correct = mcq.correctAnswer[code]?.trim();
 
         if (!correct) {
-          setError(`Correct answer missing in ${lang.toUpperCase()}.`);
+          setError(`Correct answer missing in ${lang.code.toUpperCase()}.`);
           return;
         }
 
         if (!options.includes(correct)) {
-          setError(`Correct answer must match one option in ${lang.toUpperCase()}.`);
+          setError(
+            `Correct answer must match one option in ${lang.code.toUpperCase()}.`
+          );
           return;
         }
+
       }
     }
 
-    setError("");
-    console.log({ chapterId, mcqs });
+    const selectedName = selectedChapter;
 
-    /* RESET FORM */
-    setChapterId("");
-    setMcqs([createEmptyMcq()]);
-    setActiveLang(UI_LANGUAGES[0]);
+    const chapterObj = chapters.find(
+      c => c.name === selectedName
+    );
+
+    const chapterIds = chapterObj?.ids || [];
+
+    try {
+
+      const res = await axios.post(
+        "http://localhost:5000/api/McqsModel/addMcqs",
+        {
+          chapterIds,
+          mcqs
+        }
+      );
+
+      if (res.data.status === 1) {
+
+        setError("");
+
+        setMessage("MCQ added successfully");
+        setMessageType("success");
+
+        /* RESET FORM ONLY ON SUCCESS */
+
+        setSelectedChapter("");
+        setMcqs([createEmptyMcq()]);
+        setActiveLang(uiLanguages[0]?.code || "");
+
+      } else {
+
+        setMessage("Failed to add MCQ");
+        setMessageType("error");
+
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+      setMessage("Server error");
+      setMessageType("error");
+
+    }
+
   };
 
   return (
-    <div className="addmcq-page">
-      <div className="addmcq-page__card">
+    <>
+      {message && (
+        <p
+          className={`app-message ${messageType === "success" ? "success" : "error"
+            }`}
+        >
+          {message}
+        </p>
+      )}
 
-        <h2 className="addmcq-page__title">Add Learning MCQs</h2>
+      <div className="addmcq-page">
+        <div className="addmcq-page__card">
 
-        {error && <div className="addmcq-page__error">{error}</div>}
+          <h2 className="addmcq-page__title">Add Learning MCQs</h2>
 
-        {/* Chapter */}
-        <div className="addmcq-page__field">
-          <label>Select Chapter</label>
-          <select value={chapterId} onChange={(e) => setChapterId(e.target.value)}>
-            <option value="">Choose Chapter</option>
-            {chapters.map(c => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
-        </div>
+          {error && <div className="addmcq-page__error">{error}</div>}
 
-        {/* MCQs */}
-        {mcqs.map((mcq, i) => (
-          <div key={i} className="addmcq-page__mcq-box">
+          {/* Chapter */}
+          <div className="addmcq-page__field">
+            <label>Select Chapter</label>
+            <select
+              value={selectedChapter || ""}
+              onChange={(e) => setSelectedChapter(e.target.value)}
+            >
+              <option value="">Choose Chapter</option>
 
-            <div className="addmcq-page__mcq-header">
-
-              <select
-                className="addmcq-page__mcq-select-difficulty"
-                value={mcq.difficulty}
-                onChange={(e) => handleDifficultyChange(i, e.target.value)}
-              >
-                <option value="">Select Difficulty</option>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-              </select>
-
-              {mcqs.length > 1 && (
-                <button
-                  className="addmcq-page__danger-btn"
-                  onClick={() => removeMcq(i)}
-                >
-                  Remove
-                </button>
-              )}
-
-            </div>
-
-
-            <div className="addmcq-page__lang-tabs">
-              {UI_LANGUAGES.map(lang => (
-                <button
-                  key={lang}
-                  className={`addmcq-page__lang-tab ${activeLang === lang ? "active" : ""}`}
-                  onClick={() => setActiveLang(lang)}
-                  type="button"
-                >
-                  {lang.toUpperCase()}
-                </button>
+              {chapters.map((c, i) => (
+                <option key={i} value={c.name}>
+                  {c.name}
+                </option>
               ))}
-            </div>
 
-            {/* Question */}
-            {[activeLang].map(lang => (
-              <div key={lang} className="addmcq-page__field">
-                <label>{lang.toUpperCase()} Question</label>
-                <RichEditor
-                  value={mcq.question[lang]}
-                  onChange={(value) =>
-                    handleQuestionChange(i, lang, value)
-                  }
-                />
-              </div>
-            ))}
-
-            {/* Options */}
-            {mcq.options.map((opt, optIndex) => (
-              <div key={optIndex} className="addmcq-page__field">
-                <label>
-                  {activeLang.toUpperCase()} Option {optIndex + 1}
-                </label>
-                <input
-                  value={opt[activeLang]}
-                  onChange={(e) =>
-                    handleOptionChange(i, optIndex, activeLang, e.target.value)
-                  }
-                />
-              </div>
-            ))}
-
-            {/* Correct Answer */}
-            <div className="addmcq-page__field">
-              <label>{activeLang.toUpperCase()} Correct Answer</label>
-              <select
-                value={mcq.correctAnswer[activeLang]}
-                onChange={(e) =>
-                  handleCorrectChange(i, activeLang, e.target.value)
-                }
-              >
-                <option value="">Select Correct Option</option>
-                {mcq.options.map((opt, idx) => (
-                  <option key={idx} value={opt[activeLang]}>
-                    Option {idx + 1}
-                  </option>
-                ))}
-              </select>
-            </div>
-
+            </select>
           </div>
-        ))}
 
-        <button
+          {/* MCQs */}
+          {mcqs.map((mcq, i) => (
+            <div key={i} className="addmcq-page__mcq-box">
+
+              <div className="addmcq-page__mcq-header">
+
+                <select
+                  className="addmcq-page__mcq-select-difficulty"
+                  value={mcq.difficulty}
+                  onChange={(e) => handleDifficultyChange(i, e.target.value)}
+                >
+                  <option value="">Select Difficulty</option>
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+
+                {mcqs.length > 1 && (
+                  <button
+                    className="addmcq-page__danger-btn"
+                    onClick={() => removeMcq(i)}
+                  >
+                    Remove
+                  </button>
+                )}
+
+              </div>
+
+
+              <div className="addmcq-page__lang-tabs">
+                {uiLanguages.map(lang => (
+                  <button
+                    key={lang.code}
+                    className={`addmcq-page__lang-tab ${activeLang === lang.code ? "active" : ""
+                      }`}
+                    onClick={() => setActiveLang(lang.code)}
+                    type="button"
+                  >
+                    {lang.code.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+
+              {/* Question */}
+              {[activeLang].map(lang => (
+                <div key={lang} className="addmcq-page__field">
+                  <label>{lang.toUpperCase()} Question</label>
+                  <RichEditor
+                    value={mcq.question[lang]}
+                    onChange={(value) =>
+                      handleQuestionChange(i, lang, value)
+                    }
+                  />
+                </div>
+              ))}
+
+              {/* Options */}
+              {mcq.options.map((opt, optIndex) => (
+                <div key={optIndex} className="addmcq-page__field">
+                  <label>
+                    {activeLang.toUpperCase()} Option {optIndex + 1}
+                  </label>
+                  <input
+                    value={opt[activeLang]}
+                    onChange={(e) =>
+                      handleOptionChange(i, optIndex, activeLang, e.target.value)
+                    }
+                  />
+                </div>
+              ))}
+
+              {/* Correct Answer */}
+              <div className="addmcq-page__field">
+                <label>{activeLang.toUpperCase()} Correct Answer</label>
+                <select
+                  value={mcq.correctAnswer[activeLang]}
+                  onChange={(e) =>
+                    handleCorrectChange(i, activeLang, e.target.value)
+                  }
+                >
+                  <option value="">Select Correct Option</option>
+                  {mcq.options.map((opt, idx) => (
+                    <option key={idx} value={opt[activeLang]}>
+                      Option {idx + 1}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+            </div>
+          ))}
+
+          {/* <button
           className="addmcq-page__add-btn"
           onClick={addMcq}
         >
           <span>+ Add Another MCQ</span>
-        </button>
+        </button> */}
 
-        <button className="addmcq-page__save-btn" onClick={validateForm}>
-          Save MCQs
-        </button>
+          <button className="addmcq-page__save-btn" onClick={validateForm}>
+            Save MCQs
+          </button>
 
+        </div>
       </div>
-    </div>
+    </>
   );
 }

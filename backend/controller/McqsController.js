@@ -3,355 +3,362 @@ import fs from "fs";
 import path from "path";
 
 export const addMcqs = async (req, res) => {
-    try {
+  try {
 
-        const chapterId = req.body.chapterId;
-        let mcqs = req.body.mcqs;
+    const chapterIds = req.body.chapterIds;
+    const mcqs = req.body.mcqs;
 
-        // ---------- BASIC VALIDATION ----------
+    // ---------- BASIC VALIDATION ----------
 
-        if (!chapterId || !mcqs) {
-            return res.status(400).json({
-                status: 0,
-                message: "chapterId and mcqs required",
-            });
-        }
+    if (!chapterIds || !mcqs) {
+      return res.status(400).json({
+        status: 0,
+        message: "chapterIds and mcqs required",
+      });
+    }
 
-        // ---------- SAFE JSON PARSE ----------
+    if (!Array.isArray(chapterIds) || chapterIds.length === 0) {
+      return res.status(400).json({
+        status: 0,
+        message: "chapterIds must be array",
+      });
+    }
 
-        try {
-            mcqs = JSON.parse(mcqs);
-        } catch (err) {
-            return res.status(400).json({
-                status: 0,
-                message: "Invalid mcqs JSON format",
-            });
-        }
-        if (!Array.isArray(mcqs)) {
-            return res.status(400).json({
-                status: 0,
-                message: "mcqs must be array",
-            });
-        }
-        if (!Array.isArray(mcqs) || mcqs.length === 0) {
-            return res.status(400).json({
-                status: 0,
-                message: "mcqs must be array",
-            });
-        }
+    if (!Array.isArray(mcqs) || mcqs.length === 0) {
+      return res.status(400).json({
+        status: 0,
+        message: "mcqs must be non-empty array",
+      });
+    }
 
-        // ---------- DIFFICULTY CHECK ----------
 
-        const difficultyLevel = mcqs[0].difficulty;
+    // ---------- DIFFICULTY CHECK ----------
 
-        if (!difficultyLevel) {
-            return res.status(400).json({
-                status: 0,
-                message: "difficulty required",
-            });
-        }
+    const difficultyLevel = mcqs[0].difficulty;
 
-        // ---------- BUILD QUESTIONS ----------
+    if (!difficultyLevel) {
+      return res.status(400).json({
+        status: 0,
+        message: "difficulty required",
+      });
+    }
 
-        let questions = [];
 
-        for (let q of mcqs) {
+    // ---------- BUILD QUESTIONS ----------
 
-            if (!q.question) {
-                return res.status(400).json({
-                    status: 0,
-                    message: "question required",
-                });
-            }
+    let questions = [];
 
-            if (!q.options || q.options.length !== 4) {
-                return res.status(400).json({
-                    status: 0,
-                    message: "4 options required",
-                });
-            }
+    for (let q of mcqs) {
 
-            if (!q.correctAnswer) {
-                return res.status(400).json({
-                    status: 0,
-                    message: "correctAnswer required",
-                });
-            }
-
-            const correctIndex = q.options.findIndex(
-                (opt) => opt.en === q.correctAnswer.en
-            );
-
-            if (correctIndex === -1) {
-                return res.status(400).json({
-                    status: 0,
-                    message: "correctAnswer not found in options",
-                });
-            }
-
-            questions.push({
-                question: q.question,
-                options: q.options,
-                correctAnswer: correctIndex,
-            });
-        }
-
-        // ---------- IMAGE REPLACE ----------
-
-        if (req.files && req.files.length > 0) {
-
-            req.files.forEach((file) => {
-
-                const fullURL =
-                    `${req.protocol}://${req.get("host")}/uploads/images/${file.filename}`;
-
-                questions.forEach((q) => {
-
-                    // question images
-                    Object.keys(q.question).forEach((lang) => {
-                        q.question[lang] =
-                            q.question[lang].replace(
-                                new RegExp(`src="${file.originalname}"`, "g"),
-                                `src="${fullURL}"`
-                            );
-                    });
-
-                    // option images
-                    q.options.forEach((opt) => {
-                        Object.keys(opt).forEach((lang) => {
-                            opt[lang] =
-                                opt[lang].replace(
-                                    new RegExp(`src="${file.originalname}"`, "g"),
-                                    `src="${fullURL}"`
-                                );
-                        });
-                    });
-
-                });
-
-            });
-
-        }
-
-        // ---------- SAVE ----------
-
-        const mcqsData = new McqsModel({
-            chapterId,
-            difficultyLevel,
-            questions,
+      if (!q.question) {
+        return res.status(400).json({
+          status: 0,
+          message: "question required",
         });
+      }
 
-        await mcqsData.save();
-
-        return res.status(201).json({
-            status: 1,
-            message: "MCQs added successfully",
-            data: mcqsData,
+      if (!q.options || q.options.length !== 4) {
+        return res.status(400).json({
+          status: 0,
+          message: "4 options required",
         });
+      }
 
-    } catch (error) {
-
-        console.error(error);
-
-        return res.status(500).json({
-            status: 0,
-            message: "Server error",
+      if (!q.correctAnswer) {
+        return res.status(400).json({
+          status: 0,
+          message: "correctAnswer required",
         });
+      }
+
+
+      // ---------- FIND CORRECT INDEX (dynamic languages) ----------
+
+      const langKeys = Object.keys(q.correctAnswer);
+
+      let correctIndex = -1;
+
+      for (let i = 0; i < q.options.length; i++) {
+
+        let match = true;
+
+        for (let lang of langKeys) {
+
+          if (q.options[i][lang] !== q.correctAnswer[lang]) {
+            match = false;
+            break;
+          }
+
+        }
+
+        if (match) {
+          correctIndex = i;
+          break;
+        }
+
+      }
+
+      if (correctIndex === -1) {
+        return res.status(400).json({
+          status: 0,
+          message: "correctAnswer not found in options",
+        });
+      }
+
+
+      questions.push({
+        question: q.question,
+        options: q.options,
+        correctAnswer: correctIndex,
+      });
 
     }
+
+
+    // ---------- IMAGE REPLACE ----------
+
+    if (req.files && req.files.length > 0) {
+
+      req.files.forEach((file) => {
+
+        const fullURL =
+          `${req.protocol}://${req.get("host")}/uploads/images/${file.filename}`;
+
+        questions.forEach((q) => {
+
+          // question images
+          Object.keys(q.question).forEach((lang) => {
+
+            q.question[lang] =
+              q.question[lang].replace(
+                new RegExp(`src="${file.originalname}"`, "g"),
+                `src="${fullURL}"`
+              );
+
+          });
+
+
+          // option images
+          q.options.forEach((opt) => {
+
+            Object.keys(opt).forEach((lang) => {
+
+              opt[lang] =
+                opt[lang].replace(
+                  new RegExp(`src="${file.originalname}"`, "g"),
+                  `src="${fullURL}"`
+                );
+
+            });
+
+          });
+
+        });
+
+      });
+
+    }
+
+
+    // ---------- SAVE ----------
+
+    const mcqsData = new McqsModel({
+      chapterIds,
+      difficultyLevel,
+      questions,
+    });
+
+    await mcqsData.save();
+
+
+    return res.status(201).json({
+      status: 1,
+      message: "MCQs added successfully",
+      data: mcqsData,
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    return res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+
+  }
 };
 
 export const deleteMcqsById = async (req, res) => {
-    try {
+  try {
 
-        const id = req.params.id;
+    const id = req.params.id;
 
-        if (!id) {
-            return res.status(400).json({
-                status: 0,
-                message: "ID required",
-            });
-        }
-
-        const mcqs = await McqsModel.findById(id);
-
-        if (!mcqs) {
-            return res.status(404).json({
-                status: 0,
-                message: "MCQs not found",
-            });
-        }
-
-        const imageFolder = path.join(
-            process.cwd(),
-            "uploads",
-            "images"
-        );
-
-
-        // ---------- LOOP QUESTIONS ----------
-        mcqs.questions.forEach((q) => {
-
-            // QUESTION TEXT
-            Object.values(q.question || {}).forEach((text) => {
-
-                text = String(text || "");
-
-                const matches = text.match(/src="([^"]+)"/g);
-
-                if (!matches) return;
-
-                matches.forEach((m) => {
-
-                    const url = m.replace('src="', "").replace('"', "");
-
-                    const fileName = url.split("/").pop();
-
-                    const filePath = path.join(imageFolder, fileName);
-
-                    if (fs.existsSync(filePath)) {
-                        fs.unlinkSync(filePath);
-                    }
-
-                });
-
-            });
-
-
-            // OPTIONS
-            q.options.forEach((opt) => {
-
-                Object.values(opt || {}).forEach((text) => {
-
-                    text = String(text || "");
-
-                    const matches = text.match(/src="([^"]+)"/g);
-
-                    if (!matches) return;
-
-                    matches.forEach((m) => {
-
-                        const url = m.replace('src="', "").replace('"', "");
-
-                        const fileName = url.split("/").pop();
-
-                        const filePath = path.join(imageFolder, fileName);
-
-                        if (fs.existsSync(filePath)) {
-                            fs.unlinkSync(filePath);
-                        }
-
-                    });
-
-                });
-
-            });
-
-        });
-
-
-        // ---------- DELETE DB ----------
-        await McqsModel.findByIdAndDelete(id);
-
-
-        return res.status(200).json({
-            status: 1,
-            message: "MCQs deleted successfully",
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        return res.status(500).json({
-            status: 0,
-            message: "Server error",
-        });
-
+    if (!id) {
+      return res.status(400).json({
+        status: 0,
+        message: "ID required",
+      });
     }
+
+    const mcqs = await McqsModel.findById(id);
+
+    if (!mcqs) {
+      return res.status(404).json({
+        status: 0,
+        message: "MCQs not found",
+      });
+    }
+
+    const imageFolder = path.join(
+      process.cwd(),
+      "uploads",
+      "images"
+    );
+
+
+    // ---------- LOOP QUESTIONS ----------
+    mcqs.questions.forEach((q) => {
+
+      // QUESTION TEXT
+      Object.values(q.question || {}).forEach((text) => {
+
+        text = String(text || "");
+
+        const matches = text.match(/src="([^"]+)"/g);
+
+        if (!matches) return;
+
+        matches.forEach((m) => {
+
+          const url = m.replace('src="', "").replace('"', "");
+
+          const fileName = url.split("/").pop();
+
+          const filePath = path.join(imageFolder, fileName);
+
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+          }
+
+        });
+
+      });
+
+
+      // OPTIONS
+      q.options.forEach((opt) => {
+
+        Object.values(opt || {}).forEach((text) => {
+
+          text = String(text || "");
+
+          const matches = text.match(/src="([^"]+)"/g);
+
+          if (!matches) return;
+
+          matches.forEach((m) => {
+
+            const url = m.replace('src="', "").replace('"', "");
+
+            const fileName = url.split("/").pop();
+
+            const filePath = path.join(imageFolder, fileName);
+
+            if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath);
+            }
+
+          });
+
+        });
+
+      });
+
+    });
+
+
+    // ---------- DELETE DB ----------
+    await McqsModel.findByIdAndDelete(id);
+
+
+    return res.status(200).json({
+      status: 1,
+      message: "MCQs deleted successfully",
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    return res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+
+  }
 };
 
 export const getAllMcqs = async (req, res) => {
-    try {
+  try {
 
-        const mcqs = await McqsModel.find().sort({ createdAt: -1 });
+    const mcqs = await McqsModel.find().sort({ createdAt: -1 }).populate("chapterIds");
 
-        if (!mcqs || mcqs.length === 0) {
-            return res.status(404).json({
-                status: 0,
-                message: "No MCQs found",
-                count: 0,
-                data: [],
-            });
-        }
-
-        return res.status(200).json({
-            status: 1,
-            message: "MCQs fetched successfully",
-            count: mcqs.length,
-            data: mcqs,
-        });
-
-    } catch (error) {
-
-        console.error("getAllMcqs error:", error);
-
-        return res.status(500).json({
-            status: 0,
-            message: "Failed to fetch MCQs",
-        });
-
+    if (!mcqs || mcqs.length === 0) {
+      return res.status(404).json({
+        status: 0,
+        message: "No MCQs found",
+        count: 0,
+        data: [],
+      });
     }
+
+    return res.status(200).json({
+      status: 1,
+      message: "MCQs fetched successfully",
+      count: mcqs.length,
+      data: mcqs,
+    });
+
+  } catch (error) {
+
+    console.error("getAllMcqs error:", error);
+
+    return res.status(500).json({
+      status: 0,
+      message: "Failed to fetch MCQs",
+    });
+
+  }
 };
 
 export const getAllMcqsByDifficulty = async (req, res) => {
-    try {
+  try {
 
-        const { difficultyLevel } = req.params;
+    const { difficultyLevel } = req.params;
 
-        if (!difficultyLevel) {
-            return res.status(400).json({
-                status: 0,
-                message: "difficultyLevel parameter is required",
-            });
-        }
+    const mcqs = await McqsModel.find({
+      difficultyLevel: {
+        $regex: `^${difficultyLevel}$`,
+        $options: "i",
+      },
+    })
+      .populate("chapterIds")   // ✅ add this
+      .sort({ createdAt: -1 });
 
-        const mcqs = await McqsModel.find({
-            difficultyLevel: {
-                $regex: `^${difficultyLevel}$`,
-                $options: "i",
-            },
-        }).sort({ createdAt: -1 });
+    return res.status(200).json({
+      status: 1,
+      data: mcqs,
+    });
 
-
-        if (!mcqs || mcqs.length === 0) {
-            return res.status(404).json({
-                status: 0,
-                message: `No MCQs found for difficulty '${difficultyLevel}'`,
-                count: 0,
-                data: [],
-            });
-        }
-
-        return res.status(200).json({
-            status: 1,
-            message: "MCQs fetched successfully",
-            count: mcqs.length,
-            data: mcqs,
-        });
-
-    } catch (error) {
-
-        console.error("getAllMcqsByDifficulty error:", error);
-
-        return res.status(500).json({
-            status: 0,
-            message: "Failed to fetch MCQs",
-        });
-
-    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      status: 0,
+      message: "error",
+    });
+  }
 };
-
 
 export const updateMcqsById = async (req, res) => {
   try {
@@ -375,12 +382,11 @@ export const updateMcqsById = async (req, res) => {
     }
 
     // ---------- PARSE JSON ----------
-    try {
-      mcqs = JSON.parse(mcqs);
-    } catch {
+    // already object from frontend
+    if (!Array.isArray(mcqs)) {
       return res.status(400).json({
         status: 0,
-        message: "Invalid mcqs format",
+        message: "mcqs must be array",
       });
     }
 
@@ -431,6 +437,12 @@ export const updateMcqsById = async (req, res) => {
         (opt) => opt.en === q.correctAnswer.en
       );
 
+      if (correctIndex === -1) {
+        return res.status(400).json({
+          status: 0,
+          message: "correctAnswer not found in options",
+        });
+      }
       if (correctIndex === -1) {
         return res.status(400).json({
           status: 0,
@@ -582,5 +594,102 @@ export const updateMcqsById = async (req, res) => {
       status: 0,
       message: "Server error",
     });
+  }
+};
+
+
+export const getMcqsById = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+    const mcq = await McqsModel.findById(id)
+      .populate("chapterIds");
+
+    if (!mcq) {
+      return res.status(404).json({
+        status: 0,
+        message: "MCQ not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: 1,
+      data: mcq,
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      status: 0,
+      message: "Error",
+    });
+
+  }
+};
+
+
+export const searchMcqs = async (req, res) => {
+  try {
+
+    const { key } = req.query;
+
+    if (!key) {
+      return res.status(400).json({
+        status: 0,
+        message: "Search key required"
+      });
+    }
+
+    const regex = new RegExp(key, "i");
+
+    const mcqs = await McqsModel.aggregate([
+
+      {
+        $lookup: {
+          from: "chapters",
+          localField: "chapterIds",
+          foreignField: "_id",
+          as: "chapterData"
+        }
+      },
+
+      {
+        $match: {
+          $or: [
+
+            { difficultyLevel: { $regex: regex } },
+
+            { "questions.question.en": { $regex: regex } },
+
+            { "chapterData.translations.en": { $regex: regex } }
+
+          ]
+        }
+      },
+
+      {
+        $sort: { createdAt: -1 }
+      }
+
+    ]);
+
+    return res.status(200).json({
+      status: 1,
+      count: mcqs.length,
+      data: mcqs
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      status: 0,
+      message: "Server error"
+    });
+
   }
 };

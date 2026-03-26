@@ -43,6 +43,7 @@ import ViewChapters from "./Components/admin/words/ViewChapters"
 import AddMcq from "./Components/admin/msq/AddMcq";
 import ManageMcq from "./Components/admin/msq/ManageMcq";
 import EditMcq from "./Components/admin/msq/EditMcq";
+import ViewMcq from "./Components/admin/msq/VewMcq"
 
 function App() {
   const [authView, setAuthView] = useState(null);
@@ -91,10 +92,11 @@ function App() {
 
 
 
-        {/* ======================= <anage MCQs ======================= */}
+        {/* ======================= <Manage MCQs ======================= */}
           <Route path="mcq/add" element={<AddMcq />} />
           <Route path="mcq/manage" element={<ManageMcq />} /> 
-          <Route path="mcq/edit" element={<EditMcq />} />
+          <Route path="mcq/edit/:id" element={<EditMcq />} />
+          <Route path="mcq/view/:id" element={<ViewMcq />} />
         
         </Route>
 
