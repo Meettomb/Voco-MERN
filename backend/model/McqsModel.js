@@ -2,12 +2,13 @@ import mongoose from "mongoose";
 
 const mcqsSchema = new mongoose.Schema(
   {
-    chapterId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref:"chapters",
-      required: [true, "Chapter ID is Required"],
-      trim: true,
-    },
+    chapterIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "chapters",
+        required: true,
+      }
+    ],
 
     difficultyLevel: {
       type: String,
