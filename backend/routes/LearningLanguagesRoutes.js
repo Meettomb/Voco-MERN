@@ -7,18 +7,19 @@ import {
     deleteLearningLangaugeChapterbyId,
     updateLearningLangauge,
     getAllChapters
-} from "../controller/LearningLanguagesController.js"
+} from "../controller/LearningLanguagesController.js";
+import authMiddleware from "../utils/authMiddlware.js";
 
 const LearningLanguagesRoutes = express.Router();
-LearningLanguagesRoutes.post("/addLearningLanguages", addLearningLanguages);
-LearningLanguagesRoutes.get("/getAllLearningLanguages", getAllLearningLanguages);
-LearningLanguagesRoutes.get("/getLearningLanguagesById/:id", getLearningLanguagesById);
-LearningLanguagesRoutes.delete("/deleteLearningLangaugebyId/:id", deleteLearningLangaugebyId);
-LearningLanguagesRoutes.delete("/deleteLearningLangaugeChapterbyId/:langId/:chapterId", deleteLearningLangaugeChapterbyId);
-LearningLanguagesRoutes.put("/updateLearningLangauge/:id", updateLearningLangauge);
+LearningLanguagesRoutes.post("/addLearningLanguages", authMiddleware, addLearningLanguages);
+LearningLanguagesRoutes.get("/getAllLearningLanguages", authMiddleware, getAllLearningLanguages);
+LearningLanguagesRoutes.get("/getLearningLanguagesById/:id", authMiddleware, getLearningLanguagesById);
+LearningLanguagesRoutes.delete("/deleteLearningLangaugebyId/:id", authMiddleware, deleteLearningLangaugebyId);
+LearningLanguagesRoutes.delete("/deleteLearningLangaugeChapterbyId/:langId/:chapterId", authMiddleware, deleteLearningLangaugeChapterbyId);
+LearningLanguagesRoutes.put("/updateLearningLangauge/:id", authMiddleware, updateLearningLangauge);
 
 // Chapters
-LearningLanguagesRoutes.get("/getAllChapters", getAllChapters);
+LearningLanguagesRoutes.get("/getAllChapters", authMiddleware, getAllChapters);
 
 
 

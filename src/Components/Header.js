@@ -5,18 +5,57 @@ import Logo from '../assets/images/Voco.png';
 import { useTranslation } from 'react-i18next';
 import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
+import getUser from "../utils/getUser.js";
+import axios from "axios";
 
 
 function Header({ onOpen }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const isLoggedIn = true; // Replace with actual auth logic
+  const isLoggedIn = localStorage.getItem('token');
   const profileRef = useRef(null);
   const { t, i18n } = useTranslation();
   const sideNavRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const target = location.state?.target;
+
+  const [userData, setUserData] = useState(null);
+
+  // get data from token
+  const user = getUser();
+  const id = user?.id;
+
+
+  const handelLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/admin');
+  }
+
+  useEffect(() => {
+    if (id) {
+      getLoginUserData();
+    }
+  }, [id]);
+  const role = userData?.role;
+
+  const getLoginUserData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/userModel/getUserDataById/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      );
+
+      setUserData(response.data.data);
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
 
   useEffect(() => {
@@ -142,10 +181,13 @@ function Header({ onOpen }) {
                         {t("nav.settings")}
                       </Link>
 
-                      <Link to="/admin" onClick={() => setProfileOpen(false)}>
-                        {t("nav.adminPanel")}
-                      </Link>
-                      <button>{t("nav.logout")}</button>
+                      {role === "admin" && (
+                        <Link to="/admin" onClick={() => setProfileOpen(false)}>
+                          {t("nav.adminPanel")}
+                        </Link>
+                      )}
+
+                      <button onClick={handelLogout}>{t("nav.logout")}</button>
 
                     </div>
                   )}
@@ -243,17 +285,18 @@ function Header({ onOpen }) {
                     {t("nav.settings")}
                   </button>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigate("/admin");
-                      setProfileOpen(false);
-                      setMenuOpen(false);
-                    }}
-                  >
-                    {t("nav.adminPanel")}
-                  </button>
-
+                  {role === "admin" && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigate("/admin");
+                        setProfileOpen(false);
+                        setMenuOpen(false);
+                      }}
+                    >
+                      {t("nav.adminPanel")}
+                    </button>
+                  )}
                 </div>
               )}
 
@@ -334,7 +377,7 @@ function Header({ onOpen }) {
 
           {/* Auth CTA */}
           {isLoggedIn ? (
-            <button className="side-nav-auth" >
+            <button className="side-nav-auth" onClick={handelLogout}>
               Logout
             </button>
           ) : (

@@ -4,6 +4,8 @@ import axios from "axios";
 
 export default function UiLanguages() {
     usePageTitle("Supported UI Languages");
+
+    const token = localStorage.getItem('token')
     const [search, setSearch] = useState("");
     const [formData, setFormData] = useState({
         englishName: "",
@@ -53,7 +55,13 @@ export default function UiLanguages() {
 
     const addUiLaunguage = async () => {
         try {
-            const response = await axios.post("http://localhost:5000/api/UiLanguageModel/addUiLaunguage", formData);
+            const response = await axios.post("http://localhost:5000/api/UiLanguageModel/addUiLaunguage", formData,
+                {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                }
+            );
             if (response.data.status === 1) {
                 setMessage(response.data.message);
                 setMessageType("success");
@@ -80,13 +88,25 @@ export default function UiLanguages() {
     }
 
     const getAllUiLanguages = async () => {
-        const response = await axios.get("http://localhost:5000/api/UiLanguageModel/getUiLanguage");
+        const response = await axios.get("http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            }
+        );
         setLanguages(response.data.data);
     }
 
     const updateLanguage = async () => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/UiLanguageModel/updateUiLanguageById/${popup.data._id}`, editData);
+            const response = await axios.put(`http://localhost:5000/api/UiLanguageModel/updateUiLanguageById/${popup.data._id}`, editData,
+                {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                }
+            );
             if (response.data.status === 1) {
                 setMessage(response.data.message);
                 setMessageType("success");
@@ -114,7 +134,13 @@ export default function UiLanguages() {
 
     const deleteLanguage = async (id) => {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/UiLanguageModel/deleteUiLanguage/${id}`);
+            const response = await axios.delete(`http://localhost:5000/api/UiLanguageModel/deleteUiLanguage/${id}`,
+                {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                }
+            );
             if (response.data.status === 1) {
                 setMessage(response.data.message);
                 setMessageType("success");
@@ -155,8 +181,12 @@ export default function UiLanguages() {
                 {
                     params: {
                         search: value
+                    },
+                    headers: {
+                        'Authorization': 'Bearer ' + token
                     }
                 }
+
             );
 
             if (response.data.status === 1) {

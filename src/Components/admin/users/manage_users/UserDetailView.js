@@ -59,7 +59,13 @@ export default function UserDetailView() {
 
   const fetchUserDetails = async () => {
     try {
-      const responce = await axios.get(`http://localhost:5000/api/userModel/getUserDataById/${id}`);
+      const responce = await axios.get(`http://localhost:5000/api/userModel/getUserDataById/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
 
       setUser(responce.data.data);
       console.log(responce.data.data);
@@ -75,6 +81,11 @@ export default function UserDetailView() {
         `http://localhost:5000/api/userModel/updateUserActiveStatus/${id}`,
         {
           isActive: !user.isActive,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
         }
       );
 

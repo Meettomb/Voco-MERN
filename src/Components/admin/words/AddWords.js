@@ -49,7 +49,12 @@ export default function AddWords() {
             try {
 
                 const res = await axios.get(
-                    "http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages"
+                    "http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    }
                 );
 
                 if (res.data.status === 1) {
@@ -108,7 +113,12 @@ export default function AddWords() {
             try {
 
                 const res = await axios.get(
-                    "http://localhost:5000/api/UiLanguageModel/getUiLanguage"
+                    "http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+                    {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
                 );
 
                 if (res.data.status === 1) {
@@ -393,7 +403,7 @@ export default function AddWords() {
                 formData,
                 {
                     headers: {
-                        "Content-Type": "multipart/form-data"
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 }
             );

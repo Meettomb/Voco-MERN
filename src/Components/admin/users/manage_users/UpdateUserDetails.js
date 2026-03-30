@@ -43,7 +43,12 @@ export default function UpdateUserDetails() {
   const fetchUserDetails = useCallback(async () => {
     try {
       const responce = await axios.get(
-        `http://localhost:5000/api/userModel/getUserDataById/${id}`
+        `http://localhost:5000/api/userModel/getUserDataById/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
       );
 
       if (responce.data.status === 1) {
@@ -79,6 +84,11 @@ export default function UpdateUserDetails() {
         `http://localhost:5000/api/userModel/updateUserRoleById/${id}`,
         {
           role: formData.role
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
         }
       );
 

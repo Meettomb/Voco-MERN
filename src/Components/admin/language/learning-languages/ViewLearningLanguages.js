@@ -71,7 +71,13 @@ export default function ViewLearningLanguages() {
 
   const getLearningLanguagesById = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/LearningLanguagesModel/getLearningLanguagesById/${id}`);
+      const response = await axios.get(`http://localhost:5000/api/LearningLanguagesModel/getLearningLanguagesById/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
       if (response.data.status === 1) {
         setLangauage(response.data.data);
       }
@@ -88,7 +94,12 @@ export default function ViewLearningLanguages() {
     try {
 
       const response = await axios.delete(
-        `http://localhost:5000/api/LearningLanguagesModel/deleteLearningLangaugeChapterbyId/${langId}/${chapterId}`
+        `http://localhost:5000/api/LearningLanguagesModel/deleteLearningLangaugeChapterbyId/${langId}/${chapterId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
       );
 
       if (response.data.status === 1) {
@@ -115,7 +126,13 @@ export default function ViewLearningLanguages() {
   const deleteLearningLangaugebyId = async (id) => {
     try {
 
-      const responce = await axios.delete(`http://localhost:5000/api/LearningLanguagesModel/deleteLearningLangaugebyId/${id}`);
+      const responce = await axios.delete(`http://localhost:5000/api/LearningLanguagesModel/deleteLearningLangaugebyId/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
       if (responce.data.status === 1) {
         setMessage(responce.data.message);
         setMessageType("success");

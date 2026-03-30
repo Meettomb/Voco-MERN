@@ -45,6 +45,8 @@ import ManageMcq from "./Components/admin/msq/ManageMcq";
 import EditMcq from "./Components/admin/msq/EditMcq";
 import ViewMcq from "./Components/admin/msq/VewMcq"
 
+import AuthRoute from "./Components/AuthRoute";
+import AdminRoute from "./Components/AdminRoute";
 function App() {
   const [authView, setAuthView] = useState(null);
 
@@ -54,50 +56,151 @@ function App() {
 
         {/* Pages WITH Header + Footer */}
         <Route element={<MainLayout onOpen={() => setAuthView("login")} />}>
+
           <Route path="/" element={<Home />} />
-          <Route path="/learn-words" element={<LearnWords />} />
-          <Route path="/videos" element={<Videos />} />
-          <Route path="/video/:id" element={<VideoPlayer />} />
-          <Route path="/mcqs-exam" element={<McqsExam />} />
-          <Route path="/choose-learning-language" element={<ChooseLearningLanguage />} />
-          <Route path="/profile" element={<Profile />} />
+
+          <Route path="/learn-words" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <LearnWords />
+            </AuthRoute>} />
+
+          <Route path="/videos" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <Videos />
+            </AuthRoute>} />
+
+          <Route path="/video/:id" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <VideoPlayer />
+            </AuthRoute>} />
+
+          <Route path="/mcqs-exam" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <McqsExam />
+            </AuthRoute>} />
+
+          <Route path="/choose-learning-language" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <ChooseLearningLanguage />
+            </AuthRoute>} />
+
+          <Route path="/profile" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <Profile />
+            </AuthRoute>} />
         </Route>
 
         {/* Admin Pages WITH Admin Header + Sidebar */}
-        <Route path="/admin" element={<AdminHeader />}>
+        <Route path="/admin" element={
+          <AuthRoute onAuthFail={() => setAuthView("login")}>
+            <AdminRoute>
+              <AdminHeader />
+            </AdminRoute>
+          </AuthRoute>}>
+
           <Route index element={<Dashboard />} />
 
-          
           {/* //======================= Manage Users ======================= */}
-          <Route path="users/all-users" element={<AllUsers />} />
-          <Route path="users/active-users" element={<ActiveUsers />} />
-          <Route path="users/manage-users/user-detail-view/:id" element={<UserDetailView />} />
-          <Route path="users/manage-users/update-user-details/:id" element={<UpdateUserDetails />} />
+          <Route path="users/all-users" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <AllUsers />
+            </AuthRoute>} />
 
-        {/* ======================= Manage Languages ======================= */}
-          <Route path="language/ui-languages" element={<UiLanguages />} />
+          <Route path="users/active-users" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <ActiveUsers />
+            </AuthRoute>} />
 
-          <Route path="language/learning-languages/add" element={<LearningLanguages />} />
-          <Route path="language/learning-languages/view-all-learning-languages" element={<ViewAllLearningLanguages />} />
-          <Route path="language/learning-languages/view-learning-languages/:id" element={<ViewLearningLanguages />} />
-          <Route path="language/learning-languages/update-learning-language/:id" element={<UpdateLearningLanguage />} />
+          <Route path="users/manage-users/user-detail-view/:id" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <UserDetailView />
+            </AuthRoute>} />
 
-        {/* ======================= Manage Words ======================= */}
-          <Route path="words/add" element={<AddWords />} />
-          <Route path="words/manage" element={<ManageWords />} />
-          <Route path="words/view/:chapterId" element={<ViewWord />} />
-          <Route path="words/edit/:id" element={<EditWords />} />
-          <Route path="words/ViewLanguages" element={<ViewLanguages />} />
-          <Route path="words/ViewChapters/:languageId" element={<ViewChapters />} />
+          <Route path="users/manage-users/update-user-details/:id" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <UpdateUserDetails />
+            </AuthRoute>} />
+
+          {/* ======================= Manage Languages ======================= */}
+          <Route path="language/ui-languages" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <UiLanguages />
+            </AuthRoute>} />
+
+          <Route path="language/learning-languages/add" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <LearningLanguages />
+            </AuthRoute>} />
+
+          <Route path="language/learning-languages/view-all-learning-languages" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <ViewAllLearningLanguages />
+            </AuthRoute>} />
+
+          <Route path="language/learning-languages/view-learning-languages/:id" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <ViewLearningLanguages />
+            </AuthRoute>} />
+
+          <Route path="language/learning-languages/update-learning-language/:id" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <UpdateLearningLanguage />
+            </AuthRoute>} />
+
+          {/* ======================= Manage Words ======================= */}
+          <Route path="words/add" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <AddWords />
+            </AuthRoute>} />
+
+          <Route path="words/manage" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <ManageWords />
+            </AuthRoute>} />
+
+          <Route path="words/view/:chapterId" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <ViewWord />
+            </AuthRoute>} />
+
+          <Route path="words/edit/:id" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <EditWords />
+            </AuthRoute>} />
+
+          <Route path="words/ViewLanguages" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <ViewLanguages />
+            </AuthRoute>} />
+
+          <Route path="words/ViewChapters/:languageId" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <ViewChapters />
+            </AuthRoute>} />
 
 
 
-        {/* ======================= <Manage MCQs ======================= */}
-          <Route path="mcq/add" element={<AddMcq />} />
-          <Route path="mcq/manage" element={<ManageMcq />} /> 
-          <Route path="mcq/edit/:id" element={<EditMcq />} />
-          <Route path="mcq/view/:id" element={<ViewMcq />} />
-        
+          {/* ======================= <Manage MCQs ======================= */}
+          <Route path="mcq/add" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <AddMcq />
+            </AuthRoute>} />
+
+          <Route path="mcq/manage" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <ManageMcq />
+            </AuthRoute>} />
+
+          <Route path="mcq/edit/:id" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <EditMcq />
+            </AuthRoute>} />
+
+          <Route path="mcq/view/:id" element={
+            <AuthRoute onAuthFail={() => setAuthView("login")}>
+              <ViewMcq />
+            </AuthRoute>} />
+
         </Route>
 
         {/* Pages WITHOUT Header */}

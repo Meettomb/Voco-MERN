@@ -47,7 +47,12 @@ export default function ViewChapters() {
 
         axios
             .get(
-                "http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages"
+                "http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages",
+                {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
             )
             .then(res => {
 
