@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { COMPANY_NAME } from "../../hooks/usePageTitle";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 export default function AdminSidebar() {
 
@@ -12,6 +12,14 @@ export default function AdminSidebar() {
   const [collapsed, setCollapsed] = useState(true);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
+  const navigate = useNavigate();
+
+  const isLoggedIn = localStorage.getItem('token');
+  
+  const handelLogout = () =>{
+    localStorage.removeItem('token');
+    navigate('/');
+  }
 
   const openSidebar = () => {
     setCollapsed(false);
@@ -220,7 +228,7 @@ export default function AdminSidebar() {
             </div>
           )}
 
-{/* 
+          {/* 
           <Link to="/admin/settings" className="nav-item" onClick={handleNavClick}>
             <svg viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="3" />
@@ -263,7 +271,17 @@ export default function AdminSidebar() {
               <div className="profile-menu">
                 <Link to="/profile" onClick={() => setProfileOpen(false)}>Profile</Link>
                 <Link to="/" onClick={() => setProfileOpen(false)}>Client side</Link>
-                <Link to="#" onClick={() => setProfileOpen(false)}>Logout</Link>
+
+                {isLoggedIn &&
+                  <Link to="#" 
+                  onClick={(e)=>{
+                    e.preventDefault(); 
+                    handelLogout(); 
+                    setProfileOpen(false);
+                  }}
+                  >Logout</Link> 
+
+                }
               </div>
             )}
           </div>

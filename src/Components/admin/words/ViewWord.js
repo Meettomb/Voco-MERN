@@ -35,7 +35,13 @@ export default function ViewWords() {
     setLoading(true);
 
     axios
-      .get("http://localhost:5000/api/LearningWordsModel/getLearningWords")
+      .get("http://localhost:5000/api/LearningWordsModel/getLearningWords",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      )
       .then(res => {
 
         const data = res.data.data.filter(
@@ -60,7 +66,12 @@ export default function ViewWords() {
       // if (!window.confirm("Delete all words?")) return;
 
       const response = await axios.delete(
-        `http://localhost:5000/api/LearningWordsModel/deleteLearningWordsByChapterId/${chapterId}`
+        `http://localhost:5000/api/LearningWordsModel/deleteLearningWordsByChapterId/${chapterId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
       );
 
       if (response.data.message) {

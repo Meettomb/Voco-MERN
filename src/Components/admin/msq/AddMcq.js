@@ -25,8 +25,12 @@ export default function AddMcq() {
     const fetchChapters = async () => {
 
       const res = await axios.get(
-        // "http://localhost:5000/api/chapters/getUniqueChapters"
-        "http://localhost:5000/api/ChapterModel/getUniqueChapters"
+        "http://localhost:5000/api/ChapterModel/getUniqueChapters",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
       );
 
       setChapters(res.data.data);
@@ -43,7 +47,12 @@ export default function AddMcq() {
       try {
 
         const res = await axios.get(
-          "http://localhost:5000/api/UiLanguageModel/getUiLanguage"
+          "http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+          }
         );
 
         const data = res.data.data || [];
@@ -208,6 +217,11 @@ export default function AddMcq() {
         {
           chapterIds,
           mcqs
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
         }
       );
 

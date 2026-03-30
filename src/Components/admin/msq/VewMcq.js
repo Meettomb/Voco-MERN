@@ -33,7 +33,12 @@ export default function ViewMcq() {
         try {
 
             const res = await axios.get(
-                `http://localhost:5000/api/McqsModel/getMcqsById/${id}`
+                `http://localhost:5000/api/McqsModel/getMcqsById/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                }
             );
 
             if (res.data.status === 1) {
@@ -64,7 +69,12 @@ export default function ViewMcq() {
         try {
 
             const res = await axios.delete(
-                `http://localhost:5000/api/McqsModel/deleteMcqsById/${id}`
+                `http://localhost:5000/api/McqsModel/deleteMcqsById/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                }
             );
 
             if (res.data.status === 1) {

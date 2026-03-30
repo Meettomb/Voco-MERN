@@ -31,7 +31,12 @@ export default function EditMcq() {
     const fetchChapters = async () => {
 
       const res = await axios.get(
-        "http://localhost:5000/api/ChapterModel/getUniqueChapters"
+        "http://localhost:5000/api/ChapterModel/getUniqueChapters",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
       );
 
       setChapters(res.data.data);
@@ -52,7 +57,12 @@ export default function EditMcq() {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://localhost:5000/api/McqsModel/getMcqsById/${id}`
+        `http://localhost:5000/api/McqsModel/getMcqsById/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
       );
 
       if (res.data.status === 1) {
@@ -97,7 +107,12 @@ export default function EditMcq() {
       try {
 
         const res = await axios.get(
-          "http://localhost:5000/api/UiLanguageModel/getUiLanguage"
+          "http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+          }
         );
 
         const data = res.data.data || [];
@@ -254,6 +269,11 @@ export default function EditMcq() {
         {
           chapterId: chapterIds,
           mcqs
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
         }
       );
 
@@ -263,7 +283,7 @@ export default function EditMcq() {
 
         navigate(`/admin/mcq/view/${id}`, {
           state: {
-            replace: true,     
+            replace: true,
             message: "MCQ updated successfully",
             type: "success"
           }

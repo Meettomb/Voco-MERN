@@ -3,7 +3,6 @@ import connectDB from "./db.js";
 import app from "./app.js";
 
 dotenv.config();
-
 // connect MongoDB
 connectDB();
 

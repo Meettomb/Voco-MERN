@@ -75,7 +75,13 @@ export default function ManageMcq() {
 
       }
 
-      const res = await axios.get(url);
+      const res = await axios.get(url,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
 
       if (res.data.status === 1) {
         setMcqs(res.data.data);

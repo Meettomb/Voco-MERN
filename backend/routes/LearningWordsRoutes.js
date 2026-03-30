@@ -3,20 +3,22 @@ import { addLearningWord, deleteLearningWordById, getLearningWords, updateLearni
 import { imageUpload } from "../middleware/imageUpload.js";
 import fs from "fs";
 import path from "path";
-
+import authMiddleware from "../utils/authMiddlware.js";
 const LearningWordsRoutes = express.Router()
 
 // Learning Words
 LearningWordsRoutes.post(
     "/addLearningWord",
+    authMiddleware,
     imageUpload.any(),
     addLearningWord
 );
 
-LearningWordsRoutes.get("/getLearningWords", getLearningWords)
-LearningWordsRoutes.delete("/deleteLearningWord/:id", deleteLearningWordById);
+LearningWordsRoutes.get("/getLearningWords", authMiddleware, getLearningWords)
+LearningWordsRoutes.delete("/deleteLearningWord/:id", authMiddleware, deleteLearningWordById);
 LearningWordsRoutes.put(
     "/updateLearningWordById/:id",
+    authMiddleware,
     imageUpload.any(),
     updateLearningWordById
 );
@@ -80,6 +82,7 @@ LearningWordsRoutes.delete("/deleteImage", (req, res) => {
 
 LearningWordsRoutes.delete(
   "/deleteLearningWordsByChapterId/:chapterId",
+  authMiddleware,
   deleteLearningWordsByChapterId
 );
 

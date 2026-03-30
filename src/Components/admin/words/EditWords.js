@@ -22,7 +22,7 @@ export default function EditWords() {
   const [isAllLanguage, setIsAllLanguage] = useState(false);
   const [newChapter, setNewChapter] = useState({});
 
-  
+
   // const [chapters, setChapters] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [chapters, setChapters] = useState([]);
@@ -58,7 +58,12 @@ export default function EditWords() {
       try {
 
         const res = await axios.get(
-          "http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages"
+          "http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+          }
         );
 
         if (res.data.status === 1) {
@@ -88,7 +93,12 @@ export default function EditWords() {
         setLoading(true);
 
         const res = await axios.get(
-          "http://localhost:5000/api/LearningWordsModel/getLearningWords"
+          "http://localhost:5000/api/LearningWordsModel/getLearningWords",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+          }
         );
 
         const word = res.data.data.find(
@@ -175,7 +185,7 @@ export default function EditWords() {
 
   };
 
- 
+
   useEffect(() => {
 
     const getUiLanguages = async () => {
@@ -183,7 +193,12 @@ export default function EditWords() {
       try {
 
         const res = await axios.get(
-          "http://localhost:5000/api/UiLanguageModel/getUiLanguage"
+          "http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+          }
         );
 
         if (res.data.status === 1) {
@@ -209,29 +224,48 @@ export default function EditWords() {
 
     if (uiLanguages.length === 0) return;
 
-    const grammarObj = {};
+    setGrammarContent(prev => {
+      // 🔥 If already has data (edit mode), don't overwrite
+      if (Object.keys(prev).length > 0) {
+        return prev;
+      }
 
-    uiLanguages.forEach(lang => {
-      grammarObj[lang] = "";
+      const grammarObj = {};
+
+      uiLanguages.forEach(lang => {
+        grammarObj[lang] = "";
+      });
+
+      return grammarObj;
     });
 
-    setGrammarContent(grammarObj);
-
-    setLearnWords([
-      {
-        difficulty: "",
-        words: [
-          {
-            translations: { ...grammarObj }
-          }
-        ]
+    setLearnWords(prev => {
+      // 🔥 Don't overwrite if already loaded from API
+      if (prev.length > 0) {
+        return prev;
       }
-    ]);
+
+      const grammarObj = {};
+      uiLanguages.forEach(lang => {
+        grammarObj[lang] = "";
+      });
+
+      return [
+        {
+          difficulty: "",
+          words: [
+            {
+              translations: { ...grammarObj }
+            }
+          ]
+        }
+      ];
+    });
 
   }, [uiLanguages]);
 
 
-   useEffect(() => {
+  useEffect(() => {
 
     if (!languageId) return;
 
@@ -376,19 +410,20 @@ export default function EditWords() {
     }
 
     // TEXTAREA validation
+    const cleanText = (html = "") => {
+      return html.replace(/<[^>]*>/g, "").trim();
+    };
+
     if (contentType === "textarea") {
-
       for (let lang of uiLanguages) {
+        const value = grammarContent[lang] || "";
 
-        if (!grammarContent[lang] || !grammarContent[lang].trim()) {
-          setError("Please fill all grammar language fields.");
+        if (!cleanText(value)) {
+          setError(`Please fill grammar field (${lang})`);
           return;
         }
-
       }
-
     }
-
     // TEXT BLOCK validation
     if (contentType === "text") {
 
@@ -408,8 +443,8 @@ export default function EditWords() {
 
           for (let lang of uiLanguages) {
 
-            if (!w.translations[lang]) {
-              setError("Fill all language words.");
+            if (!w.translations[lang] || !w.translations[lang].trim()) {
+              setError(`Fill all language words (${lang})`);
               return;
             }
 
@@ -480,7 +515,7 @@ export default function EditWords() {
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data"
+            Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         }
       );

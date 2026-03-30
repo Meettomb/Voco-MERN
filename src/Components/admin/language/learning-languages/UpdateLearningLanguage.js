@@ -27,7 +27,12 @@ export default function UpdateLearningLanguage() {
 
   const fetchUiLanguages = async () => {
     const res = await axios.get(
-      "http://localhost:5000/api/UiLanguageModel/getUiLanguage"
+      "http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+      {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
     );
 
     if (res.data.status === 1) {
@@ -40,7 +45,12 @@ export default function UpdateLearningLanguage() {
     try {
 
       const res = await axios.get(
-        `http://localhost:5000/api/LearningLanguagesModel/getLearningLanguagesById/${id}`
+        `http://localhost:5000/api/LearningLanguagesModel/getLearningLanguagesById/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
       );
 
       if (res.data.status === 1) {
@@ -151,7 +161,12 @@ export default function UpdateLearningLanguage() {
 
       const res = await axios.put(
         `http://localhost:5000/api/LearningLanguagesModel/updateLearningLangauge/${id}`,
-        formData
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
       );
 
       if (res.data.status === 1) {

@@ -15,7 +15,13 @@ export default function ActiveUsers() {
 
   const fetchUsers = async () => {
     try {
-      const respnce = await axios.get("http://localhost:5000/api/userModel/getActiveUsers/");
+      const respnce = await axios.get("http://localhost:5000/api/userModel/getActiveUsers/",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
       setUsers(respnce.data.data);
       console.log(respnce.data);
     } catch (error) {
@@ -35,7 +41,12 @@ export default function ActiveUsers() {
       }
 
       const res = await axios.get(
-        `http://localhost:5000/api/userModel/searchUsers?keyword=${value}`
+        `http://localhost:5000/api/userModel/searchUsers?keyword=${value}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
       );
 
       setUsers(res.data.data);

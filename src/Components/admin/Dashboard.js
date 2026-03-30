@@ -14,7 +14,12 @@ export default function Dashboard() {
     try {
 
       const res = await axios.get(
-        "http://localhost:5000/api/dashboard/data"
+        "http://localhost:5000/api/dashboard/data",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
       );
 
       setDashboard(res.data.data);

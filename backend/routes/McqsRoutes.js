@@ -9,15 +9,16 @@ import {
     getMcqsById,
     searchMcqs
 } from "../controller/McqsController.js";
+import authMiddleware from "../utils/authMiddlware.js";
 
 const mcqRoute = express.Router();
 
-mcqRoute.post("/addMcqs", imageUpload.array("image"), addMcqs);
-mcqRoute.delete("/deleteMcqsById/:id", deleteMcqsById);
-mcqRoute.get("/getAllMcqs", getAllMcqs);
-mcqRoute.get("/getAllMcqsByDifficulty/:difficultyLevel", getAllMcqsByDifficulty);
-mcqRoute.patch("/updateMcqsById/:id", imageUpload.array("image"), updateMcqsById);
-mcqRoute.get("/getMcqsById/:id", getMcqsById);
-mcqRoute.get("/searchMcqs", searchMcqs);
+mcqRoute.post("/addMcqs", authMiddleware, imageUpload.array("image"), addMcqs);
+mcqRoute.delete("/deleteMcqsById/:id", authMiddleware, deleteMcqsById);
+mcqRoute.get("/getAllMcqs", authMiddleware, getAllMcqs);
+mcqRoute.get("/getAllMcqsByDifficulty/:difficultyLevel", authMiddleware, getAllMcqsByDifficulty);
+mcqRoute.patch("/updateMcqsById/:id", authMiddleware, imageUpload.array("image"), updateMcqsById);
+mcqRoute.get("/getMcqsById/:id", authMiddleware, getMcqsById);
+mcqRoute.get("/searchMcqs", authMiddleware, searchMcqs);
 
 export default mcqRoute;

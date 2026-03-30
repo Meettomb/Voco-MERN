@@ -28,7 +28,7 @@ export default function ViewAllLearningLanguages() {
 
   const location = useLocation();
 
-   useEffect(() => {
+  useEffect(() => {
 
     if (location.state?.message) {
 
@@ -68,7 +68,13 @@ export default function ViewAllLearningLanguages() {
   const getAllLearningLanguages = async () => {
     try {
 
-      const response = await axios.get("http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages");
+      const response = await axios.get("http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
       setLanguages(response.data.data)
     }
     catch (error) {
@@ -79,7 +85,13 @@ export default function ViewAllLearningLanguages() {
   const deleteLearningLangaugebyId = async (id) => {
     try {
 
-      const responce = await axios.delete(`http://localhost:5000/api/LearningLanguagesModel/deleteLearningLangaugebyId/${id}`);
+      const responce = await axios.delete(`http://localhost:5000/api/LearningLanguagesModel/deleteLearningLangaugebyId/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
       if (responce.data.status === 1) {
         setMessage(responce.data.message);
         setMessageType("success");

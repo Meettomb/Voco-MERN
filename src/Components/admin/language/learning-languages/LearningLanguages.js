@@ -42,7 +42,12 @@ export default function LearningLanguages() {
   const fetchLanguages = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/UiLanguageModel/getUiLanguage"
+        "http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+        {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        }
       );
 
       if (res.data.status === 1) {
@@ -158,7 +163,12 @@ export default function LearningLanguages() {
 
       const response = await axios.post(
         "http://localhost:5000/api/LearningLanguagesModel/addLearningLanguages",
-        payload
+        payload,
+        {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+         }
       );
 
       if (response?.data?.status === 1) {

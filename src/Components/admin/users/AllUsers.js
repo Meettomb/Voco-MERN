@@ -9,6 +9,7 @@ export default function AllUsers() {
 
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
+  const token = localStorage.getItem('token')
 
   useEffect(() => {
     // Fetch users from API
@@ -17,11 +18,22 @@ export default function AllUsers() {
 
   const fetchUsers = async () => {
     try {
-      const respnce = await axios.get("http://localhost:5000/api/userModel/getUserData/");
+      const respnce = await axios.get("http://localhost:5000/api/userModel/getUserData/",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
       setUsers(respnce.data.data);
-      console.log(respnce.data);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        window.location.href = "/";
+      } else {
+        console.error("Error fetching users:", error);
+      }
+
     }
   }
 
@@ -37,7 +49,12 @@ export default function AllUsers() {
       }
 
       const res = await axios.get(
-        `http://localhost:5000/api/userModel/searchUsers?keyword=${value}`
+        `http://localhost:5000/api/userModel/searchUsers?keyword=${value}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
       );
 
       setUsers(res.data.data);

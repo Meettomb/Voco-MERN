@@ -1,5 +1,5 @@
 import express from "express";
-
+import authMiddleware from "../utils/authMiddlware.js";
 import {
   registerUser,
   getUserData,
@@ -9,29 +9,30 @@ import {
   getActiveUsers,
   updateUserPersonalDetailById,
   updateUserPasswordById,
-  searchUsers
+  searchUsers,
+  Login
 } from "../controller/UserTableController.js";
 
 
 import { sendOtp, verifyOtp } from "../controller/UserTableController.js";
 
-
 const route = express.Router()
 
 route.post('/registerUser', registerUser)
-route.get('/getUserData', getUserData)
-route.get('/getUserDataById/:id', getUserDataById)
-route.patch('/updateUserActiveStatus/:id', updateUserActiveStatus)
-route.patch('/updateUserRoleById/:id', updateUserRoleById)
-route.patch("/updateUserPasswordById/:id", updateUserPasswordById);
-route.get('/getActiveUsers', getActiveUsers)
-route.get("/searchUsers",searchUsers);
+route.get('/getUserData', authMiddleware, getUserData)
+route.get('/getUserDataById/:id', authMiddleware, getUserDataById)
+route.patch('/updateUserActiveStatus/:id', authMiddleware, updateUserActiveStatus)
+route.patch('/updateUserRoleById/:id', authMiddleware, updateUserRoleById)
+route.patch("/updateUserPasswordById/:id", authMiddleware, updateUserPasswordById);
+route.get('/getActiveUsers', authMiddleware, getActiveUsers)
+route.get("/searchUsers", authMiddleware, searchUsers);
+route.post("/Login",Login);
 
 
 // --------------------------------------------------
 // Profile Settings - Personal Details
 // -------------------------
-route.put('/updateUserPersonalDetailById/:id', updateUserPersonalDetailById)
+route.put('/updateUserPersonalDetailById/:id', authMiddleware, updateUserPersonalDetailById)
 
 
 // --------------------------------------------------

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import usePageTitle from "../hooks/usePageTitle";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function SignInPopup({ onClose, onOpenRegister }) {
   usePageTitle("Sign In");
@@ -8,12 +10,13 @@ function SignInPopup({ onClose, onOpenRegister }) {
   const { t } = useTranslation();
 
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  const navigate = useNavigate();
 
   /* Lock background scroll */
   useEffect(() => {
@@ -43,10 +46,10 @@ function SignInPopup({ onClose, onOpenRegister }) {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.username.trim()) {
-      newErrors.username = t("signIn.errors.emailRequired");
-    } else if (!emailRegex.test(formData.username.trim())) {
-      newErrors.username = "Please enter a valid email address";
+    if (!formData.email) {
+      newErrors.email = t("signIn.errors.emailRequired");
+    } else if (!emailRegex.test(formData.email.trim())) {
+      newErrors.email = "Please enter a valid email address";
     }
 
 
@@ -60,17 +63,49 @@ function SignInPopup({ onClose, onOpenRegister }) {
     return Object.keys(newErrors).length === 0;
   };
 
-
-
   /* Submit */
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
-    console.log("Valid form data:", formData);
+    try {
+      const response = await axios.post("http://localhost:5000/api/userModel/Login/", formData)
+      if (response.data.status === 1) {
+        localStorage.setItem('token', response.data.data.token)
+        if (response.data.data.role === "admin") {
+          onClose();
+          navigate(
+            "/admin",
+            { state: { message: "Login successful ", messageType: "success" } }
+          );
+        }
+        else {
+          onClose();
+          navigate(
+            "/",
+            { state: { message: "Login successful ", messageType: "success" } }
+          );
+        }  
+      }
+      else {
+        navigate("/", {
+          state: {
+            message: response.data.message || "Login failed",
+            messageType: "error"
+          }
+        });
+      }
 
-    // API call here
+    } catch (error) {
+      navigate("/", {
+        state: {
+          message: "Something went wrong",
+          messageType: "error"
+        }
+      });
+    }
+    // console.log("Valid form data:", formData);
   };
 
   return (
@@ -97,7 +132,7 @@ function SignInPopup({ onClose, onOpenRegister }) {
             {t("signIn.subtitle")}</p>
 
           <form className="signin-form" onSubmit={submitForm}>
-            {/* Username */}
+            {/* Email */}
             <div className="form-group">
               <label>{t("signIn.emailLabel")}</label>
               <div className="input-icon-wrapper">
@@ -116,15 +151,15 @@ function SignInPopup({ onClose, onOpenRegister }) {
 
                 <input
                   type="text"
-                  name="username"
-                  value={formData.username}
+                  name="email"
+                  value={formData.email}
                   onChange={handleChange}
                   placeholder={t("signIn.emailPlaceholder")}
-                  className={errors.username ? "error" : ""}
+                  className={errors.email ? "error" : ""}
                 />
               </div>
-              {errors.username && (
-                <span className="error-text">{errors.username}</span>
+              {errors.email && (
+                <span className="error-text">{errors.email}</span>
               )}
             </div>
 
