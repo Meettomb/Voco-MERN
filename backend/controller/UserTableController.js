@@ -292,79 +292,94 @@ export const updateUserPersonalDetailById = async (req, res) => {
   try {
     const id = req.params.id;
 
-    // Check if user exists/ Get old data for validation
+    // 🔒 Authorization check
+    if (req.user.id !== id) {
+      return res.status(403).json({
+        status: 0,
+        message: "Unauthorized access",
+      });
+    }
+
     const oldUserData = await UserModel.findById(id);
     if (!oldUserData) {
       return res.status(404).json({
         status: 0,
         message: "User Not Found",
-      })
+      });
     }
-    const updateData = {
-      username: req.body.username,
-      phoneNumber: req.body.phoneNumber,
-    };
+
+    // ❌ Empty check
+    if (!req.body.username && !req.body.phoneNumber && !req.body.learningLanguages) {
+      return res.status(400).json({
+        status: 0,
+        message: "No data provided for update",
+      });
+    }
+
+    // ✅ Dynamic update object
+    const updateData = {};
+
+    if (req.body.username) {
+      updateData.username = req.body.username;
+    }
+
+    if (req.body.phoneNumber) {
+      updateData.phoneNumber = req.body.phoneNumber;
+    }
 
     if (req.body.learningLanguages) {
       updateData.learningLanguages = req.body.learningLanguages;
     }
 
-    // If phone number is being updated, reset phone verification status
-    if (req.body.phoneNumber && req.body.phoneNumber !== oldUserData.phoneNumber) {
-      updateData.phoneNumberVerified = false; // reset phone verification if phone number is changed
+    // 📱 Phone verification reset
+    if (
+      req.body.phoneNumber &&
+      req.body.phoneNumber !== oldUserData.phoneNumber
+    ) {
+      updateData.phoneNumberVerified = false;
     }
-    const updateUserPersonalDetailById = await UserModel.findByIdAndUpdate(
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
       id,
       updateData,
       { new: true, runValidators: true }
     );
 
-
-    if (!updateUserPersonalDetailById) {
-      res.status(404).json({
-        status: 0,
-        message: "User Not Found",
-      })
-    }
-    res.status(200).json({
+    return res.status(200).json({
       status: 1,
-      message: "Data Update Successfully",
-      data: updateUserPersonalDetailById
-    })
+      message: "Data Updated Successfully",
+      data: updatedUser
+    });
 
-  }
-  catch (error) {
-    // Validation errors
+  } catch (error) {
     if (error.name === "ValidationError") {
       return res.status(400).json({
         status: 0,
         message: error.message,
       });
     }
-    else if (error.name === "CastError") {
+
+    if (error.name === "CastError") {
       return res.status(400).json({
         status: 0,
         message: "Invalid User ID",
-      })
+      });
     }
-    else if (error.name === "MongoError" && error.code === 11000) {
+
+    if (error.code === 11000) {
       const field = Object.keys(error.keyValue)[0];
 
       return res.status(409).json({
         status: 0,
         message: `${field} already exists`,
       });
-    } else if (error.code === 11000) {
-      const field = Object.keys(error.keyValue)[0];
+    }
 
-      return res.status(409).json({
-        status: 0,
-        message: `${field} already exists`,
-      });
-    }
-    else {
-      console.log(error)
-    }
+    console.error(error);
+    return res.status(500).json({
+      status: 0,
+      message: "Internal Server Error",
+    });
   }
 };
 

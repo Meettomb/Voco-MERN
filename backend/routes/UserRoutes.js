@@ -32,7 +32,7 @@ route.post("/Login",Login);
 // --------------------------------------------------
 // Profile Settings - Personal Details
 // -------------------------
-route.put('/updateUserPersonalDetailById/:id', authMiddleware, updateUserPersonalDetailById)
+route.patch('/updateUserPersonalDetailById/:id', authMiddleware, updateUserPersonalDetailById)
 
 
 // --------------------------------------------------

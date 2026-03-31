@@ -1,38 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import getUser from '../../utils/getUser';
+import React from 'react';
 
-export default function ProfileHero() {
-    const user = getUser();
-    const id = user ? user.id : null;
-    const [userData, setUserData] = useState();
-    const fetchUserData = useCallback(async () => {
-        try {
-            const response = await axios.get(`http://localhost:5000/api/userModel/getUserDataById/${id}`,
-                {
-
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-
-                    }
-                }
-            );
-            if (response.data.status === 1) {
-                setUserData(response.data.data);
-            }
-        } catch (error) {
-            console.error("Error fetching user data:", error);
-        }
-    }, [id])
-
-    useEffect(() => {
-        if (id) {
-            fetchUserData();
-        }
-    }, [fetchUserData, id]);
-
-
+export default function ProfileHero({ userData }) {
     return (
         <>
             <div className="profile-hero">
@@ -85,7 +53,9 @@ export default function ProfileHero() {
 
                                 </svg>
 
-                                Learning: {userData?.learningLanguages.length > 0 ? userData.learningLanguages.join(", ") : "Not Specified"}
+                                Learning: {userData?.learningLanguages.length > 0
+                                    ? userData.learningLanguages.map(lang => lang.native).join(", ") 
+                                    : "Not Specified"}
                             </span>
 
                         </div>
