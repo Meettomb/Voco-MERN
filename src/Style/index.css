@@ -5727,9 +5727,123 @@ svg {
 }
 
 
+/* ===============================
+   Edit Header (Right Align)
+   =============================== */
+.AcountSettings .edit-header {
+  display: flex;
+  justify-content: flex-end; /* move to right */
+  align-items: center;
+  margin-bottom: 12px;
+}
 
+/* ===============================
+   Edit Button (SVG Icon Button)
+   =============================== */
+.AcountSettings .edit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
+  width: 40px;
+  height: 40px;
 
+  border-radius: 10px;
+  border: 1px solid var(--color-border-light);
+
+  background-color: var(--color-bg-card);
+  color: var(--color-primary);
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  box-shadow: var(--shadow-sm);
+}
+
+/* Hover Effect */
+.AcountSettings .edit-btn:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Active Click */
+.AcountSettings .edit-btn:active {
+  transform: scale(0.95);
+}
+
+/* SVG Styling */
+.AcountSettings .edit-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Optional: Focus (Accessibility) */
+.AcountSettings .edit-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+/* ===============================
+   Section Header (Title + Edit)
+   =============================== */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Title */
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* ===============================
+   Edit Button
+   =============================== */
+.edit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 38px;
+  height: 38px;
+
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+
+  background-color: var(--color-bg-card);
+  color: var(--color-primary);
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Hover */
+.edit-btn:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Click */
+.edit-btn:active {
+  transform: scale(0.95);
+}
+
+/* SVG */
+.edit-btn svg {
+  width: 18px;
+  height: 18px;
+}
 
 
 

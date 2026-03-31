@@ -1,6 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import getUser from '../../utils/getUser';
 
 export default function ProfileHero() {
+    const user = getUser();
+    const id = user ? user.id : null;
+    const [userData, setUserData] = useState();
+    const fetchUserData = useCallback(async () => {
+        try {
+            const response = await axios.get(`http://localhost:5000/api/userModel/getUserDataById/${id}`,
+                {
+
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+
+                    }
+                }
+            );
+            if (response.data.status === 1) {
+                setUserData(response.data.data);
+            }
+        } catch (error) {
+            console.error("Error fetching user data:", error);
+        }
+    }, [id])
+
+    useEffect(() => {
+        if (id) {
+            fetchUserData();
+        }
+    }, [fetchUserData, id]);
+
+
     return (
         <>
             <div className="profile-hero">
@@ -23,12 +55,12 @@ export default function ProfileHero() {
                                 <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
                             </svg>
                         </div>
-
                     </div>
+
                     <div className="hero-info">
-                        <h1 id="userName">404 Name Not Found</h1>
+                        <h1 id="userName">{userData?.username || "User Name not Found"}</h1>
                         <div className="language-tags">
-                            <span className="language-tag">Native: Hindi</span><span className="language-tag">
+                            <span className="language-tag">UI Language: {userData?.uiSupportLangauge || "Not Specified"}</span><span className="language-tag">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
@@ -53,7 +85,7 @@ export default function ProfileHero() {
 
                                 </svg>
 
-                                Learning: English
+                                Learning: {userData?.learningLanguages.length > 0 ? userData.learningLanguages.join(", ") : "Not Specified"}
                             </span>
 
                         </div>

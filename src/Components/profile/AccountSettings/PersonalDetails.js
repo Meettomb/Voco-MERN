@@ -1,6 +1,10 @@
 import { useState } from 'react';
+import getUser from '../../../utils/getUser';
+import axios from 'axios';
 
 export default function PersonalDetails() {
+
+    const [isEditing, setIsEditing] = useState(false);
 
     const options = ["English", "Spanish", "Hindi", "Gujarati", "French", "German"];
 
@@ -88,6 +92,8 @@ export default function PersonalDetails() {
         };
 
         console.log("FORM DATA:", payload);
+
+        setIsEditing(false);
     };
 
     // ===================================================
@@ -98,8 +104,25 @@ export default function PersonalDetails() {
 
                 <form onSubmit={handleSubmit}>
 
+                    <div className="edit-header">
+                        {!isEditing && (
+                            <button type="button" onClick={() => setIsEditing(true)} 
+                            className="edit-btn"
+                            title="Edit Personal Details">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M12 20h9" />
+                                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
+
                     {/* ================= ROW 1 ================= */}
                     <div className="form-row">
+
+
 
                         {/* Username */}
                         <div className="form-group">
@@ -119,6 +142,7 @@ export default function PersonalDetails() {
                                 placeholder="Enter your Username"
                                 value={formData.username}
                                 onChange={handleChange}
+                                disabled={!isEditing}
                             />
 
                             {errors.username && (
@@ -143,6 +167,7 @@ export default function PersonalDetails() {
                                 placeholder="Enter your phone number"
                                 value={formData.phone}
                                 onChange={handleChange}
+                                disabled={!isEditing}
                             />
 
                             {errors.phone && (
@@ -170,7 +195,9 @@ export default function PersonalDetails() {
                                 Learning Language
                             </label>
 
-                            <select className="form-input" onChange={handleSelect}>
+                            <select className="form-input" onChange={handleSelect}
+                                disabled={!isEditing}
+                            >
                                 <option value="">Select language</option>
                                 {options.map(opt => (
                                     <option key={opt} value={opt}>{opt}</option>
@@ -215,6 +242,7 @@ export default function PersonalDetails() {
                     </div>
 
                     {/* ================= BUTTONS ================= */}
+                    {isEditing && (
                     <div className="action-buttons">
 
                         <button type="submit" className="btn btn-primary">
@@ -225,7 +253,7 @@ export default function PersonalDetails() {
                             <span>Save Changes</span>
                         </button>
 
-                        <button type="button" className="btn btn-secondary">
+                        <button type="button" className="btn btn-secondary" onClick={() => setIsEditing(false)}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -235,6 +263,7 @@ export default function PersonalDetails() {
                         </button>
 
                     </div>
+                    )}
 
                 </form>
 
