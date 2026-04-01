@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
+import getUser from '../../../utils/getUser';
 
-export default function Security() {
+export default function Security({ userData, setUserData, fetchUserData }) {
     const [isEmailEditing, setIsEmailEditing] = useState(false);
     const [isPasswordEditing, setIsPasswordEditing] = useState(false);
-
-
     const [email, setEmail] = useState("");
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const [errors, setErrors] = useState({});
+
+    const user = getUser();
+    const id = user ? user.id : null;
 
     // ================= EMAIL VALIDATION =================
     const validateEmailForm = () => {

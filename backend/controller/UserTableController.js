@@ -281,6 +281,94 @@ export const searchUsers = async (req, res) => {
   }
 };
 
+
+export const updateUserById = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // 🔒 Authorization (user can update only self)
+    if (req.user.id !== id) {
+      return res.status(403).json({
+        status: 0,
+        message: "Unauthorized access",
+      });
+    }
+
+    const existingUser = await UserModel.findById(id);
+
+    if (!existingUser) {
+      return res.status(404).json({
+        status: 0,
+        message: "User not found",
+      });
+    }
+
+    //  Prevent updating restricted fields
+    const restrictedFields = ["password", "role", "email"];
+    restrictedFields.forEach(field => delete req.body[field]);
+
+    //  Empty body check
+    if (Object.keys(req.body).length === 0) {
+      return res.status(400).json({
+        status: 0,
+        message: "No valid fields provided for update",
+      });
+    }
+
+    //  Reset phone verification if changed
+    if (
+      req.body.phoneNumber &&
+      req.body.phoneNumber !== existingUser.phoneNumber
+    ) {
+      req.body.phoneNumberVerified = false;
+    }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      id,
+      { $set: req.body },
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).populate("learningLanguages");
+
+    return res.status(200).json({
+      status: 1,
+      message: "User updated successfully",
+      data: updatedUser,
+    });
+
+  } catch (error) {
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        status: 0,
+        message: error.message,
+      });
+    }
+
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+      return res.status(409).json({
+        status: 0,
+        message: `${field} already exists`,
+      });
+    }
+
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        status: 0,
+        message: "Invalid user ID",
+      });
+    }
+
+    console.error(error);
+    return res.status(500).json({
+      status: 0,
+      message: "Internal server error",
+    });
+  }
+};
 // ===================================================
 // ===================================================
 // ==================== Profile ======================
@@ -446,6 +534,7 @@ export const updateUserPasswordById = async (req, res) => {
     });
   }
 }
+
 
 
 // ===================================================

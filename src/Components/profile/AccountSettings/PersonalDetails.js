@@ -1,9 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
-import getUser from '../../../utils/getUser';
 import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
 
-export default function PersonalDetails({ userData, setUserData, fetchUserData }) {
+export default function PersonalDetails() {
     const [isEditing, setIsEditing] = useState(false);
     const [languages, setLanguages] = useState([]);
     // Selected languages
@@ -34,8 +33,8 @@ export default function PersonalDetails({ userData, setUserData, fetchUserData }
 
     }, [message]);
 
-    const user = getUser();
-    const id = user ? user.id : null;
+    const { userData, refreshUser } = useAuth();
+    const id = userData?._id;
 
     const getLearningLanguages = useCallback(async () => {
         try {
@@ -136,6 +135,7 @@ export default function PersonalDetails({ userData, setUserData, fetchUserData }
         e.preventDefault();
 
         if (!validateForm()) return;
+        if (!id) return;
 
         const payload = {
             username: formData.username,
@@ -155,7 +155,7 @@ export default function PersonalDetails({ userData, setUserData, fetchUserData }
                 setMessage("Personal details updated successfully!");
                 setMessageType("success");
 
-                await fetchUserData(); // refetch to get updated data
+                await refreshUser(); // refetch to get updated data
                 setIsEditing(false);
 
             } else {

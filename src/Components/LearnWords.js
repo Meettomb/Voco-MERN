@@ -1,9 +1,12 @@
 import { useTranslation } from "react-i18next";
 import usePageTitle from "../hooks/usePageTitle";
+import { useAuth } from "../context/AuthContext";
 
 function LearnWords() {
-  
-    usePageTitle("Learn Words");
+
+  const { userData, refreshUser, activeLanguage } = useAuth();
+  console.log("Active Language in LearnWords:", activeLanguage);
+  usePageTitle("Learn Words");
   const { t } = useTranslation();
 
   const ROADMAP_DATA = [
@@ -21,7 +24,7 @@ function LearnWords() {
       <div className="lw-roadmap">
         {ROADMAP_DATA.map((item) => (
           <div className="lw-step" key={item.chapterId}>
-            
+
             <div className="lw-dot">
               {item.chapterId}
             </div>

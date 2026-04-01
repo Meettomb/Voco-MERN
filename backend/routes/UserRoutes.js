@@ -10,7 +10,8 @@ import {
   updateUserPersonalDetailById,
   updateUserPasswordById,
   searchUsers,
-  Login
+  Login,
+  updateUserById
 } from "../controller/UserTableController.js";
 
 
@@ -27,6 +28,7 @@ route.patch("/updateUserPasswordById/:id", authMiddleware, updateUserPasswordByI
 route.get('/getActiveUsers', authMiddleware, getActiveUsers)
 route.get("/searchUsers", authMiddleware, searchUsers);
 route.post("/Login",Login);
+route.patch("/updateUserById/:id", authMiddleware, updateUserById);
 
 
 // --------------------------------------------------
