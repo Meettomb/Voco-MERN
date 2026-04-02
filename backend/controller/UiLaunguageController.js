@@ -209,3 +209,30 @@ export const filterUiLanguages = async (req, res) => {
 
   }
 };
+
+
+export const getByCode = async (req, res) => {
+  try {
+    const { code } = req.params;
+    const language = await UiLanguageModel.findOne({ code: code });
+
+    if (!language) {
+      return res.status(404).json({
+        status: 0,
+        message: "Language not found",
+      });
+    }
+
+    res.status(200).json({
+      status: 1,
+      message: "Language fetched successfully",
+      data: language,
+    });
+  } catch (error) {
+    console.error("Error fetching language by code:", error);
+    res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+  }
+}

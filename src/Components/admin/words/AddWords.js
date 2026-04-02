@@ -115,10 +115,10 @@ export default function AddWords() {
                 const res = await axios.get(
                     "http://localhost:5000/api/UiLanguageModel/getUiLanguage",
                     {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        }
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    }
                 );
 
                 if (res.data.status === 1) {
@@ -303,7 +303,11 @@ export default function AddWords() {
 
             for (let lang of uiLanguages) {
 
-                if (!grammarContent[lang] || !grammarContent[lang].trim()) {
+                const cleanText = (html = "") => {
+                    return html.replace(/<[^>]*>/g, "").trim();
+                };
+
+                if (!cleanText(grammarContent[lang])) {
                     setError("Please fill all grammar language fields.");
                     return;
                 }
@@ -397,7 +401,6 @@ export default function AddWords() {
                 );
 
             }
-
             const response = await axios.post(
                 "http://localhost:5000/api/LearningWordsModel/addLearningWord",
                 formData,

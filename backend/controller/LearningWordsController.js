@@ -5,9 +5,7 @@ import fs from "fs";
 import path from "path";
 
 export const addLearningWord = async (req, res) => {
-
     try {
-
         let {
             chapterId,
             contentType,
@@ -15,170 +13,182 @@ export const addLearningWord = async (req, res) => {
             isAllLanguage
         } = req.body;
 
+        console.log("BODY:", req.body);
+        let translations = req.body.translations ? JSON.parse(req.body.translations) : null;
+        let grammarContent = {};
 
-        /* ===========================
-           PARSE JSON
-        =========================== */
-
-        let translations = req.body.translations;
-        if (translations) {
-            translations = JSON.parse(translations);
+        try {
+            if (req.body.grammarContent) {
+                grammarContent = JSON.parse(req.body.grammarContent);
+            }
+        } catch (err) {
+            console.log("JSON parse error:", err);
         }
+        let difficulties = req.body.difficulties ? JSON.parse(req.body.difficulties) : null;
 
-        let grammarContent = req.body.grammarContent;
-        if (grammarContent) {
-            grammarContent = JSON.parse(grammarContent);
-        }
+        /* =========================
+           COMMON MERGE FUNCTION
+        ========================= */
 
-        let difficulties = req.body.difficulties;
-        if (difficulties) {
-            difficulties = JSON.parse(difficulties);
-        }
+        const mergeData = (existing) => {
 
+            if (contentType === "TextBlock") {
 
-        /* ===========================
+                difficulties.forEach(newDiff => {
+
+                    const existingDiff = existing.difficulties.find(
+                        d => d.level === newDiff.level
+                    );
+
+                    if (existingDiff) {
+
+                        newDiff.words.forEach(newWord => {
+
+                            if (!newWord?.en) return; // skip invalid data
+
+                            const newEn = newWord.en.toLowerCase();
+
+                            const exists = existingDiff.words.some(w =>
+                                w?.en && w.en.toLowerCase() === newEn
+                            );
+
+                            if (!exists) {
+                                existingDiff.words.push(newWord);
+                            }
+
+                        });
+
+                    } else {
+                        existing.difficulties.push(newDiff);
+                    }
+
+                });
+
+                existing.grammarContent = {};
+            }
+
+            if (contentType === "TextArea") {
+
+                if (!existing.grammarContent) {
+                    existing.grammarContent = {};
+                }
+
+                existing.grammarContent = grammarContent;
+
+                existing.markModified("grammarContent");  //
+
+                existing.difficulties = [];
+            }
+
+            return existing;
+        };
+
+        /* =========================
            ALL LANGUAGE MODE
-        =========================== */
+        ========================= */
 
         if (isAllLanguage === "true") {
 
             const languages = await LearningLanguagesModel.find();
-
-            if (!languages.length) {
-                return res.json({
-                    status: 0,
-                    message: "No languages found"
-                });
-            }
-
             let savedData = [];
 
             for (let lang of languages) {
 
-                console.log("Saving for:", lang.english);
-
-
-                /* ---------- create / get chapter ---------- */
-
                 const chapter = await ChapterModel.findOneAndUpdate(
-                    {
-                        languageId: lang._id,
-                        translations: translations
-                    },
-                    {
-                        languageId: lang._id,
-                        translations: translations
-                    },
-                    {
-                        new: true,
-                        upsert: true
-                    }
+                    { languageId: lang._id, translations },
+                    { languageId: lang._id, translations },
+                    { new: true, upsert: true }
                 );
-
-
-                /* ---------- add chapter to language ---------- */
 
                 if (!lang.chapters.includes(chapter._id)) {
                     lang.chapters.push(chapter._id);
                     await lang.save();
                 }
 
-
-                /* ---------- prepare learning word ---------- */
-
-                let data = {
+                const existing = await LearningWord.findOne({
                     chapterId: chapter._id,
-                    learningWordsLangauge: lang._id,
-                    contentType
-                };
+                    learningWordsLangauge: lang._id
+                });
 
+                if (existing) {
 
-                if (contentType === "TextArea") {
+                    const updated = mergeData(existing);
+                    await updated.save();
+                    savedData.push(updated);
 
-                    data.grammarContent = grammarContent;
-                    data.difficulties = [];
+                } else {
 
+                    const newDoc = await LearningWord.create({
+                        chapterId: chapter._id,
+                        learningWordsLangauge: lang._id,
+                        contentType,
+                        grammarContent: contentType === "TextArea" ? grammarContent : {},
+                        difficulties: contentType === "TextBlock" ? difficulties : []
+                    });
+
+                    savedData.push(newDoc);
                 }
-
-
-                if (contentType === "TextBlock") {
-
-                    data.grammarContent = {};
-                    data.difficulties = difficulties;
-
-                }
-
-
-                const learningWord = await LearningWord.create(data);
-
-                savedData.push(learningWord);
-
             }
-
 
             return res.json({
                 status: 1,
                 message: "Saved for all languages",
                 data: savedData
             });
-
         }
 
-
-        /* ===========================
+        /* =========================
            NORMAL MODE
-        =========================== */
+        ========================= */
 
-        let data = {
+        const existing = await LearningWord.findOne({
             chapterId,
-            learningWordsLangauge,
-            contentType
-        };
-
-
-        if (contentType === "TextArea") {
-
-            data.grammarContent = grammarContent;
-            data.difficulties = [];
-
-        }
-
-
-        if (contentType === "TextBlock") {
-
-            data.grammarContent = {};
-            data.difficulties = difficulties;
-
-        }
-
-
-        const learningWord = await LearningWord.create(data);
-
-
-        return res.json({
-            status: 1,
-            message: "Saved",
-            data: learningWord
+            learningWordsLangauge
         });
 
+        if (existing) {
+
+            const updated = mergeData(existing);
+            await updated.save();
+
+            return res.json({
+                status: 1,
+                message: "Updated existing chapter",
+                data: updated
+            });
+
+        } else {
+
+            const newDoc = await LearningWord.create({
+                chapterId,
+                learningWordsLangauge,
+                contentType,
+                grammarContent: contentType === "TextArea" ? grammarContent : {},
+                difficulties: contentType === "TextBlock" ? difficulties : []
+            });
+
+            return res.json({
+                status: 1,
+                message: "Created new chapter",
+                data: newDoc
+            });
+        }
 
     } catch (err) {
-
         console.log(err);
-
         return res.json({
             status: 0,
             message: err.message
         });
-
     }
-
 };
 
 
 export const getLearningWords = async (req, res) => {
     try {
-        const learningWords = await LearningWord.find();
+        const learningWords = await LearningWord.find()
+            .populate("learningWordsLangauge")
+            .populate("chapterId");
 
         res.status(200).json({
             message: "Learning words fetched",
