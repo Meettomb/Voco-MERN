@@ -5,14 +5,16 @@ import Logo from '../assets/images/Voco.png';
 import { useTranslation } from 'react-i18next';
 import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
-import getUser from "../utils/getUser.js";
-import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import FullScreenLoader from "./FullScreenLoader";
 
 
 function Header({ onOpen }) {
+
+  const { userData, loading, setUserData } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const isLoggedIn = localStorage.getItem('token');
+  const isLoggedIn = !!userData;
   const profileRef = useRef(null);
   const { t, i18n } = useTranslation();
   const sideNavRef = useRef(null);
@@ -20,42 +22,24 @@ function Header({ onOpen }) {
   const location = useLocation();
   const target = location.state?.target;
 
-  const [userData, setUserData] = useState(null);
 
   // get data from token
-  const user = getUser();
-  const id = user?.id;
+  // const user = getUser();
+  // const id = user?.id;
+
+const langCount = userData?.learningLanguages?.length || 0;
+
+const isSingleLanguage = langCount === 1;
 
 
   const handelLogout = () => {
     localStorage.removeItem('token');
-    navigate('/admin');
+    setUserData(null);
+    navigate('/');
   }
 
-  useEffect(() => {
-    if (id) {
-      getLoginUserData();
-    }
-  }, [id]);
+
   const role = userData?.role;
-
-  const getLoginUserData = async () => {
-    try {
-      const response = await axios.get(`http://localhost:5000/api/userModel/getUserDataById/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-          }
-        }
-      );
-
-      setUserData(response.data.data);
-
-    } catch (err) {
-      console.log(err);
-    }
-  }
 
 
   useEffect(() => {
@@ -86,12 +70,8 @@ function Header({ onOpen }) {
     setMenuOpen(false);
   };
 
-  // const handleSideNavNavigate = () => {
-  //   setProfileOpen(false);
-  //   setMenuOpen(false);
-  // };
 
-
+  if (loading) return <FullScreenLoader />;
   return (
     <header className="header">
       <div className="outer_header_div">
@@ -116,34 +96,70 @@ function Header({ onOpen }) {
                 <Link to="/">{t("nav.home")}</Link>
               </li>
 
-              <li>
-                <Link to="/choose-learning-language"
-                  state={{ target: "learn-words" }}
-                  className={target === "learn-words" ? "active-link" : ""}
-                >
-                  {t("nav.learnWords")}
-                </Link>
-              </li>
 
-              <li>
-                <Link
-                  to="/choose-learning-language"
-                  state={{ target: "videos" }}
-                  className={target === "videos" ? "active-link" : ""}
-                >
-                  {t("nav.videos")}
-                </Link>
+              {isSingleLanguage ? (
+                <li>
+                  <Link to="/learn-words"
+                    className={target === "learn-words" ? "active-link" : ""}
+                  >
+                    {t("nav.learnWords")}
 
-              </li>
+                  </Link>
+                </li>
+              ) : (
+                <li>
+                  <Link to="/choose-learning-language"
+                    state={{ target: "learn-words" }}
+                    className={target === "learn-words" ? "active-link" : ""}
+                  >
+                    {t("nav.learnWords")}
 
-              <li>
-                <Link to="/choose-learning-language"
-                  state={{ target: "mcqs-exam" }}
-                  className={target === "mcqs-exam" ? "active-link" : ""}
-                >
-                  {t("nav.mcqs")}
-                </Link>
-              </li>
+                  </Link>
+                </li>
+              )}
+
+              {isSingleLanguage ? (
+                <li>
+                  <Link
+                    to="/videos"
+                    className={target === "videos" ? "active-link" : ""}
+                  >
+                    {t("nav.videos")}
+                  </Link>
+
+                </li>
+              ) : (
+                <li>
+                  <Link
+                    to="/choose-learning-language"
+                    state={{ target: "videos" }}
+                    className={target === "videos" ? "active-link" : ""}
+                  >
+                    {t("nav.videos")}
+                  </Link>
+
+                </li>
+              )}
+
+              {isSingleLanguage ? (
+                <li>
+                  <Link to="/mcqs-exam"
+                    className={target === "mcqs-exam" ? "active-link" : ""}
+                  >
+                    {t("nav.mcqs")}
+                  </Link>
+                </li>
+              ) : (
+                <li>
+                  <Link to="/choose-learning-language"
+                    state={{ target: "mcqs-exam" }}
+                    className={target === "mcqs-exam" ? "active-link" : ""}
+                  >
+                    {t("nav.mcqs")}
+                  </Link>
+                </li>
+              )}
+
 
               {/* <li>
                 <Link to="/progress">{t("nav.progress")}</Link>
@@ -328,40 +344,81 @@ function Header({ onOpen }) {
                 {t("nav.home")}
               </Link>
             </li>
-
-            <li>
-              <Link to="/choose-learning-language" state={{ target: "learn-words" }} onClick={() => setMenuOpen(false)}>
-                <svg viewBox="0 -960 960 960">
-                  <path d="M160-120v-640q0-33 23.5-56.5T240-840h400q33 0 56.5 23.5T720-760v640
+            {isSingleLanguage ? (
+              <li>
+                <Link to="/learn-words" state={{ target: "learn-words" }} onClick={() => setMenuOpen(false)}>
+                  <svg viewBox="0 -960 960 960">
+                    <path d="M160-120v-640q0-33 23.5-56.5T240-840h400q33 0 56.5 23.5T720-760v640
       q-20-12-40-18t-40-6H240q-20 0-40 6t-40 18Zm80-160h320v-80H240v80Zm0-160h400v-80H240v80Zm0-160h400v-80H240v80Z
     " />
-                </svg>
-                {t("nav.learnWords")}
-              </Link>
-            </li>
+                  </svg>
+                  {t("nav.learnWords")}
+                </Link>
+              </li>
+            ) : (
+              <li>
+                <Link to="/choose-learning-language" state={{ target: "learn-words" }} onClick={() => setMenuOpen(false)}>
+                  <svg viewBox="0 -960 960 960">
+                    <path d="M160-120v-640q0-33 23.5-56.5T240-840h400q33 0 56.5 23.5T720-760v640
+      q-20-12-40-18t-40-6H240q-20 0-40 6t-40 18Zm80-160h320v-80H240v80Zm0-160h400v-80H240v80Zm0-160h400v-80H240v80Z
+    " />
+                  </svg>
+                  {t("nav.learnWords")}
+                </Link>
+              </li>
+            )}
 
-            <li>
-              <Link to="/choose-learning-language" state={{ target: "videos" }} onClick={() => setMenuOpen(false)}>
-                <svg viewBox="0 -960 960 960">
-                  <path d="M160-120v-720l640 360-640 360Z" />
-                </svg>
-                {t("nav.videos")}
-              </Link>
-            </li>
+            {isSingleLanguage ? (
+              <li>
+                <Link to="/videos" state={{ target: "videos" }} onClick={() => setMenuOpen(false)}>
+                  <svg viewBox="0 -960 960 960">
+                    <path d="M160-120v-720l640 360-640 360Z" />
+                  </svg>
+                  {t("nav.videos")}
+                </Link>
+              </li>
+            ) : (
+              <li>
+                <Link to="/choose-learning-language" state={{ target: "videos" }} onClick={() => setMenuOpen(false)}>
+                  <svg viewBox="0 -960 960 960">
+                    <path d="M160-120v-720l640 360-640 360Z" />
+                  </svg>
+                  {t("nav.videos")}
+                </Link>
+              </li>
+            )}
 
-            <li>
-              <Link to="/choose-learning-language" state={{ target: "mcqs-exam" }} onClick={() => setMenuOpen(false)}>
-                <svg viewBox="0 -960 960 960">
-                  <path d=" M480-200q-33 0-56.5-23.5T400-280q0-33 23.5-56.5T480-360
+
+            {isSingleLanguage ? (
+              <li>
+                <Link to="/mcqs-exam" state={{ target: "mcqs-exam" }} onClick={() => setMenuOpen(false)}>
+                  <svg viewBox="0 -960 960 960">
+                    <path d=" M480-200q-33 0-56.5-23.5T400-280q0-33 23.5-56.5T480-360
       q33 0 56.5 23.5T560-280q0 33-23.5 56.5T480-200Zm-120-240
       q0-66 40-105t80-55q30-12 45-29t15-39q0-33-23.5-56.5T480-760
       q-33 0-56.5 23.5T400-680h-80q0-66 47-113t113-47
       q66 0 113 47t47 113q0 45-23 75t-57 45q-33 14-49 31t-16 49v40h-80v-40Z
     " />
-                </svg>
-                {t("nav.mcqs")}
-              </Link>
-            </li>
+                  </svg>
+                  {t("nav.mcqs")}
+                </Link>
+              </li>
+            ) : (
+              <li>
+                <Link to="/choose-learning-language" state={{ target: "mcqs-exam" }} onClick={() => setMenuOpen(false)}>
+                  <svg viewBox="0 -960 960 960">
+                    <path d=" M480-200q-33 0-56.5-23.5T400-280q0-33 23.5-56.5T480-360
+      q33 0 56.5 23.5T560-280q0 33-23.5 56.5T480-200Zm-120-240
+      q0-66 40-105t80-55q30-12 45-29t15-39q0-33-23.5-56.5T480-760
+      q-33 0-56.5 23.5T400-680h-80q0-66 47-113t113-47
+      q66 0 113 47t47 113q0 45-23 75t-57 45q-33 14-49 31t-16 49v40h-80v-40Z
+    " />
+                  </svg>
+                  {t("nav.mcqs")}
+                </Link>
+              </li>
+            )}
+
 
             {/* <li>
               <Link to="/progress" onClick={() => setMenuOpen(false)}>

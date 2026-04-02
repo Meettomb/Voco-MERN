@@ -1,5 +1,12 @@
 import express from "express";
-import { addUiLaunguage, getUiLanguage, deleteUiLanguageById, updateUiLanguageById, filterUiLanguages } from "../controller/UiLaunguageController.js";
+import {
+    addUiLaunguage,
+    getUiLanguage,
+    deleteUiLanguageById,
+    updateUiLanguageById,
+    filterUiLanguages,
+    getByCode
+} from "../controller/UiLaunguageController.js";
 import authMiddleware from "../utils/authMiddlware.js";
 
 const UiLanguageRoutes = express.Router()
@@ -10,5 +17,6 @@ UiLanguageRoutes.get("/getUiLanguage", authMiddleware, getUiLanguage)
 UiLanguageRoutes.delete("/deleteUiLanguage/:id", authMiddleware, deleteUiLanguageById);
 UiLanguageRoutes.put("/updateUiLanguageById/:id", authMiddleware, updateUiLanguageById);
 UiLanguageRoutes.get("/filterUiLanguages", authMiddleware, filterUiLanguages);
+UiLanguageRoutes.get("/getByCode/:code", authMiddleware, getByCode);
 
 export default UiLanguageRoutes;

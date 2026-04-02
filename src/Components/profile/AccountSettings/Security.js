@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
+import getUser from '../../../utils/getUser';
 
-export default function Security() {
-
+export default function Security({ userData, setUserData, fetchUserData }) {
+    const [isEmailEditing, setIsEmailEditing] = useState(false);
+    const [isPasswordEditing, setIsPasswordEditing] = useState(false);
     const [email, setEmail] = useState("");
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const [errors, setErrors] = useState({});
+
+    const user = getUser();
+    const id = user ? user.id : null;
 
     // ================= EMAIL VALIDATION =================
     const validateEmailForm = () => {
@@ -55,17 +60,14 @@ export default function Security() {
         e.preventDefault();
         if (!validateEmailForm()) return;
 
-        console.log("Update Email:", email);
+        setIsEmailEditing(false);
     };
 
     const handlePasswordSubmit = (e) => {
         e.preventDefault();
         if (!validatePasswordForm()) return;
 
-        console.log("Update Password:", {
-            currentPassword,
-            newPassword
-        });
+        setIsPasswordEditing(false);
     };
 
     // ===================================================
@@ -77,7 +79,24 @@ export default function Security() {
                 {/* ================= EMAIL SETTINGS ================= */}
                 <form onSubmit={handleEmailSubmit}>
 
-                    <h3 className="section-title" style={{marginBottom:"20px"}}>Email Settings</h3>
+                    <div className="section-header">
+                        <h3 className="section-title">Email Settings</h3>
+
+                        {!isEmailEditing && (
+                            <button
+                                type="button"
+                                onClick={() => setIsEmailEditing(true)}
+                                className="edit-btn"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M12 20h9" />
+                                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
 
                     <div className="form-group">
 
@@ -99,6 +118,7 @@ export default function Security() {
                                 setEmail(e.target.value);
                                 setErrors({ ...errors, email: "" });
                             }}
+                            disabled={!isEmailEditing}
                         />
 
                         {errors.email && <p className="error-text">{errors.email}</p>}
@@ -107,12 +127,23 @@ export default function Security() {
                             This email will be used for login and notifications
                         </div>
 
-                        <div className="action-buttons">
-                            <button type="submit" className="btn btn-primary">
-                                Update Email
-                            </button>
-                        </div>
+                        {isEmailEditing && (
 
+                            <div className="action-buttons">
+                                <button type="submit" className="btn btn-primary">
+                                    Update Email
+                                </button>
+
+                                <button type="submit"
+                                    className="btn btn-secondary"
+                                    onClick={() => setIsEmailEditing(false)}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+
+
+                        )}
                     </div>
 
                 </form>
@@ -120,8 +151,24 @@ export default function Security() {
                 {/* ================= CHANGE PASSWORD ================= */}
                 <form onSubmit={handlePasswordSubmit}>
 
-                    <h3 className="section-title" style={{marginBottom:"20px"}}>Change Password</h3>
+                    <div className="section-header">
+                        <h3 className="section-title" style={{ marginBottom: "20px" }}>Change Password</h3>
 
+                        {!isPasswordEditing && (
+                            <button
+                                type="button"
+                                onClick={() => setIsPasswordEditing(true)}
+                                className="edit-btn"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M12 20h9" />
+                                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
                     <div className="form-group">
 
                         <label className="form-label">
@@ -142,6 +189,7 @@ export default function Security() {
                                 setCurrentPassword(e.target.value);
                                 setErrors({ ...errors, currentPassword: "" });
                             }}
+                            disabled={!isPasswordEditing}
                         />
 
                         {errors.currentPassword && (
@@ -171,6 +219,7 @@ export default function Security() {
                                     setNewPassword(e.target.value);
                                     setErrors({ ...errors, newPassword: "" });
                                 }}
+                                disabled={!isPasswordEditing}
                             />
 
                             {errors.newPassword && (
@@ -197,6 +246,7 @@ export default function Security() {
                                     setConfirmPassword(e.target.value);
                                     setErrors({ ...errors, confirmPassword: "" });
                                 }}
+                                disabled={!isPasswordEditing}
                             />
 
                             {errors.confirmPassword && (
@@ -213,9 +263,21 @@ export default function Security() {
 
                     <div className="action-buttons">
 
-                        <button type="submit" className="btn btn-primary">
-                            Update Password
-                        </button>
+                        {isPasswordEditing && (
+                            <>
+                                <button type="submit" className="btn btn-primary">
+                                    Update Password
+                                </button>
+
+                                <button type="submit"
+                                    className="btn btn-secondary"
+                                    onClick={() => setIsPasswordEditing(false)}
+                                >
+                                    Cancel
+                                </button>
+
+                            </>
+                        )}
 
                         <button type="button" className="btn btn-danger">
                             Delete Account

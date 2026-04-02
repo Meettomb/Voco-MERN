@@ -1,5 +1,11 @@
 import express from "express";
-import { addLearningWord, deleteLearningWordById, getLearningWords, updateLearningWordById, deleteLearningWordsByChapterId } from "../controller/LearningWordsController.js";
+import { addLearningWord, 
+    deleteLearningWordById, 
+    getLearningWords, 
+    updateLearningWordById, 
+    deleteLearningWordsByChapterId,
+    getLearningWordById
+ } from "../controller/LearningWordsController.js";
 import { imageUpload } from "../middleware/imageUpload.js";
 import fs from "fs";
 import path from "path";
@@ -14,7 +20,8 @@ LearningWordsRoutes.post(
     addLearningWord
 );
 
-LearningWordsRoutes.get("/getLearningWords", authMiddleware, getLearningWords)
+LearningWordsRoutes.get("/getLearningWords/:id", authMiddleware, getLearningWordById);
+LearningWordsRoutes.get("/getLearningWords", authMiddleware, getLearningWords);
 LearningWordsRoutes.delete("/deleteLearningWord/:id", authMiddleware, deleteLearningWordById);
 LearningWordsRoutes.put(
     "/updateLearningWordById/:id",

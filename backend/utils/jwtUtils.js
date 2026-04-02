@@ -5,7 +5,7 @@ export const generateToken = (user) => {
     const payload = {
         id: user._id
     }
-    return jwt.sign(payload, secretKey, {expiresIn: "3h"})  
+    return jwt.sign(payload, secretKey, {expiresIn: "2d"})  
     
 }
 

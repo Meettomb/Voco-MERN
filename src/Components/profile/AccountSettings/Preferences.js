@@ -1,11 +1,28 @@
 import React from 'react'
 
 export default function Preferences() {
+
+    const [isEditing, setIsEditing] = React.useState(false);
+
     return (
         // Preferences Tab Content
         <div>
             <div className="tab-content AcountSettings" id="preferencesTab">
                 <form>
+                    <div className="edit-header">
+                        {!isEditing && (
+                            <button type="button" onClick={() => setIsEditing(true)}
+                                className="edit-btn"
+                                title="Edit Personal Details">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M12 20h9" />
+                                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
                     <div className="form-row">
                         <div className="form-group">
                             <label className="form-label">
@@ -15,7 +32,10 @@ export default function Preferences() {
                                 </svg>
                                 Daily Learning Goal
                             </label>
-                            <input type="text" className="form-input" placeholder="Set your daily goal" />
+                            <input type="text"
+                                className="form-input"
+                                placeholder="Set your daily goal"
+                                disabled={!isEditing} />
                         </div>
                         <div className="form-group">
                             <label className="form-label">
@@ -25,7 +45,9 @@ export default function Preferences() {
                                 </svg>
                                 Reminder Time
                             </label>
-                            <input type="time" className="form-input" />
+                            <input type="time"
+                                className="form-input"
+                                disabled={!isEditing} />
                         </div>
                     </div>
 
@@ -38,7 +60,7 @@ export default function Preferences() {
                                 </svg>
                                 Difficulty Level
                             </label>
-                            <select className="form-input">
+                            <select className="form-input" disabled={!isEditing}>
                                 <option value="">Select difficulty</option>
                                 <option value="beginner">Beginner</option>
                                 <option value="intermediate">Intermediate</option>
@@ -55,25 +77,33 @@ export default function Preferences() {
                                 </svg>
                                 Voice Practice
                             </label>
-                            <input type="text" className="form-input" placeholder="Voice settings" />
+                            <input type="text"
+                                className="form-input"
+                                placeholder="Voice settings"
+                                disabled={!isEditing} />
                         </div>
                     </div>
 
-                    <div className="action-buttons">
-                        <button type="submit" className="btn btn-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="20 6 9 17 4 12" />
-                            </svg>
-                            <span>Save Preferences</span>
-                        </button>
-                        <button type="button" className="btn btn-secondary">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="1 4 1 10 7 10" />
-                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
-                            </svg>
-                            <span>Reset to Default</span>
-                        </button>
-                    </div>
+                    {isEditing && (
+                        <div className="action-buttons">
+                            <button type="submit" className="btn btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                                <span>Save Preferences</span>
+                            </button>
+                            <button type="button"
+                                className="btn btn-secondary"
+                                onClick={() => setIsEditing(false)}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="1 4 1 10 7 10" />
+                                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                                </svg>
+                                <span>Cancel</span>
+                            </button>
+                        </div>
+                    )}
                 </form>
             </div>
         </div>

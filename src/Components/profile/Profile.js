@@ -1,16 +1,28 @@
-import React from 'react'
-import ProfileHero from './ProfileHero';
-import '../../Style/profile.css';
-import usePageTitle from '../../hooks/usePageTitle';
-import AccountSettingTop from './AccountSettings/AccountSettingTop';
-
+import React from "react";
+import ProfileHero from "./ProfileHero";
+import AccountSettingTop from "./AccountSettings/AccountSettingTop";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Profile() {
-  usePageTitle("Profile");
+  const { userData, refreshUser } = useAuth();
+
   return (
-    <div className='profile_main'>
-        <ProfileHero />
-        <AccountSettingTop />
-    </div>
+    <>
+      {/* {message && (
+        <p
+          className={`app-message ${messageType === "success" ? "success" : "error"
+            }`}
+        >
+          {message}
+        </p>
+      )} */}
+      <div className='profile_main'>
+        <ProfileHero userData={userData} />
+        <AccountSettingTop
+          userData={userData}
+          refreshUser={refreshUser}
+        />
+      </div>
+    </>
   )
 }

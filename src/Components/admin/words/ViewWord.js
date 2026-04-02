@@ -45,7 +45,7 @@ export default function ViewWords() {
       .then(res => {
 
         const data = res.data.data.filter(
-          w => w.chapterId === chapterId
+          w => w.chapterId?._id === chapterId
         );
 
         setWords(data);

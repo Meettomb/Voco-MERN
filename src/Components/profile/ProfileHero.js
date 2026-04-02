@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function ProfileHero() {
+export default function ProfileHero({ userData }) {
     return (
         <>
             <div className="profile-hero">
@@ -23,12 +23,12 @@ export default function ProfileHero() {
                                 <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
                             </svg>
                         </div>
-
                     </div>
+
                     <div className="hero-info">
-                        <h1 id="userName">404 Name Not Found</h1>
+                        <h1 id="userName">{userData?.username || "User Name not Found"}</h1>
                         <div className="language-tags">
-                            <span className="language-tag">Native: Hindi</span><span className="language-tag">
+                            <span className="language-tag">UI Language: {userData?.uiSupportLangauge || "Not Specified"}</span><span className="language-tag">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
@@ -53,7 +53,9 @@ export default function ProfileHero() {
 
                                 </svg>
 
-                                Learning: English
+                                Learning: {userData?.learningLanguages.length > 0
+                                    ? userData.learningLanguages.map(lang => lang.native).join(", ") 
+                                    : "Not Specified"}
                             </span>
 
                         </div>

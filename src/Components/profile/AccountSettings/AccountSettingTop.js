@@ -3,7 +3,7 @@ import PersonalDetails from './PersonalDetails';
 import Security from './Security';
 import Preferences from './Preferences';
 
-export default function AccountSettingTop() {
+export default function AccountSettingTop({ userData, setUserData, fetchUserData }) {
     const [activeTab, setActiveTab] = useState('personal');
 
     return (
@@ -43,9 +43,29 @@ export default function AccountSettingTop() {
                     </button>
                 </div>
                 <div>
-                    {activeTab === 'personal' && <PersonalDetails />}
-                    {activeTab === 'security' && <Security />}
-                    {activeTab === 'preferences' && <Preferences />}
+                    {activeTab === 'personal' &&
+                        <PersonalDetails
+                            userData={userData}
+                            setUserData={setUserData}
+                            fetchUserData={fetchUserData}
+                        />
+                    }
+
+                    {activeTab === 'security' &&
+                        <Security
+                            userData={userData}
+                            setUserData={setUserData}
+                            fetchUserData={fetchUserData}
+                        />
+                    }
+
+                    {activeTab === 'preferences' &&
+                        <Preferences
+                            userData={userData}
+                            setUserData={setUserData}
+                            fetchUserData={fetchUserData}
+                        />
+                    }
                 </div>
 
 
