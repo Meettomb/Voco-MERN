@@ -21,6 +21,8 @@ import EnterEmail from "./Components/forgotPassword/EnterEmail";
 import ForgotPasswordOtpVerify from "./Components/forgotPassword/ForgotPasswordOtpVerify";
 import EnterNewPassword from "./Components/forgotPassword/EnterNewPassword";
 
+import LearnChapter from "./Components/LearnChapter";
+
 // Admin Components
 import AdminHeader from "./Components/admin/AdminHeader";
 import Dashboard from "./Components/admin/Dashboard";
@@ -34,7 +36,7 @@ import AddWords from "./Components/admin/words/AddWords";
 import ViewAllLearningLanguages from "./Components/admin/language/learning-languages/ViewAllLearningLanguages";
 import ViewLearningLanguages from "./Components/admin/language/learning-languages/ViewLearningLanguages";
 import UpdateLearningLanguage from "./Components/admin/language/learning-languages/UpdateLearningLanguage";
-import ManageWords from "./Components/admin/words/ManageWords";
+// import ManageWords from "./Components/admin/words/ManageWords";
 import ViewWord from "./Components/admin/words/ViewWord";
 import EditWords from "./Components/admin/words/EditWords";
 import ViewLanguages from "./Components/admin/words/ViewLanguages"
@@ -91,6 +93,12 @@ function App() {
               <AuthRoute onAuthFail={() => setAuthView("login")}>
                 <Profile />
               </AuthRoute>} />
+
+            <Route path="/learn-chapter/:chapterId" element={
+              <AuthRoute onAuthFail={() => setAuthView("login")}>
+                <LearnChapter />
+              </AuthRoute>} />
+
           </Route>
 
           {/* Admin Pages WITH Admin Header + Sidebar */}
@@ -156,10 +164,10 @@ function App() {
                 <AddWords />
               </AuthRoute>} />
 
-            <Route path="words/manage" element={
+            {/* <Route path="words/manage" element={
               <AuthRoute onAuthFail={() => setAuthView("login")}>
                 <ManageWords />
-              </AuthRoute>} />
+              </AuthRoute>} /> */}
 
             <Route path="words/view/:chapterId" element={
               <AuthRoute onAuthFail={() => setAuthView("login")}>

@@ -3,12 +3,14 @@ import { useTranslation } from "react-i18next";
 import usePageTitle from "../hooks/usePageTitle";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function LearnWords() {
 
   const { activeLanguage, uiLanguage } = useAuth();
   const { t } = useTranslation();
   usePageTitle("Learn Words");
+  const navigate = useNavigate();
 
   const [chapters, setChapters] = useState([]);
 
@@ -45,6 +47,7 @@ function LearnWords() {
 
   const handleStartLearning = (chapterId) => {
     // handle navigation to learning page for the selected chapter
+    navigate(`/learn-chapter/${chapterId}`);
   }
 
   return (

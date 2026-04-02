@@ -31,7 +31,7 @@ function Home({ onOpen }) {
             const timer = setTimeout(() => {
                 setMessage("");
                 setMessageType("");
-            }, 3000);
+            }, 2000);
 
             return () => clearTimeout(timer);
         }

@@ -5573,6 +5573,7 @@ svg {
   height: 18px;
   fill: var(--color-primary);
 }
+
 .AcountSettings .form-input {
   width: 100%;
   padding: 0.9rem 1.2rem;
@@ -5733,7 +5734,8 @@ svg {
    =============================== */
 .AcountSettings .edit-header {
   display: flex;
-  justify-content: flex-end; /* move to right */
+  justify-content: flex-end;
+  /* move to right */
   align-items: center;
   margin-bottom: 12px;
 }
@@ -6945,4 +6947,374 @@ svg {
     padding: 15px;
   }
 
+}
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* LearnChapter */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+/* =========================
+   ROOT IS ALREADY DEFINED
+   ========================= */
+
+/* =========================
+   MAIN WRAPPER
+   ========================= */
+
+.LearnChapter {
+  padding: 20px;
+  background: var(--color-bg-main);
+  min-height: 100vh;
+  color: var(--color-text-primary);
+}
+
+.LearnChapter .LearnChapter__container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* =========================
+   GRAMMAR SECTION
+   ========================= */
+
+.LearnChapter .LearnChapter__grammar {
+  background: var(--color-bg-card);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.LearnChapter .LearnChapter__grammarContent h2 {
+  color: var(--color-primary);
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+.LearnChapter .LearnChapter__grammarContent p {
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+}
+
+/* =========================
+   LEVELS
+   ========================= */
+
+.LearnChapter .LearnChapter__levels {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* =========================
+   SINGLE LEVEL
+   ========================= */
+
+.LearnChapter .LearnChapter__level {
+  background: var(--color-bg-card);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border-light);
+}
+
+/* Level Header */
+
+.LearnChapter .LearnChapter__levelHeader {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: var(--color-accent-yellow);
+}
+
+/* =========================
+   WORD GRID
+   ========================= */
+
+.LearnChapter .LearnChapter__words {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+/* =========================
+   WORD CARD
+   ========================= */
+
+.LearnChapter .LearnChapter__wordCard {
+  background: var(--color-bg-section);
+  padding: 15px;
+  border-radius: 10px;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  border: 1px solid var(--color-border-light);
+}
+
+.LearnChapter .LearnChapter__wordCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  background: var(--color-bg-hover);
+}
+
+/* English */
+
+.LearnChapter .LearnChapter__wordEn {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-accent-green);
+}
+
+/* Hindi */
+
+.LearnChapter .LearnChapter__wordHi {
+  font-size: 14px;
+  margin-top: 6px;
+  color: var(--color-text-secondary);
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+   ========================= */
+
+/* Tablet */
+@media (max-width: 992px) {
+  .LearnChapter {
+    padding: 15px;
+  }
+
+  .LearnChapter .LearnChapter__grammar {
+    padding: 20px;
+  }
+
+  .LearnChapter .LearnChapter__level {
+    padding: 18px;
+  }
+
+  .LearnChapter .LearnChapter__levelHeader {
+    font-size: 18px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .LearnChapter .LearnChapter__words {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+
+  .LearnChapter .LearnChapter__wordCard {
+    padding: 12px;
+  }
+
+  .LearnChapter .LearnChapter__wordEn {
+    font-size: 14px;
+  }
+
+  .LearnChapter .LearnChapter__wordHi {
+    font-size: 13px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .LearnChapter {
+    padding: 10px;
+  }
+
+  .LearnChapter .LearnChapter__grammar {
+    padding: 15px;
+  }
+
+  .LearnChapter .LearnChapter__level {
+    padding: 15px;
+  }
+
+  .LearnChapter .LearnChapter__levelHeader {
+    font-size: 16px;
+  }
+
+  .LearnChapter .LearnChapter__words {
+    grid-template-columns: 1fr;
+  }
+
+  .LearnChapter .LearnChapter__wordCard {
+    padding: 10px;
+  }
+}
+
+/* =========================
+   HEADER
+   ========================= */
+
+.LearnChapter .LearnChapter__header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* =========================
+   BACK BUTTON
+   ========================= */
+
+.LearnChapter .LearnChapter__backBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-bg-section);
+  border: 1px solid var(--color-border-light);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.LearnChapter .LearnChapter__backBtn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ICON */
+
+.LearnChapter .LearnChapter__backIcon {
+  width: 18px;
+  height: 18px;
+}
+/* =========================
+   LANGUAGE TOGGLE
+   ========================= */
+
+.LearnChapter .LearnChapter__langToggle {
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-bg-section);
+  border: 1px solid var(--color-border-light);
+  border-radius: 999px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 15px;
+}
+
+/* BUTTON */
+
+.LearnChapter .LearnChapter__langToggle button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* HOVER */
+
+.LearnChapter .LearnChapter__langToggle button:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-primary);
+}
+
+/* ACTIVE STATE */
+
+.LearnChapter .LearnChapter__langToggle button.active {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-sm);
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 480px) {
+  .LearnChapter .LearnChapter__langToggle {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .LearnChapter .LearnChapter__langToggle button {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    font-size: 12px;
+  }
+}
+
+
+/* ICON SIZE */
+
+.LearnChapter .LearnChapter__speakIcon {
+  width: 18px;
+  height: 18px;
+}
+
+/* BUTTON IMPROVEMENT */
+
+.LearnChapter .LearnChapter__speakBtn {
+  margin-left: 10px;
+  background: var(--color-bg-hover);
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  padding: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--color-text-secondary);
+}
+
+/* HOVER */
+
+.LearnChapter .LearnChapter__speakBtn:hover {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  transform: scale(1.05);
+}
+
+/* ACTIVE CLICK */
+
+.LearnChapter .LearnChapter__speakBtn:active {
+  transform: scale(0.95);
+}
+
+
+.LearnChapter .LearnChapter__grammarPara {
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.LearnChapter .LearnChapter__grammarPara:hover {
+  background: var(--color-bg-hover);
+}
+.LearnChapter__grammarContent p {
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.LearnChapter__grammarContent p:hover {
+  background: var(--color-bg-hover);
+}
+
+.LearnChapter .LearnChapter__speakSelectedBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.LearnChapter .LearnChapter__speakSelectedBtn:hover {
+  background: var(--color-primary-dark);
 }

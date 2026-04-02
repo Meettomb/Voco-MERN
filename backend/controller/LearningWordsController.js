@@ -448,3 +448,31 @@ export const deleteLearningWordsByChapterId = async (req, res) => {
 
     }
 };
+
+export const getLearningWordById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const word = await LearningWord.findById(id)
+            .populate("learningWordsLangauge")
+            .populate("chapterId");
+
+        if (!word) {
+            return res.status(404).json({
+                status: 0,
+                message: "LearningWord not found"
+            });
+        }
+
+        return res.status(200).json({
+            status: 1,
+            data: word
+        });
+
+    } catch (err) {
+        return res.status(400).json({
+            status: 0,
+            message: err.message
+        });
+    }
+};
