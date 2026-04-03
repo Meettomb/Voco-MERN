@@ -21,6 +21,8 @@ const TrashIcon = () => (
 
 export default function ViewAllLearningLanguages() {
   usePageTitle("View All Learning Languages");
+  
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
 
   const [languages, setLanguages] = useState(null);
   const [message, setMessage] = useState("");
@@ -68,7 +70,7 @@ export default function ViewAllLearningLanguages() {
   const getAllLearningLanguages = async () => {
     try {
 
-      const response = await axios.get("http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages",
+      const response = await axios.get(`${REACT_APP_API_URL}/LearningLanguagesModel/getAllLearningLanguages`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -85,7 +87,7 @@ export default function ViewAllLearningLanguages() {
   const deleteLearningLangaugebyId = async (id) => {
     try {
 
-      const responce = await axios.delete(`http://localhost:5000/api/LearningLanguagesModel/deleteLearningLangaugebyId/${id}`,
+      const responce = await axios.delete(`${REACT_APP_API_URL}/LearningLanguagesModel/deleteLearningLangaugebyId/${id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`

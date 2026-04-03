@@ -10,6 +10,9 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [uiLanguage, setUiLanguage] = useState(null);
 
+
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+
   const user = getUser();
   const id = user?.id;
 
@@ -35,7 +38,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       const res = await axios.get(
-        `http://localhost:5000/api/userModel/getUserDataById/${id}`,
+        `${REACT_APP_API_URL}/userModel/getUserDataById/${id}`,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -57,7 +60,7 @@ export const AuthProvider = ({ children }) => {
       const langCode = langCodeParam || i18n.language || "en";
 
       const res = await axios.get(
-        `http://localhost:5000/api/UiLanguageModel/getByCode/${langCode}`,
+        `${REACT_APP_API_URL}/UiLanguageModel/getByCode/${langCode}`,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),

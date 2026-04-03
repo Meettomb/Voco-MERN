@@ -7,6 +7,8 @@ import FullScreenLoader from "../../../FullScreenLoader";
 export default function UserDetailView() {
   usePageTitle("User Detail View");
 
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+  
   const navigate = useNavigate();
 
   // TEMP dummy data (replace with API later)
@@ -59,7 +61,7 @@ export default function UserDetailView() {
 
   const fetchUserDetails = async () => {
     try {
-      const responce = await axios.get(`http://localhost:5000/api/userModel/getUserDataById/${id}`,
+      const responce = await axios.get(`${REACT_APP_API_URL}/userModel/getUserDataById/${id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -78,7 +80,7 @@ export default function UserDetailView() {
     try {
 
       await axios.patch(
-        `http://localhost:5000/api/userModel/updateUserActiveStatus/${id}`,
+        `${REACT_APP_API_URL}/userModel/updateUserActiveStatus/${id}`,
         {
           isActive: !user.isActive,
         },

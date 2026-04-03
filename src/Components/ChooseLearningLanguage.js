@@ -8,6 +8,7 @@ export default function ChooseLearningLanguage() {
   const { userData, refreshUser, updateActiveLanguage } = useAuth();
   const id = userData?._id;
 
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
   const navigate = useNavigate();
   const location = useLocation();
   // which page user wanted
@@ -47,7 +48,7 @@ export default function ChooseLearningLanguage() {
       // Update DB only if 0 language
       if (langCount === 0) {
         const response = await axios.patch(
-          `http://localhost:5000/api/userModel/updateUserById/${id}`,
+          `${REACT_APP_API_URL}/userModel/updateUserById/${id}`,
           {
             learningLanguages: [selectedLanguage._id]
           },
@@ -66,7 +67,7 @@ export default function ChooseLearningLanguage() {
 
         await refreshUser();
       }
-      
+
       updateActiveLanguage(selectedLanguage);
 
       // Navigation (common for all cases)
@@ -95,7 +96,7 @@ export default function ChooseLearningLanguage() {
 
   const getLearningLanguage = async () => {
     try {
-      const lang = await axios.get("http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages",
+      const lang = await axios.get(`${REACT_APP_API_URL}/LearningLanguagesModel/getAllLearningLanguages`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`

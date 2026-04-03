@@ -39,7 +39,9 @@ const TrashIcon = () => (
 
 export default function ViewLearningLanguages() {
   usePageTitle("View Learning Language");
-  const navigate = useNavigate();   // ✅ back navigation
+  
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+  const navigate = useNavigate();   //  back navigation
   // const [search, setSearch] = useState("");
 
   const { id } = useParams();
@@ -71,7 +73,7 @@ export default function ViewLearningLanguages() {
 
   const getLearningLanguagesById = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/LearningLanguagesModel/getLearningLanguagesById/${id}`,
+      const response = await axios.get(`${REACT_APP_API_URL}/LearningLanguagesModel/getLearningLanguagesById/${id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -94,7 +96,7 @@ export default function ViewLearningLanguages() {
     try {
 
       const response = await axios.delete(
-        `http://localhost:5000/api/LearningLanguagesModel/deleteLearningLangaugeChapterbyId/${langId}/${chapterId}`,
+        `${REACT_APP_API_URL}/LearningLanguagesModel/deleteLearningLangaugeChapterbyId/${langId}/${chapterId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -126,7 +128,7 @@ export default function ViewLearningLanguages() {
   const deleteLearningLangaugebyId = async (id) => {
     try {
 
-      const responce = await axios.delete(`http://localhost:5000/api/LearningLanguagesModel/deleteLearningLangaugebyId/${id}`,
+      const responce = await axios.delete(`${REACT_APP_API_URL}/LearningLanguagesModel/deleteLearningLangaugebyId/${id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`

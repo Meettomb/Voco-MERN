@@ -9,6 +9,7 @@ export default function ViewLanguages() {
 
   usePageTitle("Languages");
 
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
   const [languages, setLanguages] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -21,7 +22,7 @@ export default function ViewLanguages() {
 
     axios
       .get(
-        "http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages",
+        `${REACT_APP_API_URL}/LearningLanguagesModel/getAllLearningLanguages`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`

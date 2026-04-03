@@ -5,6 +5,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function SignInPopup({ onClose, onOpenRegister }) {
+
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
   usePageTitle("Sign In");
   const [showPassword, setShowPassword] = useState(false);
   const { t } = useTranslation();
@@ -70,7 +72,7 @@ function SignInPopup({ onClose, onOpenRegister }) {
     if (!validateForm()) return;
 
     try {
-      const response = await axios.post("http://localhost:5000/api/userModel/Login/", formData)
+      const response = await axios.post(`${REACT_APP_API_URL}/userModel/Login/`, formData)
       if (response.data.status === 1) {
         localStorage.setItem('token', response.data.data.token)
         if (response.data.data.role === "admin") {
@@ -86,7 +88,7 @@ function SignInPopup({ onClose, onOpenRegister }) {
             "/",
             { state: { message: "Login successful ", messageType: "success" } }
           );
-        }  
+        }
       }
       else {
         navigate("/", {

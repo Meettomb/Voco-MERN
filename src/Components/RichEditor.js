@@ -173,6 +173,7 @@ const ResizableImage = Image.extend({
 
 export default function RichEditor({ value, onChange }) {
 
+    const REACT_APP_API_URL = process.env.REACT_APP_API_URL
     const fileInputRef = useRef(null);
     const [showHtmlPreview, setShowHtmlPreview] = useState(false);
 
@@ -228,7 +229,7 @@ export default function RichEditor({ value, onChange }) {
                 try {
 
                     await axios.delete(
-                        "http://localhost:5000/api/LearningWordsModel/deleteImage",
+                        `${REACT_APP_API_URL}/LearningWordsModel/deleteImage`,
                         {
                             data: { url: img }
                         }
@@ -262,7 +263,7 @@ export default function RichEditor({ value, onChange }) {
             formData.append("image", file);
 
             const res = await axios.post(
-                "http://localhost:5000/api/LearningWordsModel/uploadImage",
+                `${REACT_APP_API_URL}/LearningWordsModel/uploadImage`,
                 formData,
                 {
                     headers: {

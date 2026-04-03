@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import '../Style/index.css';
 import { COMPANY_NAME } from "../hooks/usePageTitle";
 import Logo from '../assets/images/Voco.png';
 import { useTranslation } from 'react-i18next';

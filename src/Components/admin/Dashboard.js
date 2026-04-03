@@ -6,6 +6,8 @@ import usePageTitle from "../../hooks/usePageTitle";
 
 export default function Dashboard() {
   usePageTitle("Dashboard");
+  
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
 
   const [dashboard, setDashboard] = useState(null);
 
@@ -14,7 +16,7 @@ export default function Dashboard() {
     try {
 
       const res = await axios.get(
-        "http://localhost:5000/api/dashboard/data",
+        `${REACT_APP_API_URL}/dashboard/data`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`

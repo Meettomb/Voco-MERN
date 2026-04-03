@@ -8,6 +8,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 function ForgotPasswordOtpVerify() {
   usePageTitle("Verify OTP");
 
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const { t } = useTranslation();
 
@@ -112,7 +114,7 @@ function ForgotPasswordOtpVerify() {
       setLoading(true);
 
       const { data } = await axios.post(
-        "http://localhost:5000/api/ForgotPassword/forgotPasswordOtpVerify/",
+        `${REACT_APP_API_URL}/ForgotPassword/forgotPasswordOtpVerify/`,
         {
           email,
           otp: enteredOtp,
@@ -152,7 +154,7 @@ function ForgotPasswordOtpVerify() {
       setLoading(true);
 
       const { data } = await axios.post(
-        "http://localhost:5000/api/ForgotPassword/forgotPasswordOtpSending/",
+        `${REACT_APP_API_URL}/ForgotPassword/forgotPasswordOtpSending/`,
         savedData
       );
 

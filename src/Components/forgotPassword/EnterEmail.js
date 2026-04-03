@@ -6,6 +6,7 @@ import FullScreenLoader from "../../Components/FullScreenLoader";
 
 
 export default function EnterEmail() {
+    const REACT_APP_API_URL = process.env.REACT_APP_API_URL
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -43,7 +44,7 @@ export default function EnterEmail() {
             setLoading(true);
 
             const response = await axios.post(
-                "http://localhost:5000/api/ForgotPassword/forgotPasswordOtpSending",
+                `${REACT_APP_API_URL}/ForgotPassword/forgotPasswordOtpSending`,
                 { email }
             );
 

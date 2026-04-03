@@ -10,6 +10,10 @@ function RegisterPopup({ onClose, onOpenSignIn }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   usePageTitle("Registration");
+
+  
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+
   /* Lock background scroll */
   useEffect(() => {
     const original = document.body.style.overflow;
@@ -102,7 +106,7 @@ function RegisterPopup({ onClose, onOpenSignIn }) {
       setLoading(true); // start loader
 
       const { data } = await axios.post(
-        "http://localhost:5000/api/userModel/sendOtp",
+        `${REACT_APP_API_URL}/userModel/sendOtp`,
         formData
       );
 

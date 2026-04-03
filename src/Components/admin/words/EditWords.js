@@ -8,6 +8,9 @@ import { useParams, useNavigate } from "react-router-dom";
 // const UI_LANGUAGES = ["en", "hi"];
 
 export default function EditWords() {
+
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -58,7 +61,7 @@ export default function EditWords() {
       try {
 
         const res = await axios.get(
-          "http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages",
+          `${REACT_APP_API_URL}/LearningLanguagesModel/getAllLearningLanguages`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -93,7 +96,7 @@ export default function EditWords() {
         setLoading(true);
 
         const res = await axios.get(
-          "http://localhost:5000/api/LearningWordsModel/getLearningWords",
+          `${REACT_APP_API_URL}/LearningWordsModel/getLearningWords`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -107,8 +110,8 @@ export default function EditWords() {
 
         if (!word) return;
 
-        setChapterId(word.chapterId);
-        setLanguageId(word.learningWordsLangauge);
+        setChapterId(word.chapterId?._id || word.chapterId);
+        setLanguageId(word.learningWordsLangauge?._id || word.learningWordsLangauge);
 
         setContentType(
           word.contentType === "TextArea"
@@ -193,7 +196,7 @@ export default function EditWords() {
       try {
 
         const res = await axios.get(
-          "http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+          `${REACT_APP_API_URL}/UiLanguageModel/getUiLanguage`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -466,7 +469,7 @@ export default function EditWords() {
       let finalChapterId = chapterId;
       let finalLanguageId = languageId;
 
-      // ✅ IMPORTANT
+      //  IMPORTANT
       formData.append("isAllLanguage", isAllLanguage);
       formData.append(
         "translations",
@@ -511,7 +514,7 @@ export default function EditWords() {
       }
 
       const response = await axios.put(
-        `http://localhost:5000/api/LearningWordsModel/updateLearningWordById/${id}`,
+        `${REACT_APP_API_URL}/LearningWordsModel/updateLearningWordById/${id}`,
         formData,
         {
           headers: {
@@ -538,6 +541,7 @@ export default function EditWords() {
         setMessageType("error");
 
       }
+      
 
     } catch (error) {
 
