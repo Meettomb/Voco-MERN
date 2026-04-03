@@ -60,9 +60,9 @@ export const sendMail = async (to, subject, type, value) => {
   }
 
   // ✅ RESET PASSWORD MAIL
-if (type === "reset") {
+  if (type === "reset") {
 
-  content = `
+    content = `
   <h2>Password Reset Successful</h2>
 
   <div style="
@@ -79,7 +79,7 @@ if (type === "reset") {
   <p>If this was not you, please contact support.</p>
   `;
 
-}
+  }
 
   const html = `
   <table width="100%" cellpadding="0" cellspacing="0"

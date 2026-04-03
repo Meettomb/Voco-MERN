@@ -13,7 +13,6 @@ export const addLearningWord = async (req, res) => {
             isAllLanguage
         } = req.body;
 
-        console.log("BODY:", req.body);
         let translations = req.body.translations ? JSON.parse(req.body.translations) : null;
         let grammarContent = {};
 

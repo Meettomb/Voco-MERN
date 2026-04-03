@@ -34,7 +34,6 @@ export const forgotPasswordOtpSending = async (req, res) => {
             data: { email }
         };
 
-        console.log("OTP STORE:", otpStore);
 
         await sendMail(
             email,

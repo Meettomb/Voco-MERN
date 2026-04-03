@@ -591,8 +591,6 @@ export const sendOtp = async (req, res) => {
       data: { username, email, phoneNumber, password },
     };
 
-    console.log("OTP STORE:", otpStore);
-
     await sendMail(
       email,
       "OTP Verification",
