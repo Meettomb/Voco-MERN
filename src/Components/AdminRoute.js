@@ -5,6 +5,7 @@ import axios from "axios";
 
 export default function AdminRoute({ children }) {
 
+    const REACT_APP_API_URL = process.env.REACT_APP_API_URL
     const user = getUser();
     const id = user?.id;
 
@@ -19,7 +20,7 @@ export default function AdminRoute({ children }) {
                     return;
                 }
                 const response = await axios.get(
-                    `http://localhost:5000/api/userModel/getUserDataById/${id}`,
+                    `${REACT_APP_API_URL}/userModel/getUserDataById/${id}`,
                     {
                         headers: {
                             Authorization: "Bearer " + localStorage.getItem("token"),

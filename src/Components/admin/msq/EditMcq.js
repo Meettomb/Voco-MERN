@@ -7,6 +7,9 @@ import FullScreenLoader from "../../FullScreenLoader"
 
 export default function EditMcq() {
   usePageTitle("Add MCQs");
+
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+
   const navigate = useNavigate();
   const { id } = useParams();
   const [uiLanguages, setUiLanguages] = useState([]);
@@ -31,7 +34,7 @@ export default function EditMcq() {
     const fetchChapters = async () => {
 
       const res = await axios.get(
-        "http://localhost:5000/api/ChapterModel/getUniqueChapters",
+        `${REACT_APP_API_URL}/ChapterModel/getUniqueChapters`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -57,7 +60,7 @@ export default function EditMcq() {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://localhost:5000/api/McqsModel/getMcqsById/${id}`,
+        `${REACT_APP_API_URL}/McqsModel/getMcqsById/${id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -107,7 +110,7 @@ export default function EditMcq() {
       try {
 
         const res = await axios.get(
-          "http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+          `${REACT_APP_API_URL}/UiLanguageModel/getUiLanguage`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -265,7 +268,7 @@ export default function EditMcq() {
     try {
       setSaving(true);
       const res = await axios.patch(
-        `http://localhost:5000/api/McqsModel/updateMcqsById/${id}`,
+        `${REACT_APP_API_URL}/McqsModel/updateMcqsById/${id}`,
         {
           chapterId: chapterIds,
           mcqs

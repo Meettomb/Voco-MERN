@@ -7,6 +7,8 @@ import axios from 'axios';
 export default function AllUsers() {
   usePageTitle("All Users");
 
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const token = localStorage.getItem('token')
@@ -18,7 +20,7 @@ export default function AllUsers() {
 
   const fetchUsers = async () => {
     try {
-      const respnce = await axios.get("http://localhost:5000/api/userModel/getUserData/",
+      const respnce = await axios.get(`${REACT_APP_API_URL}/userModel/getUserData/`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -49,7 +51,7 @@ export default function AllUsers() {
       }
 
       const res = await axios.get(
-        `http://localhost:5000/api/userModel/searchUsers?keyword=${value}`,
+        `${REACT_APP_API_URL}/userModel/searchUsers?keyword=${value}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`

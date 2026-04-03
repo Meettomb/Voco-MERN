@@ -7,6 +7,7 @@ export default function ManageMcq() {
 
   usePageTitle("Manage MCQs");
 
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
   const navigate = useNavigate();
   const [mcqs, setMcqs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,19 +60,19 @@ export default function ManageMcq() {
   const fetchMcqs = async (diff = "", key = "") => {
     try {
 
-      let url = "http://localhost:5000/api/McqsModel/getAllMcqs";
+      let url = `${REACT_APP_API_URL}/McqsModel/getAllMcqs`;
 
       // search API
       if (key) {
 
-        url = `http://localhost:5000/api/McqsModel/searchMcqs?key=${key}`;
+        url = `${REACT_APP_API_URL}/McqsModel/searchMcqs?key=${key}`;
 
       }
 
       // difficulty only
       else if (diff) {
 
-        url = `http://localhost:5000/api/McqsModel/getAllMcqsByDifficulty/${diff}`;
+        url = `${REACT_APP_API_URL}/McqsModel/getAllMcqsByDifficulty/${diff}`;
 
       }
 

@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import usePageTitle from "../../../hooks/usePageTitle";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-
-
 import FullScreenLoader from "../../FullScreenLoader";
 
 export default function ViewChapters() {
 
     usePageTitle("Chapters");
 
+    const REACT_APP_API_URL = process.env.REACT_APP_API_URL
     const [loading, setLoading] = useState(false);
 
     const { languageId } = useParams();
@@ -47,12 +46,12 @@ export default function ViewChapters() {
 
         axios
             .get(
-                "http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages",
+                `${REACT_APP_API_URL}/LearningLanguagesModel/getAllLearningLanguages`,
                 {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        }
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                }
             )
             .then(res => {
 
@@ -80,7 +79,7 @@ export default function ViewChapters() {
         <>
             {message && (
                 <p
-                    className={`app-message ${messageType === "success" ? "success" : "error"
+                   className={`app - message ${messageType === "success" ? "success" : "error"
                         }`}
                 >
                     {message}

@@ -5,6 +5,8 @@ import axios from "axios";
 export default function UiLanguages() {
     usePageTitle("Supported UI Languages");
 
+    const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+
     const token = localStorage.getItem('token')
     const [search, setSearch] = useState("");
     const [formData, setFormData] = useState({
@@ -55,7 +57,7 @@ export default function UiLanguages() {
 
     const addUiLaunguage = async () => {
         try {
-            const response = await axios.post("http://localhost:5000/api/UiLanguageModel/addUiLaunguage", formData,
+            const response = await axios.post(`${REACT_APP_API_URL}/UiLanguageModel/addUiLaunguage`, formData,
                 {
                     headers: {
                         'Authorization': 'Bearer ' + token
@@ -88,7 +90,7 @@ export default function UiLanguages() {
     }
 
     const getAllUiLanguages = async () => {
-        const response = await axios.get("http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+        const response = await axios.get(`${REACT_APP_API_URL}/UiLanguageModel/getUiLanguage`,
             {
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -100,7 +102,7 @@ export default function UiLanguages() {
 
     const updateLanguage = async () => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/UiLanguageModel/updateUiLanguageById/${popup.data._id}`, editData,
+            const response = await axios.put(`${REACT_APP_API_URL}/UiLanguageModel/updateUiLanguageById/${popup.data._id}`, editData,
                 {
                     headers: {
                         'Authorization': 'Bearer ' + token
@@ -134,7 +136,7 @@ export default function UiLanguages() {
 
     const deleteLanguage = async (id) => {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/UiLanguageModel/deleteUiLanguage/${id}`,
+            const response = await axios.delete(`${REACT_APP_API_URL}/UiLanguageModel/deleteUiLanguage/${id}`,
                 {
                     headers: {
                         'Authorization': 'Bearer ' + token
@@ -177,7 +179,7 @@ export default function UiLanguages() {
             }
 
             const response = await axios.get(
-                "http://localhost:5000/api/UiLanguageModel/filterUiLanguages",
+                `${REACT_APP_API_URL}/UiLanguageModel/filterUiLanguages`,
                 {
                     params: {
                         search: value

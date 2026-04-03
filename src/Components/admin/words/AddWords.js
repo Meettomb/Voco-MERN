@@ -9,6 +9,8 @@ import FullScreenLoader from "../../FullScreenLoader";
 export default function AddWords() {
     const [loading, setLoading] = useState(false);
     const [contentType, setContentType] = useState("text");
+
+    const REACT_APP_API_URL = process.env.REACT_APP_API_URL
     // "text" | "textarea"
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("");
@@ -49,7 +51,7 @@ export default function AddWords() {
             try {
 
                 const res = await axios.get(
-                    "http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages",
+                    `${REACT_APP_API_URL}/LearningLanguagesModel/getAllLearningLanguages`,
                     {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -113,7 +115,7 @@ export default function AddWords() {
             try {
 
                 const res = await axios.get(
-                    "http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+                    `${REACT_APP_API_URL}/UiLanguageModel/getUiLanguage`,
                     {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -402,7 +404,7 @@ export default function AddWords() {
 
             }
             const response = await axios.post(
-                "http://localhost:5000/api/LearningWordsModel/addLearningWord",
+                `${REACT_APP_API_URL}/LearningWordsModel/addLearningWord`,
                 formData,
                 {
                     headers: {

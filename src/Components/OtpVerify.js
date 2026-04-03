@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 function OtpVerify() {
   usePageTitle("Verify OTP");
 
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const { t } = useTranslation();
 
@@ -112,7 +113,7 @@ function OtpVerify() {
       setLoading(true);
 
       const { data } = await axios.post(
-        "http://localhost:5000/api/userModel/verifyOtp",
+        `${REACT_APP_API_URL}/userModel/verifyOtp`,
         {
           email,
           otp: enteredOtp,
@@ -152,7 +153,7 @@ function OtpVerify() {
       setLoading(true);
 
       const { data } = await axios.post(
-        "http://localhost:5000/api/userModel/sendOtp",
+        `${REACT_APP_API_URL}/userModel/sendOtp`,
         savedData
       );
 

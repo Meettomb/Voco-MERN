@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 function LearnWords() {
 
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
   const { activeLanguage, uiLanguage } = useAuth();
   const { t } = useTranslation();
   usePageTitle("Learn Words");
@@ -18,7 +19,7 @@ function LearnWords() {
     const fetchChapters = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/LearningWordsModel/getLearningWords",
+          `${REACT_APP_API_URL}/LearningWordsModel/getLearningWords`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

@@ -9,6 +9,9 @@ export default function LearnChapter() {
     const { chapterId } = useParams();
     const navigate = useNavigate();
 
+
+    const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+
     const [grammarLang, setGrammarLang] = useState(uiLanguage?.code || "en");
 
     const [chapterData, setChapterData] = useState(null);
@@ -38,14 +41,14 @@ export default function LearnChapter() {
         return () => clearTimeout(timer);
     }, [message]);
 
-    /* ✅ Fetch chapter */
+    /*  Fetch chapter */
     useEffect(() => {
         if (!userData || !chapterId) return;
 
         const getChapterLanguage = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:5000/api/LearningWordsModel/getLearningWords/${chapterId}`,
+                    `${REACT_APP_API_URL}/LearningWordsModel/getLearningWords/${chapterId}`,
                     {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("token")}`,

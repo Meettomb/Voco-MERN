@@ -7,6 +7,7 @@ import FullScreenLoader from "../../FullScreenLoader"
 export default function ViewWords() {
 
   usePageTitle("Words");
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
   const [loading, setLoading] = useState(false);
   const { chapterId } = useParams();
 
@@ -35,7 +36,7 @@ export default function ViewWords() {
     setLoading(true);
 
     axios
-      .get("http://localhost:5000/api/LearningWordsModel/getLearningWords",
+      .get(`${REACT_APP_API_URL}/LearningWordsModel/getLearningWords`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -66,7 +67,7 @@ export default function ViewWords() {
       // if (!window.confirm("Delete all words?")) return;
 
       const response = await axios.delete(
-        `http://localhost:5000/api/LearningWordsModel/deleteLearningWordsByChapterId/${chapterId}`,
+        `${REACT_APP_API_URL}/LearningWordsModel/deleteLearningWordsByChapterId/${chapterId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`

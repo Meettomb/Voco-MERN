@@ -4,6 +4,7 @@ import axios from "axios";
 
 export default function ViewMcq() {
 
+    const REACT_APP_API_URL = process.env.REACT_APP_API_URL
     const { id } = useParams();
     const navigate = useNavigate();
     const [mcq, setMcq] = useState(null);
@@ -33,7 +34,7 @@ export default function ViewMcq() {
         try {
 
             const res = await axios.get(
-                `http://localhost:5000/api/McqsModel/getMcqsById/${id}`,
+                `${REACT_APP_API_URL}/McqsModel/getMcqsById/${id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -69,7 +70,7 @@ export default function ViewMcq() {
         try {
 
             const res = await axios.delete(
-                `http://localhost:5000/api/McqsModel/deleteMcqsById/${id}`,
+                `${REACT_APP_API_URL}/McqsModel/deleteMcqsById/${id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`

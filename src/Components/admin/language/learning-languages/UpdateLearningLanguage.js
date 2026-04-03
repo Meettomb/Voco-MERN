@@ -6,6 +6,8 @@ import axios from "axios";
 
 export default function UpdateLearningLanguage() {
   usePageTitle("Update Learning Language");
+
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
   const { id } = useParams();
 
   const navigate = useNavigate();
@@ -27,12 +29,12 @@ export default function UpdateLearningLanguage() {
 
   const fetchUiLanguages = async () => {
     const res = await axios.get(
-      "http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+      `${REACT_APP_API_URL}/UiLanguageModel/getUiLanguage`,
       {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
         }
+      }
     );
 
     if (res.data.status === 1) {
@@ -45,7 +47,7 @@ export default function UpdateLearningLanguage() {
     try {
 
       const res = await axios.get(
-        `http://localhost:5000/api/LearningLanguagesModel/getLearningLanguagesById/${id}`,
+        `${REACT_APP_API_URL}/LearningLanguagesModel/getLearningLanguagesById/${id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -160,7 +162,7 @@ export default function UpdateLearningLanguage() {
     try {
 
       const res = await axios.put(
-        `http://localhost:5000/api/LearningLanguagesModel/updateLearningLangauge/${id}`,
+        `${REACT_APP_API_URL}/LearningLanguagesModel/updateLearningLangauge/${id}`,
         formData,
         {
           headers: {

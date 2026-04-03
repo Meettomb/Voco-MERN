@@ -29,6 +29,8 @@ const TrashIcon = () => (
 
 export default function LearningLanguages() {
   usePageTitle("Add Learning Languages");
+  
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
 
   /* -------- STATES -------- */
   const [message, setMessage] = useState("");
@@ -42,7 +44,7 @@ export default function LearningLanguages() {
   const fetchLanguages = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+        `${REACT_APP_API_URL}/UiLanguageModel/getUiLanguage`,
         {
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -162,7 +164,7 @@ export default function LearningLanguages() {
     try {
 
       const response = await axios.post(
-        "http://localhost:5000/api/LearningLanguagesModel/addLearningLanguages",
+        `${REACT_APP_API_URL}/LearningLanguagesModel/addLearningLanguages`,
         payload,
         {
           headers: {

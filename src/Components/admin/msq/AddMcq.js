@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 
 export default function AddMcq() {
   usePageTitle("Add MCQs");
+
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+
   const navigate = useNavigate();
   const [uiLanguages, setUiLanguages] = useState([]);
   const [activeLang, setActiveLang] = useState("");
@@ -25,7 +28,7 @@ export default function AddMcq() {
     const fetchChapters = async () => {
 
       const res = await axios.get(
-        "http://localhost:5000/api/ChapterModel/getUniqueChapters",
+        `${REACT_APP_API_URL}/ChapterModel/getUniqueChapters`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -47,7 +50,7 @@ export default function AddMcq() {
       try {
 
         const res = await axios.get(
-          "http://localhost:5000/api/UiLanguageModel/getUiLanguage",
+          `${REACT_APP_API_URL}/UiLanguageModel/getUiLanguage`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -213,7 +216,7 @@ export default function AddMcq() {
     try {
 
       const res = await axios.post(
-        "http://localhost:5000/api/McqsModel/addMcqs",
+        `${REACT_APP_API_URL}/McqsModel/addMcqs`,
         {
           chapterIds,
           mcqs

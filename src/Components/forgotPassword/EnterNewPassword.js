@@ -8,6 +8,8 @@ export default function EnterNewPassword() {
 
   usePageTitle("Enter New Password");
 
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+
   const { t } = useTranslation();
 
   const [password, setPassword] = useState("");
@@ -74,7 +76,7 @@ export default function EnterNewPassword() {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/ForgotPassword/forgotPasswordReset",
+        `${REACT_APP_API_URL}/ForgotPassword/forgotPasswordReset`,
         {
           email: otpData.email,
           newPassword: password,

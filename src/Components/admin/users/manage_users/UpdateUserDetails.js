@@ -5,6 +5,9 @@ import axios from "axios";
 
 export default function UpdateUserDetails() {
   usePageTitle("Update User Details");
+  
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+
   const navigate = useNavigate();
 
   // Static user data (UI only)
@@ -43,7 +46,7 @@ export default function UpdateUserDetails() {
   const fetchUserDetails = useCallback(async () => {
     try {
       const responce = await axios.get(
-        `http://localhost:5000/api/userModel/getUserDataById/${id}`,
+        `${REACT_APP_API_URL}/userModel/getUserDataById/${id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -81,7 +84,7 @@ export default function UpdateUserDetails() {
     try {
 
       const response = await axios.patch(
-        `http://localhost:5000/api/userModel/updateUserRoleById/${id}`,
+        `${REACT_APP_API_URL}/userModel/updateUserRoleById/${id}`,
         {
           role: formData.role
         },

@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useAuth } from '../../../context/AuthContext';
 
 export default function PersonalDetails() {
+    const REACT_APP_API_URL = process.env.REACT_APP_API_URL
+
     const [isEditing, setIsEditing] = useState(false);
     const [languages, setLanguages] = useState([]);
     // Selected languages
@@ -39,7 +41,7 @@ export default function PersonalDetails() {
     const getLearningLanguages = useCallback(async () => {
         try {
             const response = await axios.get(
-                `http://localhost:5000/api/LearningLanguagesModel/getAllLearningLanguages`,
+                `${REACT_APP_API_URL}/LearningLanguagesModel/getAllLearningLanguages`,
                 {
                     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
                 }
@@ -145,7 +147,7 @@ export default function PersonalDetails() {
 
         try {
             const response = await axios.patch(
-                `http://localhost:5000/api/userModel/updateUserPersonalDetailById/${id}`,
+                `${REACT_APP_API_URL}/userModel/updateUserPersonalDetailById/${id}`,
                 payload,
                 {
                     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
