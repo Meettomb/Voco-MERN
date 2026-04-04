@@ -693,3 +693,47 @@ export const searchMcqs = async (req, res) => {
 
   }
 };
+
+import mongoose from "mongoose";
+
+export const getMcqByChapterId = async (req, res) => {
+  try {
+    const { chapterId } = req.params;
+
+    // ✅ Validate
+    if (!mongoose.Types.ObjectId.isValid(chapterId)) {
+      return res.status(400).json({
+        status: 0,
+        message: "Invalid chapterId",
+      });
+    }
+
+    // ✅ Convert
+    const objectId = new mongoose.Types.ObjectId(chapterId);
+
+    // ✅ Query
+    const mcqs = await McqsModel.find({
+      chapterIds: objectId
+    });
+
+    if (!mcqs || mcqs.length === 0) {
+      return res.status(404).json({
+        status: 0,
+        message: "No MCQs found for this chapter",
+      });
+    }
+
+    return res.status(200).json({
+      status: 1,
+      data: mcqs,
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      status: 0,
+      message: "Error",
+    });
+  }
+};

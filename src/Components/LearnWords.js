@@ -51,6 +51,24 @@ function LearnWords() {
     navigate(`/learn-chapter/${chapterId}`);
   }
 
+  const onHandleNavigateChapterExam = (chapterId) => {
+    const existingEndTime = localStorage.getItem("examEndTime");
+
+    // ✅ If timer already exists → DON'T reset
+    if (existingEndTime) {
+      navigate(`/ChapterExam/${chapterId}`);
+      return;
+    }
+
+    // ✅ Otherwise start new timer
+    const examDuration = 10 * 60; // 10 min
+    const endTime = Date.now() + examDuration * 1000;
+
+    localStorage.setItem("examEndTime", endTime);
+
+    navigate(`/ChapterExam/${chapterId}`);
+  };
+
   return (
     <div className="lw-page">
 
@@ -93,7 +111,8 @@ function LearnWords() {
               <div className="lw-exam">
                 <span>{t("LearnWords.exam")}</span>
 
-                <button className="btn-outline">
+                <button className="btn-outline"
+                  onClick={() => onHandleNavigateChapterExam(item.chapterId._id)}>
                   {t("LearnWords.takeExam")}
                 </button>
               </div>
@@ -103,7 +122,6 @@ function LearnWords() {
           </div>
         ))}
       </div>
-
     </div>
   );
 }

@@ -7318,3 +7318,222 @@ svg {
 .LearnChapter .LearnChapter__speakSelectedBtn:hover {
   background: var(--color-primary-dark);
 }
+
+.LearnChapter__footer {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.LearnChapter__completeBtn {
+    background: #22c55e;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.LearnChapter__completeBtn:hover {
+    background: #16a34a;
+}
+
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* ChapterExam */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+
+.ChapterExamContainer {
+  width: 100%;
+}
+/* ===== FULL WIDTH HEADER ===== */
+.examHeader {
+  width: 100%;
+  height: 70px;
+  background: var(--color-bg-section);
+  border-bottom: 1px solid var(--color-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+
+  /* IMPORTANT */
+  box-sizing: border-box;
+
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* LEFT */
+.examHeader .headerLeft {
+  flex: 1;
+}
+
+.examHeader .headerLeft .backBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.examHeader .headerLeft .backBtn:hover{
+  background-color: var(--color-bg-hover);
+}
+
+
+/* CENTER */
+.examHeader .headerCenter {
+  flex: 1;
+  text-align: center;
+}
+
+.examHeader .headerCenter h2 {
+  font-size: 20px;
+  color: var(--color-text-primary);
+}
+
+/* RIGHT */
+.examHeader .headerRight {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.examHeader .headerRight .timer {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Main Wrapper */
+.chapterExam {
+  background: var(--color-bg-main);
+  min-height: auto;
+  padding: 40px;
+}
+
+/* Container */
+.chapterExam .examContainer {
+  max-width: 800px;
+  margin: auto;
+  background: var(--color-bg-card);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+}
+
+/* Header */
+.chapterExam .examContainer .examHeader {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.chapterExam .examContainer .examHeader h2 {
+  color: var(--color-text-primary);
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.chapterExam .examContainer .examHeader p {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+/* Question Card */
+.chapterExam .examContainer .questionCard {
+  background: var(--color-bg-section);
+  border: 1px solid var(--color-border-light);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+.chapterExam .examContainer .questionCard .questionTitle {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 15px;
+}
+
+/* Options */
+.chapterExam .examContainer .questionCard .options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chapterExam .examContainer .questionCard .options .option {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-medium);
+  background: var(--color-bg-hover);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-align: left;
+}
+
+.chapterExam .examContainer .questionCard .options .option:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+}
+
+/* Correct Answer */
+.chapterExam .examContainer .questionCard .options .option.correct {
+  background: var(--color-accent-green);
+  color: var(--color-text-inverse);
+  border: none;
+}
+
+/* Footer */
+.chapterExam .examContainer .examFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Buttons */
+.chapterExam .examContainer .examFooter .btnPrimary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.chapterExam .examContainer .examFooter .btnPrimary:hover {
+  background: var(--btn-primary-hover);
+}
+
+.chapterExam .examContainer .examFooter .btnSecondary {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--btn-secondary-border);
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.chapterExam .examContainer .examFooter .btnSecondary:hover {
+  background: var(--color-primary-light);
+}
+
