@@ -700,7 +700,7 @@ export const getMcqByChapterId = async (req, res) => {
   try {
     const { chapterId } = req.params;
 
-    // ✅ Validate
+    //  Validate
     if (!mongoose.Types.ObjectId.isValid(chapterId)) {
       return res.status(400).json({
         status: 0,
@@ -708,13 +708,14 @@ export const getMcqByChapterId = async (req, res) => {
       });
     }
 
-    // ✅ Convert
+    //  Convert
     const objectId = new mongoose.Types.ObjectId(chapterId);
 
-    // ✅ Query
-    const mcqs = await McqsModel.find({
-      chapterIds: objectId
-    });
+    //  Query
+    const mcqs = await McqsModel.aggregate([
+      { $match: { chapterIds: objectId } },
+      { $sample: { size: 5 } }
+    ]);
 
     if (!mcqs || mcqs.length === 0) {
       return res.status(404).json({

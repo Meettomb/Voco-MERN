@@ -235,5 +235,23 @@
       "confirmPasswordRequired": "पासवर्ड की पुष्टि आवश्यक है",
       "passwordMismatch": "पासवर्ड मेल नहीं खा रहे हैं"
     }
+  },
+  "ChapterExam": {
+    "back": "वापस",
+    "title": "अध्याय {{number}} परीक्षा",
+    "previous": "पिछला",
+    "next": "अगला",
+    "submit": "परीक्षा जमा करें",
+    "question": "प्रश्न {{number}}.",
+    "index": "सूचकांक",
+    "progress": "प्रश्न {{current}} में से {{total}}"
+  },
+  "ChapterExamResult": {
+    "back": "वापस",
+    "title": "आपका परिणाम",
+    "passed": "🎉 उत्तीर्ण",
+    "failed": "❌ अनुत्तीर्ण",
+    "home": "होम जाएं",
+    "retry": "पुनः प्रयास करें"
   }
 }

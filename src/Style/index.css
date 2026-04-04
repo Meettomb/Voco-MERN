@@ -7184,6 +7184,7 @@ svg {
   width: 18px;
   height: 18px;
 }
+
 /* =========================
    LANGUAGE TOGGLE
    ========================= */
@@ -7292,6 +7293,7 @@ svg {
 .LearnChapter .LearnChapter__grammarPara:hover {
   background: var(--color-bg-hover);
 }
+
 .LearnChapter__grammarContent p {
   cursor: pointer;
   transition: 0.2s;
@@ -7320,23 +7322,23 @@ svg {
 }
 
 .LearnChapter__footer {
-    margin-top: 30px;
-    text-align: center;
+  margin-top: 30px;
+  text-align: center;
 }
 
 .LearnChapter__completeBtn {
-    background: #22c55e;
-    color: #fff;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
 .LearnChapter__completeBtn:hover {
-    background: #16a34a;
+  background: #16a34a;
 }
 
 
@@ -7351,6 +7353,7 @@ svg {
 .ChapterExamContainer {
   width: 100%;
 }
+
 /* ===== FULL WIDTH HEADER ===== */
 .examHeader {
   width: 100%;
@@ -7388,7 +7391,7 @@ svg {
   border-radius: 5px;
 }
 
-.examHeader .headerLeft .backBtn:hover{
+.examHeader .headerLeft .backBtn:hover {
   background-color: var(--color-bg-hover);
 }
 
@@ -7477,6 +7480,12 @@ svg {
   gap: 12px;
 }
 
+.chapterExam .examContainer .questionCard .option.selected {
+  background: #4CAF50;
+  /* green */
+  color: #fff;
+}
+
 .chapterExam .examContainer .questionCard .options .option {
   padding: 12px;
   border-radius: 8px;
@@ -7496,7 +7505,7 @@ svg {
 
 /* Correct Answer */
 .chapterExam .examContainer .questionCard .options .option.correct {
-  background: var(--color-accent-green);
+  background: #03a808a1;
   color: var(--color-text-inverse);
   border: none;
 }
@@ -7506,6 +7515,16 @@ svg {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.examFooter .leftBtns {
+  display: flex;
+  gap: 10px;
+}
+
+/* Right group */
+.examFooter .rightBtns {
+  display: flex;
 }
 
 /* Buttons */
@@ -7537,3 +7556,275 @@ svg {
   background: var(--color-primary-light);
 }
 
+.chapterExam .examContainer .examFooter .btnSubmit {
+  background: linear-gradient(135deg,
+      var(--color-accent-green),
+      #16a34a);
+  color: var(--color-text-inverse);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.25s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Hover */
+.chapterExam .examContainer .examFooter .btnSubmit:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg,
+      #16a34a,
+      #15803d);
+}
+
+/* Active (click effect) */
+.chapterExam .examContainer .examFooter .btnSubmit:active {
+  transform: scale(0.97);
+}
+
+/* Disabled */
+.chapterExam .examContainer .examFooter .btnSubmit:disabled {
+  background: var(--color-border-medium);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* ChapterExamResult */
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* =========================
+   Page Background
+========================= */
+.resultPage_container {
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Use theme colors */
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
+}
+
+/* Wrapper */
+.resultPage {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* =========================
+   Card
+========================= */
+.resultPage .resultCard {
+  width: 100%;
+  max-width: 420px;
+
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(14px);
+
+  border-radius: 20px;
+  padding: 32px 24px;
+
+  box-shadow: var(--shadow-md);
+
+  text-align: center;
+  position: relative;
+
+  color: var(--color-text-inverse);
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* =========================
+   Header
+========================= */
+.resultPage .resultCard .resultHeader {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+}
+
+.resultPage .resultCard .resultHeader .backBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  background: transparent;
+  border: none;
+
+  color: var(--color-text-inverse);
+  font-size: 14px;
+
+  cursor: pointer;
+  opacity: 0.85;
+
+  transition: all 0.2s ease;
+}
+
+.resultPage .resultCard .resultHeader .backBtn:hover {
+  opacity: 1;
+  transform: translateX(-2px);
+}
+
+/* =========================
+   Title
+========================= */
+.resultPage .resultCard .resultTitle {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+/* =========================
+   Score Circle
+========================= */
+.resultPage .resultCard .scoreCircle {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 20px;
+
+  border-radius: 50%;
+
+  background: var(--color-bg-card);
+  color: var(--color-primary);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  box-shadow: var(--shadow-sm);
+}
+
+.resultPage .resultCard .scoreCircle span {
+  font-size: 38px;
+  font-weight: 700;
+}
+
+.resultPage .resultCard .scoreCircle small {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+}
+
+/* =========================
+   Status
+========================= */
+.resultPage .resultCard .resultStatus {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 25px;
+}
+
+.resultPage .resultCard .resultStatus.pass {
+  color: var(--color-accent-green);
+}
+
+.resultPage .resultCard .resultStatus.fail {
+  color: #ef4444; /* better red than previous */
+}
+
+/* =========================
+   Buttons
+========================= */
+.resultPage .resultCard .resultActions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* Primary Button */
+.resultPage .resultCard .resultActions .btnPrimary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+
+  font-weight: 500;
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+.resultPage .resultCard .resultActions .btnPrimary:hover {
+  background: var(--btn-primary-hover);
+  transform: translateY(-2px);
+}
+
+/* Secondary Button */
+.resultPage .resultCard .resultActions .btnSecondary {
+  background: transparent;
+  border: 1px solid var(--color-text-inverse);
+
+  color: var(--color-text-inverse);
+  padding: 10px 16px;
+
+  border-radius: 10px;
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+.resultPage .resultCard .resultActions .btnSecondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* =========================
+   Responsive
+========================= */
+@media (max-width: 768px) {
+  .resultPage .resultCard {
+    max-width: 360px;
+    padding: 28px 20px;
+  }
+
+  .resultPage .resultCard .scoreCircle {
+    width: 120px;
+    height: 120px;
+  }
+
+  .resultPage .resultCard .scoreCircle span {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .resultPage .resultCard {
+    padding: 24px 16px;
+  }
+
+  .resultPage .resultCard .resultTitle {
+    font-size: 22px;
+  }
+
+  .resultPage .resultCard .scoreCircle {
+    width: 100px;
+    height: 100px;
+  }
+
+  .resultPage .resultCard .scoreCircle span {
+    font-size: 26px;
+  }
+
+  .resultPage .resultCard .resultActions {
+    flex-direction: column;
+  }
+
+  .resultPage .resultCard .resultActions button {
+    width: 100%;
+  }
+}

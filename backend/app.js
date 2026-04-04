@@ -8,10 +8,14 @@ import ForgotPasswordRoutes from "./routes/ForgotPasswordRoutes.js";
 import LearningLanguagesRoutes from "./routes/LearningLanguagesRoutes.js";
 import DashboardRoutes from "./routes/DashboardRoutes.js";
 import ChapterRoutes from "./routes/ChapterRoutes.js";
+import ExamAttemptRoutes from "./routes/ExamAttemptRoutes.js";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin:"http://localhost:3000"
+}));
+
 app.use(express.json());
 
 app.use("/uploads", express.static("uploads")); 
@@ -24,6 +28,7 @@ app.use("/api/ForgotPassword", ForgotPasswordRoutes);
 app.use("/api/LearningLanguagesModel", LearningLanguagesRoutes);
 app.use("/api/dashboard", DashboardRoutes);
 app.use("/api/ChapterModel", ChapterRoutes);
+app.use("/api/ExamAttemptModel", ExamAttemptRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "Backend is running" });

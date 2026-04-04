@@ -51,22 +51,40 @@ function LearnWords() {
     navigate(`/learn-chapter/${chapterId}`);
   }
 
-  const onHandleNavigateChapterExam = (chapterId) => {
+  const onHandleNavigateChapterExam = (item, index) => {
+    const chapterId = item.chapterId._id;
+
     const existingEndTime = localStorage.getItem("examEndTime");
 
-    // ✅ If timer already exists → DON'T reset
+    const chapterTitle =
+      item.chapterId?.translations?.[uiLanguage?.code] ||
+      item.chapterId?.translations?.en;
+
+    const chapterNumber = index + 1;
+
+    // If timer already exists → DON'T reset
     if (existingEndTime) {
-      navigate(`/ChapterExam/${chapterId}`);
+      navigate(`/ChapterExam/${chapterId}`, {
+        state: {
+          chapterTitle,
+          chapterNumber
+        }
+      });
       return;
     }
 
-    // ✅ Otherwise start new timer
-    const examDuration = 10 * 60; // 10 min
+    // Otherwise start new timer
+    const examDuration = 10 * 60;
     const endTime = Date.now() + examDuration * 1000;
 
     localStorage.setItem("examEndTime", endTime);
 
-    navigate(`/ChapterExam/${chapterId}`);
+    navigate(`/ChapterExam/${chapterId}`, {
+      state: {
+        chapterTitle,
+        chapterNumber
+      }
+    });
   };
 
   return (
@@ -112,7 +130,7 @@ function LearnWords() {
                 <span>{t("LearnWords.exam")}</span>
 
                 <button className="btn-outline"
-                  onClick={() => onHandleNavigateChapterExam(item.chapterId._id)}>
+                  onClick={() => onHandleNavigateChapterExam(item, index)}>
                   {t("LearnWords.takeExam")}
                 </button>
               </div>
