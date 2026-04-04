@@ -7,7 +7,8 @@ import {
     getAllMcqsByDifficulty,
     updateMcqsById,
     getMcqsById,
-    searchMcqs
+    searchMcqs,
+    getMcqByChapterId
 } from "../controller/McqsController.js";
 import authMiddleware from "../utils/authMiddlware.js";
 
@@ -20,5 +21,6 @@ mcqRoute.get("/getAllMcqsByDifficulty/:difficultyLevel", authMiddleware, getAllM
 mcqRoute.patch("/updateMcqsById/:id", authMiddleware, imageUpload.array("image"), updateMcqsById);
 mcqRoute.get("/getMcqsById/:id", authMiddleware, getMcqsById);
 mcqRoute.get("/searchMcqs", authMiddleware, searchMcqs);
+mcqRoute.get("/getMcqByChapterId/:chapterId", authMiddleware, getMcqByChapterId);
 
 export default mcqRoute;

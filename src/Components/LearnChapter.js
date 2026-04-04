@@ -285,7 +285,13 @@ export default function LearnChapter() {
                             ))}
                         </div>
                     )}
-
+                    <div className="LearnChapter__footer">
+                        <button
+                            className="LearnChapter__completeBtn"
+                        >
+                            Mark as Complete
+                        </button>
+                    </div>
                 </div>
             </div>
         </>

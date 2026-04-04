@@ -55,6 +55,14 @@ const ResizableImage = Image.extend({
         return {
             ...this.parent?.(),
 
+            loading: {
+                default: "lazy",
+                parseHTML: element => element.getAttribute("loading"),
+                renderHTML: attributes => {
+                    return { loading: "lazy" };
+                },
+            },
+
             width: {
                 default: "300px",
                 parseHTML: element => element.getAttribute("width"),

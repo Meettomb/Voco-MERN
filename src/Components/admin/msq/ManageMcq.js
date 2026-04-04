@@ -7,6 +7,12 @@ export default function ManageMcq() {
 
   usePageTitle("Manage MCQs");
 
+  const addLazyLoading = (html) => {
+    if (!html) return "";
+
+    return html.replace(/<img(?![^>]*loading=)/g, '<img loading="lazy"');
+  };
+
   const REACT_APP_API_URL = process.env.REACT_APP_API_URL
   const navigate = useNavigate();
   const [mcqs, setMcqs] = useState([]);
@@ -200,8 +206,11 @@ export default function ManageMcq() {
                       {/* Question */}
                       <td>
                         <div className="mcq-question-preview"
+                          // dangerouslySetInnerHTML={{
+                          //   __html: firstQuestion?.question?.en || ""
+                          // }}
                           dangerouslySetInnerHTML={{
-                            __html: firstQuestion?.question?.en || ""
+                            __html: addLazyLoading(firstQuestion?.question?.en || "")
                           }}
                         />
                       </td>

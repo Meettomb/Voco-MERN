@@ -72,6 +72,8 @@ const ForgotPasswordOtpVerify = lazy(() => import("./Components/forgotPassword/F
 const EnterNewPassword = lazy(() => import("./Components/forgotPassword/EnterNewPassword"));
 
 const LearnChapter = lazy(() => import("./Components/LearnChapter"));
+const ChapterExam = lazy(() => import("./Components/ChapterExam"));
+const ChapterExamResult = lazy(()=> import("./Components/ChapterExamResult"));
 
 
 // Admin Components
@@ -107,7 +109,7 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Suspense fallback={<FullScreenLoader/>}>
+        <Suspense fallback={<FullScreenLoader />}>
           <Routes>
             {/* Pages WITH Header + Footer */}
             <Route element={<MainLayout onOpen={() => setAuthView("login")} />}>
@@ -148,6 +150,8 @@ function App() {
                 <AuthRoute onAuthFail={() => setAuthView("login")}>
                   <LearnChapter />
                 </AuthRoute>} />
+
+
 
             </Route>
 
@@ -270,7 +274,19 @@ function App() {
             <Route path="/forgot-password/enter-email" element={<EnterEmail />} />
             <Route path="/forgot-password/otp-verify" element={<ForgotPasswordOtpVerify />} />
             <Route path="/forgot-password/enter-new-password" element={<EnterNewPassword />} />
-
+            
+            <Route path="/ChapterExam/:chapterId" element={
+              <AuthRoute onAuthFail={() => setAuthView("login")}>
+                <ChapterExam />
+              </AuthRoute>
+            } />
+            
+            <Route path="/ChapterExamResult" element={
+              <AuthRoute onAuthFail={() => setAuthView("login")}>
+                <ChapterExamResult />
+              </AuthRoute>
+            } />
+            
           </Routes>
         </Suspense>
 

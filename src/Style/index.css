@@ -7184,6 +7184,7 @@ svg {
   width: 18px;
   height: 18px;
 }
+
 /* =========================
    LANGUAGE TOGGLE
    ========================= */
@@ -7292,6 +7293,7 @@ svg {
 .LearnChapter .LearnChapter__grammarPara:hover {
   background: var(--color-bg-hover);
 }
+
 .LearnChapter__grammarContent p {
   cursor: pointer;
   transition: 0.2s;
@@ -7317,4 +7319,512 @@ svg {
 
 .LearnChapter .LearnChapter__speakSelectedBtn:hover {
   background: var(--color-primary-dark);
+}
+
+.LearnChapter__footer {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.LearnChapter__completeBtn {
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.LearnChapter__completeBtn:hover {
+  background: #16a34a;
+}
+
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* ChapterExam */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+
+.ChapterExamContainer {
+  width: 100%;
+}
+
+/* ===== FULL WIDTH HEADER ===== */
+.examHeader {
+  width: 100%;
+  height: 70px;
+  background: var(--color-bg-section);
+  border-bottom: 1px solid var(--color-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+
+  /* IMPORTANT */
+  box-sizing: border-box;
+
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* LEFT */
+.examHeader .headerLeft {
+  flex: 1;
+}
+
+.examHeader .headerLeft .backBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.examHeader .headerLeft .backBtn:hover {
+  background-color: var(--color-bg-hover);
+}
+
+
+/* CENTER */
+.examHeader .headerCenter {
+  flex: 1;
+  text-align: center;
+}
+
+.examHeader .headerCenter h2 {
+  font-size: 20px;
+  color: var(--color-text-primary);
+}
+
+/* RIGHT */
+.examHeader .headerRight {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.examHeader .headerRight .timer {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Main Wrapper */
+.chapterExam {
+  background: var(--color-bg-main);
+  min-height: auto;
+  padding: 40px;
+}
+
+/* Container */
+.chapterExam .examContainer {
+  max-width: 800px;
+  margin: auto;
+  background: var(--color-bg-card);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+}
+
+/* Header */
+.chapterExam .examContainer .examHeader {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.chapterExam .examContainer .examHeader h2 {
+  color: var(--color-text-primary);
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.chapterExam .examContainer .examHeader p {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+/* Question Card */
+.chapterExam .examContainer .questionCard {
+  background: var(--color-bg-section);
+  border: 1px solid var(--color-border-light);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+.chapterExam .examContainer .questionCard .questionTitle {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 15px;
+}
+
+/* Options */
+.chapterExam .examContainer .questionCard .options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chapterExam .examContainer .questionCard .option.selected {
+  background: #4CAF50;
+  /* green */
+  color: #fff;
+}
+
+.chapterExam .examContainer .questionCard .options .option {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-medium);
+  background: var(--color-bg-hover);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-align: left;
+}
+
+.chapterExam .examContainer .questionCard .options .option:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+}
+
+/* Correct Answer */
+.chapterExam .examContainer .questionCard .options .option.correct {
+  background: #03a808a1;
+  color: var(--color-text-inverse);
+  border: none;
+}
+
+/* Footer */
+.chapterExam .examContainer .examFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.examFooter .leftBtns {
+  display: flex;
+  gap: 10px;
+}
+
+/* Right group */
+.examFooter .rightBtns {
+  display: flex;
+}
+
+/* Buttons */
+.chapterExam .examContainer .examFooter .btnPrimary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.chapterExam .examContainer .examFooter .btnPrimary:hover {
+  background: var(--btn-primary-hover);
+}
+
+.chapterExam .examContainer .examFooter .btnSecondary {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--btn-secondary-border);
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.chapterExam .examContainer .examFooter .btnSecondary:hover {
+  background: var(--color-primary-light);
+}
+
+.chapterExam .examContainer .examFooter .btnSubmit {
+  background: linear-gradient(135deg,
+      var(--color-accent-green),
+      #16a34a);
+  color: var(--color-text-inverse);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.25s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Hover */
+.chapterExam .examContainer .examFooter .btnSubmit:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg,
+      #16a34a,
+      #15803d);
+}
+
+/* Active (click effect) */
+.chapterExam .examContainer .examFooter .btnSubmit:active {
+  transform: scale(0.97);
+}
+
+/* Disabled */
+.chapterExam .examContainer .examFooter .btnSubmit:disabled {
+  background: var(--color-border-medium);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* ChapterExamResult */
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* =========================
+   Page Background
+========================= */
+.resultPage_container {
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Use theme colors */
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
+}
+
+/* Wrapper */
+.resultPage {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* =========================
+   Card
+========================= */
+.resultPage .resultCard {
+  width: 100%;
+  max-width: 420px;
+
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(14px);
+
+  border-radius: 20px;
+  padding: 32px 24px;
+
+  box-shadow: var(--shadow-md);
+
+  text-align: center;
+  position: relative;
+
+  color: var(--color-text-inverse);
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* =========================
+   Header
+========================= */
+.resultPage .resultCard .resultHeader {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+}
+
+.resultPage .resultCard .resultHeader .backBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  background: transparent;
+  border: none;
+
+  color: var(--color-text-inverse);
+  font-size: 14px;
+
+  cursor: pointer;
+  opacity: 0.85;
+
+  transition: all 0.2s ease;
+}
+
+.resultPage .resultCard .resultHeader .backBtn:hover {
+  opacity: 1;
+  transform: translateX(-2px);
+}
+
+/* =========================
+   Title
+========================= */
+.resultPage .resultCard .resultTitle {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+/* =========================
+   Score Circle
+========================= */
+.resultPage .resultCard .scoreCircle {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 20px;
+
+  border-radius: 50%;
+
+  background: var(--color-bg-card);
+  color: var(--color-primary);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  box-shadow: var(--shadow-sm);
+}
+
+.resultPage .resultCard .scoreCircle span {
+  font-size: 38px;
+  font-weight: 700;
+}
+
+.resultPage .resultCard .scoreCircle small {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+}
+
+/* =========================
+   Status
+========================= */
+.resultPage .resultCard .resultStatus {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 25px;
+}
+
+.resultPage .resultCard .resultStatus.pass {
+  color: var(--color-accent-green);
+}
+
+.resultPage .resultCard .resultStatus.fail {
+  color: #ef4444; /* better red than previous */
+}
+
+/* =========================
+   Buttons
+========================= */
+.resultPage .resultCard .resultActions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* Primary Button */
+.resultPage .resultCard .resultActions .btnPrimary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+
+  font-weight: 500;
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+.resultPage .resultCard .resultActions .btnPrimary:hover {
+  background: var(--btn-primary-hover);
+  transform: translateY(-2px);
+}
+
+/* Secondary Button */
+.resultPage .resultCard .resultActions .btnSecondary {
+  background: transparent;
+  border: 1px solid var(--color-text-inverse);
+
+  color: var(--color-text-inverse);
+  padding: 10px 16px;
+
+  border-radius: 10px;
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+.resultPage .resultCard .resultActions .btnSecondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* =========================
+   Responsive
+========================= */
+@media (max-width: 768px) {
+  .resultPage .resultCard {
+    max-width: 360px;
+    padding: 28px 20px;
+  }
+
+  .resultPage .resultCard .scoreCircle {
+    width: 120px;
+    height: 120px;
+  }
+
+  .resultPage .resultCard .scoreCircle span {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .resultPage .resultCard {
+    padding: 24px 16px;
+  }
+
+  .resultPage .resultCard .resultTitle {
+    font-size: 22px;
+  }
+
+  .resultPage .resultCard .scoreCircle {
+    width: 100px;
+    height: 100px;
+  }
+
+  .resultPage .resultCard .scoreCircle span {
+    font-size: 26px;
+  }
+
+  .resultPage .resultCard .resultActions {
+    flex-direction: column;
+  }
+
+  .resultPage .resultCard .resultActions button {
+    width: 100%;
+  }
 }

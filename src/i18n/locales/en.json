@@ -235,5 +235,23 @@
       "confirmPasswordRequired": "Confirm password is required",
       "passwordMismatch": "Passwords do not match"
     }
+  },
+  "ChapterExam": {
+    "back": "Back",
+    "title": "Chapter {{number}} Exam",
+    "previous": "Previous",
+    "next": "Next",
+    "submit": "Submit Exam",
+    "question": "Q{{number}}.",
+    "index": "Index",
+    "progress": "Question {{current}} of {{total}}"
+  },
+  "ChapterExamResult": {
+    "back": "Back",
+    "title": "Your Result",
+    "passed": "🎉 Passed",
+    "failed": "❌ Failed",
+    "home": "Go Home",
+    "retry": "Retry"
   }
 }
