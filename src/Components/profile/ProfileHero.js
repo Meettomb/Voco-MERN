@@ -1,6 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-export default function ProfileHero({ userData }) {
+export default function ProfileHero({ userData, uiLanguage }) {
+
+    const { t } = useTranslation();
+    console.log("UI Langauge", uiLanguage)
+
     return (
         <>
             <div className="profile-hero">
@@ -26,9 +31,9 @@ export default function ProfileHero({ userData }) {
                     </div>
 
                     <div className="hero-info">
-                        <h1 id="userName">{userData?.username || "User Name not Found"}</h1>
+                        <h1 id="userName">{userData?.username || t("Profile.ProfileHero.userNotFound")}</h1>
                         <div className="language-tags">
-                            <span className="language-tag">UI Language: {userData?.uiSupportLangauge || "Not Specified"}</span><span className="language-tag">
+                            <span className="language-tag">{t("Profile.ProfileHero.uiLanguage")}: {userData?.uiSupportLangauge || "Not Specified"}</span><span className="language-tag">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
@@ -53,24 +58,24 @@ export default function ProfileHero({ userData }) {
 
                                 </svg>
 
-                                Learning: {userData?.learningLanguages.length > 0
-                                    ? userData.learningLanguages.map(lang => lang.native).join(", ") 
-                                    : "Not Specified"}
+                                {t("Profile.ProfileHero.learning")}: {userData?.learningLanguages.length > 0
+                                    ? userData.learningLanguages.map(lang => lang.native).join(", ")
+                                    : t("Profile.ProfileHero.notSpecified")}
                             </span>
 
                         </div>
                         <div className="hero-stats">
                             <div className="stat-item">
                                 <div className="stat-value" id="stat1">127</div>
-                                <div className="stat-label">Day Streak</div>
+                                <div className="stat-label">{t("Profile.ProfileHero.dayStreak")}</div>
                             </div>
                             <div className="stat-item">
                                 <div className="stat-value" id="stat2">2,847</div>
-                                <div className="stat-label">Words Learned</div>
+                                <div className="stat-label">{t("Profile.ProfileHero.wordsLearned")}</div>
                             </div>
                             <div className="stat-item">
                                 <div className="stat-value" id="stat3">48hrs</div>
-                                <div className="stat-label">This Month</div>
+                                <div className="stat-label">{t("Profile.ProfileHero.thisMonth")}</div>
                             </div>
                         </div>
                     </div>

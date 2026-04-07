@@ -253,5 +253,86 @@
     "failed": "❌ Failed",
     "home": "Go Home",
     "retry": "Retry"
+  },
+  "Profile": {
+    "ProfileHero": {
+      "userNotFound": "User Name not Found",
+      "uiLanguage": "UI Language",
+      "learning": "Learning",
+      "notSpecified": "Not Specified",
+      "dayStreak": "Day Streak",
+      "wordsLearned": "Words Learned",
+      "thisMonth": "This Month"
+    },
+    "AccountSettingTop": {
+      "AccountSettings": "Account Settings",
+      "PersonalDetails": "Personal Details",
+      "Security": "Security",
+      "Preferences": "Preferences"
+    },
+    "PersonalDetails": {
+      "edit": "Edit Personal Details",
+      "username": "Username",
+      "enterUsername": "Enter your Username",
+      "phoneNumber": "Phone Number",
+      "enterPhone": "Enter your phone number",
+      "needVerification": "Need Verification",
+      "learningLanguage": "Learning Language",
+      "selectLanguage": "Select language",
+      "memberSince": "Member Since",
+      "saveChanges": "Save Changes",
+      "cancel": "Cancel",
+      "errors": {
+        "usernameRequired": "Username is required",
+        "phoneRequired": "Phone number is required",
+        "languageRequired": "Please select at least one language"
+      },
+      "messages": {
+        "success": "Personal details updated successfully!",
+        "failed": "Failed to update personal details. Please try again."
+      }
+    },
+    "Security": {
+      "emailSettings": "Email Settings",
+      "emailAddress": "Email Address",
+      "enterEmail": "Enter your email",
+      "emailHint": "This email will be used for login and notifications",
+      "updateEmail": "Update Email",
+      "changePassword": "Change Password",
+      "currentPassword": "Current Password",
+      "enterCurrentPassword": "Enter current password",
+      "newPassword": "New Password",
+      "enterNewPassword": "Enter new password",
+      "confirmPassword": "Confirm Password",
+      "confirmNewPassword": "Confirm new password",
+      "passwordHint": "Password must be at least 8 characters and include uppercase, lowercase, number, and special character",
+      "updatePassword": "Update Password",
+      "cancel": "Cancel",
+      "deleteAccount": "Delete Account",
+      "errors": {
+        "emailRequired": "Email is required",
+        "invalidEmail": "Enter valid email address",
+        "currentPasswordRequired": "Current password is required",
+        "newPasswordRequired": "New password is required",
+        "minPassword": "Minimum 8 characters required",
+        "confirmPasswordRequired": "Confirm your password",
+        "passwordMismatch": "Passwords do not match"
+      }
+    },
+    "Preferences": {
+      "edit": "Edit Preferences",
+      "dailyGoal": "Daily Learning Goal",
+      "setDailyGoal": "Set your daily goal",
+      "reminderTime": "Reminder Time",
+      "difficultyLevel": "Difficulty Level",
+      "selectDifficulty": "Select difficulty",
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "voicePractice": "Voice Practice",
+      "voiceSettings": "Voice settings",
+      "savePreferences": "Save Preferences",
+      "cancel": "Cancel"
+    }
   }
 }

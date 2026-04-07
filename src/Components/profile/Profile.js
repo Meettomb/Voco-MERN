@@ -4,7 +4,7 @@ import AccountSettingTop from "./AccountSettings/AccountSettingTop";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Profile() {
-  const { userData, refreshUser } = useAuth();
+  const { userData, refreshUser, uiLanguage } = useAuth();
 
   return (
     <>
@@ -17,11 +17,17 @@ export default function Profile() {
         </p>
       )} */}
       <div className='profile_main'>
-        <ProfileHero userData={userData} />
+
+        <ProfileHero userData={userData}
+          uiLanguage={uiLanguage} />
+
+
         <AccountSettingTop
           userData={userData}
           refreshUser={refreshUser}
+          uiLanguage={uiLanguage}
         />
+        
       </div>
     </>
   )

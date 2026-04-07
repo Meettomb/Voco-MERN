@@ -73,6 +73,7 @@ function SignInPopup({ onClose, onOpenRegister }) {
 
     try {
       const response = await axios.post(`${REACT_APP_API_URL}/userModel/Login/`, formData)
+      
       if (response.data.status === 1) {
         localStorage.setItem('token', response.data.data.token)
         if (response.data.data.role === "admin") {
@@ -102,7 +103,7 @@ function SignInPopup({ onClose, onOpenRegister }) {
     } catch (error) {
       navigate("/", {
         state: {
-          message: "Something went wrong",
+          message: error.response?.data?.message || "Something went wrong",
           messageType: "error"
         }
       });
