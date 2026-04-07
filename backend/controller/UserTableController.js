@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { otpStore } from "../utils/otpStore.js";
 import { sendMail } from "../utils/mailService.js";
 import generateToken from "../utils/jwtUtils.js";
+import { sendOTP } from "../utils/smsService.js";
 
 
 const createUser = async ({ username, email, phoneNumber, password }) => {
@@ -380,7 +381,7 @@ export const updateUserPersonalDetailById = async (req, res) => {
   try {
     const id = req.params.id;
 
-    // 🔒 Authorization check
+    //  Authorization check
     if (req.user.id !== id) {
       return res.status(403).json({
         status: 0,
@@ -396,7 +397,7 @@ export const updateUserPersonalDetailById = async (req, res) => {
       });
     }
 
-    // ❌ Empty check
+    // Empty check
     if (!req.body.username && !req.body.phoneNumber && !req.body.learningLanguages) {
       return res.status(400).json({
         status: 0,
@@ -404,27 +405,83 @@ export const updateUserPersonalDetailById = async (req, res) => {
       });
     }
 
-    // ✅ Dynamic update object
+    //  Dynamic update object
     const updateData = {};
 
     if (req.body.username) {
       updateData.username = req.body.username;
     }
 
+
+    const incomingPhone = req.body.phoneNumber?.trim();
+    const oldPhone = oldUserData.phoneNumber?.trim();
     if (req.body.phoneNumber) {
-      updateData.phoneNumber = req.body.phoneNumber;
+      updateData.phoneNumber = incomingPhone;
     }
 
     if (req.body.learningLanguages) {
       updateData.learningLanguages = req.body.learningLanguages;
     }
 
-    // 📱 Phone verification reset
-    if (
-      req.body.phoneNumber &&
-      req.body.phoneNumber !== oldUserData.phoneNumber
-    ) {
-      updateData.phoneNumberVerified = false;
+
+    const isPhoneChanged =
+      incomingPhone && incomingPhone !== oldPhone;
+
+    const isNotVerified = oldUserData.phoneNumberVerified === false;
+
+    if (isPhoneChanged || isNotVerified) {
+
+      const phoneToVerify = (req.body.phoneNumber || oldUserData.phoneNumber).trim();
+
+      if (!/^\d{10}$/.test(phoneToVerify)) {
+        return res.status(400).json({
+          status: 0,
+          message: "Invalid phone number format"
+        });
+      }
+
+      const key = `${id}_${phoneToVerify}`;
+      const existing = otpStore[key];
+
+      if (existing && Date.now() > existing.expiresAt) {
+        delete otpStore[key];
+      }
+
+      if (existing && Date.now() - existing.lastSentAt < 60000) {
+        return res.json({
+          status: 0,
+          message: "Please wait before requesting new OTP",
+        });
+      }
+
+      const otp = Math.floor(100000 + Math.random() * 900000);
+
+      otpStore[key] = {
+        otp,
+        expiresAt: Date.now() + 2 * 60 * 1000,
+        lastSentAt: Date.now(),
+        data: {
+          username: req.body.username || oldUserData.username,
+          phoneNumber: phoneToVerify,
+          learningLanguages: req.body.learningLanguages || oldUserData.learningLanguages
+        },
+      };
+      const formattedPhone = `+91${phoneToVerify}`;
+
+      const smsResponse = await sendOTP(formattedPhone, "otp", otp);
+
+      if (smsResponse.status === 0) {
+        return res.status(500).json({
+          status: 0,
+          message: "Failed to send OTP. Try again.",
+        });
+      }
+      return res.status(200).json({
+        status: 2,
+        message: "Phone verification required",
+        tempData: otpStore[key].data
+
+      });
     }
 
     const updatedUser = await UserModel.findByIdAndUpdate(
@@ -464,6 +521,69 @@ export const updateUserPersonalDetailById = async (req, res) => {
     }
 
     console.error(error);
+    return res.status(500).json({
+      status: 0,
+      message: "Internal Server Error",
+    });
+  }
+};
+export const verifyPhoneOtp = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { phoneNumber, otp } = req.body;
+
+    const key = `${userId}_${phoneNumber}`;
+    const record = otpStore[key];
+
+    //  No OTP found
+    if (!record) {
+      return res.status(400).json({
+        status: 0,
+        message: "No OTP request found",
+      });
+    }
+
+    //  Expired
+    if (Date.now() > record.expiresAt) {
+      delete otpStore[key];
+      return res.status(400).json({
+        status: 0,
+        message: "OTP expired",
+      });
+    }
+
+    //  Wrong OTP
+    if (otp !== record.otp.toString()) {
+      return res.status(400).json({
+        status: 0,
+        message: "Invalid OTP",
+      });
+    }
+
+    //  OTP correct → update user
+    const updateData = {
+      ...record.data,
+      phoneNumberVerified: true,
+    };
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    // cleanup
+    delete otpStore[key];
+
+    return res.status(200).json({
+      status: 1,
+      message: "Phone verified and data updated successfully",
+      data: updatedUser,
+    });
+
+  } catch (error) {
+    console.error(error);
+
     return res.status(500).json({
       status: 0,
       message: "Internal Server Error",
@@ -534,8 +654,6 @@ export const updateUserPasswordById = async (req, res) => {
     });
   }
 }
-
-
 
 // ===================================================
 // ===================================================
@@ -612,7 +730,6 @@ export const sendOtp = async (req, res) => {
   }
 };
 
-
 export const verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -687,6 +804,9 @@ export const verifyOtp = async (req, res) => {
     });
   }
 };
+
+
+
 
 export const Login = async (req, res) => {
   try {

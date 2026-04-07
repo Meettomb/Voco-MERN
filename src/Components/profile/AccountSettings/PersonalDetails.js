@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 export default function PersonalDetails() {
     const REACT_APP_API_URL = process.env.REACT_APP_API_URL
@@ -11,7 +12,7 @@ export default function PersonalDetails() {
     // Selected languages
     const [selected, setSelected] = useState([]);
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     // Form values
     const [formData, setFormData] = useState({
@@ -154,7 +155,20 @@ export default function PersonalDetails() {
                     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
                 }
             );
-            if (response.data.status === 1) {
+            if (response.data.status === 2) {
+                localStorage.setItem("otpData", JSON.stringify({
+                    ...response.data.tempData,
+                    _id: id
+                }));
+                //  Redirect to verification page
+                navigate("/PhoneNumberVerify", {
+                    state: {
+                        ...response.data.tempData,
+                        _id: id
+                    }
+                });
+                return;
+            } else if (response.data.status === 1) {
                 setMessage(t("Profile.PersonalDetails.messages.success"));
                 setMessageType("success");
 

@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 export default function ProfileHero({ userData, uiLanguage }) {
 
     const { t } = useTranslation();
-    console.log("UI Langauge", uiLanguage)
 
     return (
         <>

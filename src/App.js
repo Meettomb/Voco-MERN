@@ -55,6 +55,7 @@ import { AuthProvider } from "./context/AuthContext";
 // Comen Components
 const OtpVerify = lazy(() => import("./Components/OtpVerify"));
 const MainLayout = lazy(() => import("./MainLayout"));
+const PhoneNumberVerify = lazy(() => import("./Components/PhoneNumberVerify"));
 
 // User Components
 const Home = lazy(() => import("./Components/Home"));
@@ -73,7 +74,7 @@ const EnterNewPassword = lazy(() => import("./Components/forgotPassword/EnterNew
 
 const LearnChapter = lazy(() => import("./Components/LearnChapter"));
 const ChapterExam = lazy(() => import("./Components/ChapterExam"));
-const ChapterExamResult = lazy(()=> import("./Components/ChapterExamResult"));
+const ChapterExamResult = lazy(() => import("./Components/ChapterExamResult"));
 
 
 // Admin Components
@@ -270,23 +271,29 @@ function App() {
 
             {/* Pages WITHOUT Header */}
             <Route path="/OtpVerify" element={<OtpVerify />} />
-            {/* <Route path="/select-learning-langauge" element={<SelectLearningLanguage />} /> */}
+
+            <Route path="/PhoneNumberVerify" element={
+              <AuthRoute onAuthFail={() => setAuthView("login")}>
+                <PhoneNumberVerify />
+              </AuthRoute>
+            } />
+
             <Route path="/forgot-password/enter-email" element={<EnterEmail />} />
             <Route path="/forgot-password/otp-verify" element={<ForgotPasswordOtpVerify />} />
             <Route path="/forgot-password/enter-new-password" element={<EnterNewPassword />} />
-            
+
             <Route path="/ChapterExam/:chapterId" element={
               <AuthRoute onAuthFail={() => setAuthView("login")}>
                 <ChapterExam />
               </AuthRoute>
             } />
-            
+
             <Route path="/ChapterExamResult" element={
               <AuthRoute onAuthFail={() => setAuthView("login")}>
                 <ChapterExamResult />
               </AuthRoute>
             } />
-            
+
           </Routes>
         </Suspense>
 

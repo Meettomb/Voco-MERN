@@ -12,7 +12,7 @@ const client = new twilio(ACCOUNT_SID, AUTH_TOKEN);
  * @param {string} type - otp | success | reset
  * @param {string} value - dynamic value (otp etc.)
  */
-export const smsService = async (to, type, value) => {
+export const sendOTP = async (to, type, value) => {
   try {
     let message = "";
 
