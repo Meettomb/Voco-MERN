@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import getUser from '../../../utils/getUser';
+// import getUser from '../../../utils/getUser';
+import { useTranslation } from 'react-i18next';
 
 export default function Security({ userData, setUserData, fetchUserData }) {
     const [isEmailEditing, setIsEmailEditing] = useState(false);
@@ -9,20 +10,22 @@ export default function Security({ userData, setUserData, fetchUserData }) {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
+    const { t } = useTranslation();
+
     const [errors, setErrors] = useState({});
 
-    const user = getUser();
-    const id = user ? user.id : null;
+    // const user = getUser();
+    // const id = user ? user.id : null;
 
     // ================= EMAIL VALIDATION =================
     const validateEmailForm = () => {
         let newErrors = {};
 
         if (!email.trim()) {
-            newErrors.email = "Email is required";
+            newErrors.email = t("Profile.Security.errors.emailRequired");
         }
         else if (!/\S+@\S+\.\S+/.test(email)) {
-            newErrors.email = "Enter valid email address";
+            newErrors.email = t("Profile.Security.errors.invalidEmail");
         }
 
         setErrors(newErrors);
@@ -34,21 +37,19 @@ export default function Security({ userData, setUserData, fetchUserData }) {
         let newErrors = {};
 
         if (!currentPassword) {
-            newErrors.currentPassword = "Current password is required";
+            newErrors.currentPassword = t("Profile.Security.errors.currentPasswordRequired");
         }
 
         if (!newPassword) {
-            newErrors.newPassword = "New password is required";
-        }
-        else if (newPassword.length < 8) {
-            newErrors.newPassword = "Minimum 8 characters required";
+            newErrors.newPassword = t("Profile.Security.errors.newPasswordRequired");
+        } else if (newPassword.length < 8) {
+            newErrors.newPassword = t("Profile.Security.errors.minPassword");
         }
 
         if (!confirmPassword) {
-            newErrors.confirmPassword = "Confirm your password";
-        }
-        else if (newPassword !== confirmPassword) {
-            newErrors.confirmPassword = "Passwords do not match";
+            newErrors.confirmPassword = t("Profile.Security.errors.confirmPasswordRequired");
+        } else if (newPassword !== confirmPassword) {
+            newErrors.confirmPassword = t("Profile.Security.errors.passwordMismatch");
         }
 
         setErrors(newErrors);
@@ -80,7 +81,7 @@ export default function Security({ userData, setUserData, fetchUserData }) {
                 <form onSubmit={handleEmailSubmit}>
 
                     <div className="section-header">
-                        <h3 className="section-title">Email Settings</h3>
+                        <h3 className="section-title">{t("Profile.Security.emailSettings")}</h3>
 
                         {!isEmailEditing && (
                             <button
@@ -106,13 +107,13 @@ export default function Security({ userData, setUserData, fetchUserData }) {
                                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                                 <polyline points="22,6 12,13 2,6" />
                             </svg>
-                            Email Address
+                            {t("Profile.Security.emailAddress")}
                         </label>
 
                         <input
                             type="email"
                             className="form-input"
-                            placeholder="Enter your email"
+                            placeholder={t("Profile.Security.enterEmail")}
                             value={email}
                             onChange={(e) => {
                                 setEmail(e.target.value);
@@ -124,21 +125,21 @@ export default function Security({ userData, setUserData, fetchUserData }) {
                         {errors.email && <p className="error-text">{errors.email}</p>}
 
                         <div className="form-hint">
-                            This email will be used for login and notifications
+                            {t("Profile.Security.emailHint")}
                         </div>
 
                         {isEmailEditing && (
 
                             <div className="action-buttons">
                                 <button type="submit" className="btn btn-primary">
-                                    Update Email
+                                    {t("Profile.Security.updateEmail")}
                                 </button>
 
                                 <button type="submit"
                                     className="btn btn-secondary"
                                     onClick={() => setIsEmailEditing(false)}
                                 >
-                                    Cancel
+                                    {t("Profile.Security.cancel")}
                                 </button>
                             </div>
 
@@ -152,7 +153,7 @@ export default function Security({ userData, setUserData, fetchUserData }) {
                 <form onSubmit={handlePasswordSubmit}>
 
                     <div className="section-header">
-                        <h3 className="section-title" style={{ marginBottom: "20px" }}>Change Password</h3>
+                        <h3 className="section-title" style={{ marginBottom: "20px" }}>{t("Profile.Security.changePassword")}</h3>
 
                         {!isPasswordEditing && (
                             <button
@@ -177,13 +178,13 @@ export default function Security({ userData, setUserData, fetchUserData }) {
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                             </svg>
-                            Current Password
+                            {t("Profile.Security.currentPassword")}
                         </label>
 
                         <input
                             type="password"
                             className="form-input"
-                            placeholder="Enter current password"
+                            placeholder={t("Profile.Security.enterCurrentPassword")}
                             value={currentPassword}
                             onChange={(e) => {
                                 setCurrentPassword(e.target.value);
@@ -207,13 +208,13 @@ export default function Security({ userData, setUserData, fetchUserData }) {
                                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                                 </svg>
-                                New Password
+                                {t("Profile.Security.newPassword")}
                             </label>
 
                             <input
                                 type="password"
                                 className="form-input"
-                                placeholder="Enter new password"
+                                placeholder={t("Profile.Security.enterNewPassword")}
                                 value={newPassword}
                                 onChange={(e) => {
                                     setNewPassword(e.target.value);
@@ -234,13 +235,13 @@ export default function Security({ userData, setUserData, fetchUserData }) {
                                     stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="20 6 9 17 4 12" />
                                 </svg>
-                                Confirm Password
+                                {t("Profile.Security.confirmPassword")}
                             </label>
 
                             <input
                                 type="password"
                                 className="form-input"
-                                placeholder="Confirm new password"
+                                placeholder={t("Profile.Security.confirmNewPassword")}
                                 value={confirmPassword}
                                 onChange={(e) => {
                                     setConfirmPassword(e.target.value);
@@ -257,8 +258,7 @@ export default function Security({ userData, setUserData, fetchUserData }) {
                     </div>
 
                     <div className="form-hint" style={{ marginBottom: "1.5rem" }}>
-                        Password must be at least 8 characters and include uppercase, lowercase,
-                        number, and special character
+                        {t("Profile.Security.passwordHint")}
                     </div>
 
                     <div className="action-buttons">
@@ -266,21 +266,21 @@ export default function Security({ userData, setUserData, fetchUserData }) {
                         {isPasswordEditing && (
                             <>
                                 <button type="submit" className="btn btn-primary">
-                                    Update Password
+                                    {t("Profile.Security.updatePassword")}
                                 </button>
 
                                 <button type="submit"
                                     className="btn btn-secondary"
                                     onClick={() => setIsPasswordEditing(false)}
                                 >
-                                    Cancel
+                                    {t("Profile.Security.cancel")}
                                 </button>
 
                             </>
                         )}
 
                         <button type="button" className="btn btn-danger">
-                            Delete Account
+                            {t("Profile.Security.deleteAccount")}
                         </button>
 
                     </div>

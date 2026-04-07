@@ -11,7 +11,8 @@ import {
   updateUserPasswordById,
   searchUsers,
   Login,
-  updateUserById
+  updateUserById,
+  verifyPhoneOtp
 } from "../controller/UserTableController.js";
 
 
@@ -35,7 +36,7 @@ route.patch("/updateUserById/:id", authMiddleware, updateUserById);
 // Profile Settings - Personal Details
 // -------------------------
 route.patch('/updateUserPersonalDetailById/:id', authMiddleware, updateUserPersonalDetailById)
-
+route.post("/verifyPhoneOtp",authMiddleware, verifyPhoneOtp);
 
 // --------------------------------------------------
 // OTP
