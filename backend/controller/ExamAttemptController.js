@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import ExamAttempt from "../model/ExamAttemptModel.js";
 import McqsModel from "../model/McqsModel.js";
+import LearningLanguagesModel from "../model/LearningLanguagesModel.js"
 
 export const startExam = async (req, res) => {
     try {
@@ -58,6 +59,7 @@ export const startExam = async (req, res) => {
         const attempt = await ExamAttempt.create({
             userId,
             chapterId: new mongoose.Types.ObjectId(chapterId),
+            examType: "chapter",
             mcqIds,
             startTime,
             endTime,
@@ -260,4 +262,261 @@ export const submitExam = async (req, res) => {
             message: "Internal Server Error",
         });
     }
+};
+
+// ========================================================================================
+// ========================================================================================
+// ========================================================================================
+// ================================== Final Exam ==========================================
+// ========================================================================================
+// ========================================================================================
+// ========================================================================================
+
+export const getFinalExamQuestions = async (req, res) => {
+    try {
+        const { code } = req.params;
+        const userId = req.user.id;
+
+        // Find language by code
+        const language = await LearningLanguagesModel.findOne({ code });
+
+        if (!language) {
+            return res.status(404).json({
+                status: 0,
+                message: "Language not found",
+            });
+        }
+
+        let attempt = await ExamAttempt.findOne({
+            userId,
+            langId: language._id,
+            examType: "final", // IMPORTANT (if you added it)
+            isCompleted: false,
+        }).populate("mcqIds");
+
+        if (!attempt) {
+            const chapterIds = language.chapters;
+
+            // 2. Fetch MCQs that belong to those chapters
+            const mcqs = await McqsModel.find({
+                chapterIds: { $in: chapterIds }
+            });
+
+            if (!mcqs.length) {
+                return res.status(404).json({
+                    status: 0,
+                    message: "No MCQs found for this language",
+                });
+            }
+
+            // Shuffle + limit
+            const shuffled = mcqs.sort(() => 0.5 - Math.random());
+            let selectedMcqs = [];
+            let questionCount = 0;
+
+            for (let mcq of shuffled) {
+                selectedMcqs.push(mcq);
+                questionCount += mcq.questions?.length || 0;
+
+                if (questionCount >= 15) break;
+            }
+
+            const startTime = new Date();
+            const endTime = new Date(startTime.getTime() + 15 * 60 * 1000);
+
+            attempt = await ExamAttempt.create({
+                userId,
+                langId: language._id,
+                examType: "final",
+                mcqIds: selectedMcqs.map(q => q._id),
+                answers: [],
+                startTime,
+                endTime,
+                isCompleted: false
+            });
+        }
+
+        // Time check
+        if (new Date() > attempt.endTime) {
+
+            // Calculate score
+            let score = 0;
+            let total = 0;
+
+            attempt.mcqIds.forEach((mcq) => {
+                mcq.questions?.forEach((question, index) => {
+
+                    total++;
+
+                    const userAnswer = answers.find(a =>
+                        a.mcqId?.toString() === mcq._id.toString() &&
+                        a.questionIndex === index
+                    );
+
+                    if (
+                        userAnswer &&
+                        Number(userAnswer.selectedOption) === Number(question.correctAnswer)
+                    ) {
+                        score++;
+                    }
+                });
+            });
+
+            const percentage = total > 0 ? ((score / total) * 100).toFixed(2) : 0;
+            const isPassed = percentage >= 40;
+
+            // DELETE attempt
+            await ExamAttempt.deleteOne({ _id: attempt._id });
+
+            return res.status(200).json({
+                status: 1,
+                score,
+                total,
+                percentage,
+                isPassed,
+                message: "Time expired - auto submitted"
+            });
+        }
+
+        return res.status(200).json({
+            status: 1,
+            data: {
+                mcqs: attempt.mcqIds,
+                endTime: attempt.endTime,
+                answers: attempt.answers,
+            },
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ status: 0, message: "Error" });
+    }
+};
+
+export const submitFinalExam = async (req, res) => {
+  try {
+    const { code } = req.params;
+    const userId = req.user.id;
+
+    const language = await LearningLanguagesModel.findOne({ code });
+
+    if (!language) {
+      return res.status(404).json({
+        status: 0,
+        message: "Language not found",
+      });
+    }
+
+    const attempt = await ExamAttempt.findOne({
+      userId,
+      langId: language._id,
+      examType: "final",
+      isCompleted: false,
+    }).populate("mcqIds");
+
+    if (!attempt) {
+      return res.status(404).json({
+        status: 0,
+        message: "No active attempt",
+      });
+    }
+
+    let score = 0;
+    let total = 0;
+
+    attempt.mcqIds.forEach((mcq) => {
+      mcq.questions?.forEach((question, index) => {
+
+        total++;
+
+        const userAnswer = attempt.answers.find(a =>
+          a.mcqId?.toString() === mcq._id.toString() &&
+          a.questionIndex === index
+        );
+
+
+        if (
+          userAnswer &&
+          Number(userAnswer.selectedOption) === Number(question.correctAnswer)
+        ) {
+          score++;
+        }
+      });
+    });
+
+
+    await ExamAttempt.deleteOne({ _id: attempt._id });
+
+    const percentage = total > 0 ? ((score / total) * 100).toFixed(2) : 0;
+    const isPassed = percentage >= 40;
+
+    return res.status(200).json({
+      status: 1,
+      score,
+      total,
+      percentage,
+      isPassed,
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ status: 0, message: "Error" });
+  }
+};
+
+export const saveFinalAnswer = async (req, res) => {
+  try {
+    const { code } = req.params;
+    const { mcqId, questionIndex, selectedOption } = req.body;
+    const userId = req.user.id;
+
+
+    const language = await LearningLanguagesModel.findOne({ code });
+
+    if (!language) {
+      return res.status(404).json({ status: 0, message: "Language not found" });
+    }
+
+    const attempt = await ExamAttempt.findOne({
+      userId,
+      langId: language._id,
+      examType: "final",
+      isCompleted: false,
+    });
+
+    if (!attempt) {
+      return res.status(404).json({ status: 0, message: "No attempt" });
+    }
+
+    if (new Date() > attempt.endTime) {
+      return res.status(400).json({
+        status: 0,
+        message: "Time over",
+      });
+    }
+
+    const existing = attempt.answers.find(
+      a =>
+        a.mcqId?.toString() === mcqId &&
+        a.questionIndex === questionIndex
+    );
+
+    if (existing) {
+      existing.selectedOption = selectedOption;
+    } else {
+      attempt.answers.push({
+        mcqId,
+        questionIndex,
+        selectedOption
+      });
+    }
+
+    await attempt.save();
+
+    res.json({ status: 1, message: "Saved" });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ status: 0 });
+  }
 };

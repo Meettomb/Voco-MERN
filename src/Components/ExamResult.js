@@ -6,6 +6,7 @@ export default function ResultPage() {
     const { state } = useLocation();
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const isFinal = state?.examType === "final";
 
     return (
         <div className="resultPage_container">
@@ -25,7 +26,10 @@ export default function ResultPage() {
 
                     {/* Title */}
                     <h1 className="resultTitle">
-                        {t("ChapterExamResult.title")}</h1>
+                        {isFinal
+                            ? t("FinalExamResult.title")
+                            : t("ChapterExamResult.title")}
+                    </h1>
 
                     {/* Score Circle */}
                     <div className="scoreCircle">
@@ -36,18 +40,32 @@ export default function ResultPage() {
                     {/* Status */}
                     <p className={`resultStatus ${state.isPassed ? "pass" : "fail"}`}>
                         {state.isPassed
-                            ? t("ChapterExamResult.passed")
-                            : t("ChapterExamResult.failed")}
+                            ? (isFinal
+                                ? t("FinalExamResult.passed")
+                                : t("ChapterExamResult.passed"))
+                            : (isFinal
+                                ? t("FinalExamResult.failed")
+                                : t("ChapterExamResult.failed"))}
                     </p>
 
                     {/* Actions */}
                     <div className="resultActions">
                         <button className="btnPrimary" onClick={() => navigate("/")}>
-                            {t("ChapterExamResult.home")}
+                            {t(isFinal ? "FinalExamResult.home" : "ChapterExamResult.home")}
                         </button>
 
-                        <button className="btnSecondary" onClick={() => navigate(-1)}>
-                            {t("ChapterExamResult.retry")}
+
+                        <button
+                            className="btnSecondary"
+                            onClick={() => {
+                                if (isFinal) {
+                                    navigate("/"); // or language page
+                                } else {
+                                    navigate(-1); // chapter retry
+                                }
+                            }}
+                        >
+                            {t(isFinal ? "FinalExamResult.retry" : "ChapterExamResult.retry")}
                         </button>
                     </div>
 

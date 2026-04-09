@@ -74,8 +74,9 @@ const EnterNewPassword = lazy(() => import("./Components/forgotPassword/EnterNew
 
 const LearnChapter = lazy(() => import("./Components/LearnChapter"));
 const ChapterExam = lazy(() => import("./Components/ChapterExam"));
-const ChapterExamResult = lazy(() => import("./Components/ChapterExamResult"));
+const ExamResult = lazy(() => import("./Components/ExamResult"));
 
+const FinalExam = lazy(() => import("./Components/FinalExam"));
 
 // Admin Components
 const AdminHeader = lazy(() => import("./Components/admin/AdminHeader"));
@@ -288,9 +289,15 @@ function App() {
               </AuthRoute>
             } />
 
-            <Route path="/ChapterExamResult" element={
+            <Route path="/FinalExam/:code" element={
               <AuthRoute onAuthFail={() => setAuthView("login")}>
-                <ChapterExamResult />
+                <FinalExam />
+              </AuthRoute>
+            } />
+
+            <Route path="/ExamResult" element={
+              <AuthRoute onAuthFail={() => setAuthView("login")}>
+                <ExamResult />
               </AuthRoute>
             } />
 
