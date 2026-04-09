@@ -9,8 +9,6 @@ export default function ChapterExam() {
     const { t } = useTranslation();
     // const lang = uiLanguage?.code;
     const { activeLanguage, uiLanguage } = useAuth();
-    console.log("Active Langauge", activeLanguage);
-    console.log("UI Langauge", uiLanguage);
     const { state } = useLocation();
     const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
     const [timeLeft, setTimeLeft] = useState(0);
@@ -65,12 +63,14 @@ export default function ChapterExam() {
             if (res.data.status === 1) {
                 localStorage.removeItem("examEndTime");
 
-                navigate("/ChapterExamResult", {
+                navigate("/ExamResult", {
                     replace: true,
-                    state: res.data
+                    state: {
+                        ...res.data,
+                        examType: "chapter"
+                    }
                 });
             }
-
         } catch (err) {
             console.log(err);
         }

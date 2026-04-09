@@ -154,17 +154,7 @@
     "exam": "Chapter Exam",
     "start": "Start Chapter",
     "takeExam": "Take Exam",
-    "chapters": {
-      "1": {
-        "description": "Basic everyday words"
-      },
-      "2": {
-        "description": "Common phrases & usage"
-      },
-      "3": {
-        "description": "Advanced vocabulary"
-      }
-    }
+    "finalExam": "Final Exam"
   },
   "Videos": {
     "title": "English Learning Videos"
@@ -253,6 +243,13 @@
     "failed": "❌ Failed",
     "home": "Go Home",
     "retry": "Retry"
+  },"FinalExamResult": {
+    "title": "Final Exam Result",
+    "passed": "Congratulations! You passed the final exam 🎉",
+    "failed": "You failed the final exam. Try again!",
+    "back": "Back",
+    "home": "Go Home",
+    "retry": "Retry Final Exam"
   },
   "Profile": {
     "ProfileHero": {

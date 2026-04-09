@@ -87,6 +87,58 @@ function LearnWords() {
     });
   };
 
+  const handleFinalExam = async () => {
+    try {
+      const existingEndTime = localStorage.getItem("examEndTime");
+
+      const chapterTitle = "Final Exam";
+      const chapterNumber = chapters.length + 1;
+
+      const code = activeLanguage?.code;
+
+      if (!code) {
+        alert("Language not selected");
+        return;
+      }
+
+      // Call backend to start/resume exam
+      const res = await axios.get(
+        `${REACT_APP_API_URL}/ExamAttemptModel/getFinalExamQuestions/${code}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      // If timer already exists → don't reset
+      if (existingEndTime) {
+        navigate(`/FinalExam/${code}`, {
+          state: {
+            chapterTitle,
+            chapterNumber,
+          },
+        });
+        return;
+      }
+
+      // Use backend endTime (BEST PRACTICE)
+      const endTime = new Date(res.data.data.endTime).getTime();
+      localStorage.setItem("examEndTime", endTime);
+
+      navigate(`/FinalExam/${code}`, {
+        state: {
+          chapterTitle,
+          chapterNumber,
+        },
+      });
+
+    } catch (err) {
+      console.error(err);
+      alert("Failed to start final exam");
+    }
+  };
+
   return (
     <div className="lw-page">
 
@@ -139,6 +191,33 @@ function LearnWords() {
 
           </div>
         ))}
+
+        {/* FINAL EXAM (STATIC) */}
+        <div className="lw-step">
+
+          <div className="lw-dot">
+            {chapters.length + 1}
+          </div>
+
+          <div className="lw-card">
+            <h3>
+              {t("LearnWords.chapter", { number: chapters.length + 1 })}
+            </h3>
+
+            <p>
+              {t("LearnWords.finalExam") || "Final Exam"}
+            </p>
+
+            <button
+              className="btn-primary"
+              onClick={handleFinalExam}
+            >
+              {t("LearnWords.start")}
+            </button>
+
+          </div>
+
+        </div>
       </div>
     </div>
   );
