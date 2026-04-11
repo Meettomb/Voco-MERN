@@ -3,14 +3,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
+import FullScreenLoader from "./FullScreenLoader"
 
 export default function FinalExam() {
 
     const { t } = useTranslation();
-    const [isSubmitting, setIsSubmitting] = useState(false);
     // const lang = uiLanguage?.code;
     const { activeLanguage, uiLanguage } = useAuth();
-    const { state } = useLocation();
     const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
     const [timeLeft, setTimeLeft] = useState(0);
     const navigate = useNavigate();
@@ -19,6 +18,7 @@ export default function FinalExam() {
     const questions = mcqa.flatMap(item => item.questions || []);
     const currentQuestion = questions[currentIndex];
     const [answers, setAnswers] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { code } = useParams();
     // console.log("CLICK CODE:", code);   
@@ -64,6 +64,8 @@ export default function FinalExam() {
 
     const handleSubmitExam = async () => {
         try {
+            setIsSubmitting(true);
+
             const res = await axios.post(
                 `${REACT_APP_API_URL}/ExamAttemptModel/final-exam/submit/${code}`,
                 {
@@ -92,16 +94,28 @@ export default function FinalExam() {
             }
 
         } catch (err) {
-            console.log(err);
+
+            // ✅ HANDLE 404 (IMPORTANT)
+            if (err.response?.status === 404) {
+                navigate("/ExamResult", {
+                    replace: true,
+                    state: {
+                        message: "Exam already submitted",
+                        examType: "final"
+                    }
+                });
+            } else {
+                console.log(err);
+            }
+
+        } finally {
+            setIsSubmitting(false);
         }
     };
     const formatTime = (seconds) => {
         const min = Math.floor(seconds / 60);
         const sec = seconds % 60;
         return `${min}:${sec < 10 ? "0" : ""}${sec}`;
-    };
-    const navigateBack = () => {
-        navigate(-1);
     };
 
     const loadFinalExam = async () => {
@@ -115,7 +129,9 @@ export default function FinalExam() {
                 }
             );
 
-            if (res.data.status === 1) {
+            // ✅ CASE 1: NORMAL EXAM
+            if (res.data.status === 1 && res.data.data) {
+
                 setMcqs(res.data.data.mcqs);
 
                 const formattedAnswers = {};
@@ -129,18 +145,26 @@ export default function FinalExam() {
                     if (question) {
                         formattedAnswers[question._id] = a.selectedOption;
                     }
-
-                    formattedAnswers[a.questionId] = a.selectedOption;
                 });
 
                 setAnswers(formattedAnswers);
 
-                // Sync timer from backend
                 const endTime = new Date(res.data.data.endTime).getTime();
                 localStorage.setItem("examEndTime", endTime);
 
                 const remaining = Math.floor((endTime - Date.now()) / 1000);
                 setTimeLeft(remaining > 0 ? remaining : 0);
+            }
+
+            // ✅ CASE 2: TIME EXPIRED → GO TO RESULT
+            else {
+                navigate("/ExamResult", {
+                    replace: true,
+                    state: {
+                        ...res.data,
+                        examType: "final"
+                    }
+                });
             }
 
         } catch (error) {
@@ -228,12 +252,15 @@ export default function FinalExam() {
 
     return (
         <>
+            {isSubmitting && (
+               <FullScreenLoader/>
+            )}
             <div className="ChapterExamContainer">
                 {/* Header */}
                 <div className="examHeader">
 
                     {/* Left - Back */}
-                    <div className="headerLeft">
+                    {/* <div className="headerLeft">
                         <button className="backBtn" onClick={navigateBack}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -248,12 +275,12 @@ export default function FinalExam() {
                             </svg>
                             {t("ChapterExam.back")}
                         </button>
-                    </div>
+                    </div> */}
 
                     {/* Center - Title */}
                     <div className="headerCenter">
                         <h2>
-                            Final Exam - {activeLanguage?.english}
+                            Final Exam - {activeLanguage?.native}
                         </h2>
                     </div>
 

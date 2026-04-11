@@ -14,6 +14,38 @@ function LearnWords() {
   const navigate = useNavigate();
 
   const [chapters, setChapters] = useState([]);
+  const [completedChapters, setCompletedChapters] = useState([]);
+  const [isCourseCompleted, setIsCourseCompleted] = useState(false);
+
+  useEffect(() => {
+    const fetchProgress = async () => {
+      try {
+        const res = await axios.get(
+          `${REACT_APP_API_URL}/UserProgressModel/user-progress/${activeLanguage?._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (res.data.status === 1) {
+          setCompletedChapters(res.data.data.completedChapters || []);
+          setIsCourseCompleted(res.data.data.isCourseCompleted || false);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    if (activeLanguage?._id) {
+      fetchProgress();
+    }
+  }, [activeLanguage]);
+
+  const isFinalExamUnlocked =
+    completedChapters.length === chapters.length;
+
 
   useEffect(() => {
     const fetchChapters = async () => {
@@ -142,6 +174,12 @@ function LearnWords() {
   return (
     <div className="lw-page">
 
+      {isCourseCompleted && (
+        <div className="course-completed-banner">
+          {t("LearnWords.courseCompleted")}
+        </div>
+      )}
+      
       {/* TITLE */}
       <h1 className="lw-title">
         {t("LearnWords.title")} - {
@@ -209,10 +247,28 @@ function LearnWords() {
             </p>
 
             <button
-              className="btn-primary"
+              className={`btn-primary ${!isFinalExamUnlocked ? "locked" : ""}`}
               onClick={handleFinalExam}
+              disabled={!isFinalExamUnlocked}
             >
-              {t("LearnWords.start")}
+              {!isFinalExamUnlocked && (
+                <svg
+                  className="lock-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <rect x="5" y="11" width="14" height="10" rx="2" />
+                  <path d="M8 11V7a4 4 0 118 0v4" />
+                </svg>
+              )}
+
+              <span>
+                {isFinalExamUnlocked
+                  ? t("LearnWords.start")
+                  : "Complete all chapters first"}
+              </span>
             </button>
 
           </div>

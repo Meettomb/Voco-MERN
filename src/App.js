@@ -57,6 +57,8 @@ const OtpVerify = lazy(() => import("./Components/OtpVerify"));
 const MainLayout = lazy(() => import("./MainLayout"));
 const PhoneNumberVerify = lazy(() => import("./Components/PhoneNumberVerify"));
 
+const Certificate = lazy(() => import("./Components/Certificate"))
+
 // User Components
 const Home = lazy(() => import("./Components/Home"));
 const SignIn = lazy(() => import("./Components/SIgnInPopup"));
@@ -272,6 +274,9 @@ function App() {
 
             {/* Pages WITHOUT Header */}
             <Route path="/OtpVerify" element={<OtpVerify />} />
+            <Route path="/Certificate" element={
+                <Certificate />
+            } />
 
             <Route path="/PhoneNumberVerify" element={
               <AuthRoute onAuthFail={() => setAuthView("login")}>

@@ -154,7 +154,8 @@
     "exam": "Chapter Exam",
     "start": "Start Chapter",
     "takeExam": "Take Exam",
-    "finalExam": "Final Exam"
+    "finalExam": "Final Exam",
+    "courseCompleted":"You have successfully completed this course"
   },
   "Videos": {
     "title": "English Learning Videos"
