@@ -6,27 +6,32 @@ const UserProgressSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "user_table",
     required: true,
-    unique: true 
+    unique: true
   },
 
   learningLanguages: [
     {
       languageId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "learning_languages", 
+        ref: "learning_languages",
         required: true,
       },
 
       completedChapters: [
         {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "chapters", 
+          ref: "chapters",
         }
       ],
 
       isCourseCompleted: {
         type: Boolean,
         default: false,
+      },
+      
+      completedAt: {
+        type: Date,
+        default: null,
       }
     }
   ]

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import ExamAttempt from "../model/ExamAttemptModel.js";
 import McqsModel from "../model/McqsModel.js";
 import LearningLanguagesModel from "../model/LearningLanguagesModel.js"
+import UserProgressModel from "../model/UserProgressModel.js"
 
 export const startExam = async (req, res) => {
     try {
@@ -240,7 +241,7 @@ export const submitExam = async (req, res) => {
         const percentage = total > 0 ? ((score / total) * 100).toFixed(2) : 0;
 
         //  pass/fail logic
-        const isPassed = percentage >= 40;
+        const isPassed = percentage >= 70;
 
         //  DELETE attempt AFTER result calculation
         await ExamAttempt.deleteOne({ _id: attempt._id });
@@ -363,7 +364,7 @@ export const getFinalExamQuestions = async (req, res) => {
             });
 
             const percentage = total > 0 ? ((score / total) * 100).toFixed(2) : 0;
-            const isPassed = percentage >= 40;
+            const isPassed = percentage >= 70;
 
             // DELETE attempt
             await ExamAttempt.deleteOne({ _id: attempt._id });
@@ -394,129 +395,152 @@ export const getFinalExamQuestions = async (req, res) => {
 };
 
 export const submitFinalExam = async (req, res) => {
-  try {
-    const { code } = req.params;
-    const userId = req.user.id;
+    try {
+        const { code } = req.params;
+        const userId = req.user.id;
 
-    const language = await LearningLanguagesModel.findOne({ code });
+        const language = await LearningLanguagesModel.findOne({ code });
 
-    if (!language) {
-      return res.status(404).json({
-        status: 0,
-        message: "Language not found",
-      });
-    }
-
-    const attempt = await ExamAttempt.findOne({
-      userId,
-      langId: language._id,
-      examType: "final",
-      isCompleted: false,
-    }).populate("mcqIds");
-
-    if (!attempt) {
-      return res.status(404).json({
-        status: 0,
-        message: "No active attempt",
-      });
-    }
-
-    let score = 0;
-    let total = 0;
-
-    attempt.mcqIds.forEach((mcq) => {
-      mcq.questions?.forEach((question, index) => {
-
-        total++;
-
-        const userAnswer = attempt.answers.find(a =>
-          a.mcqId?.toString() === mcq._id.toString() &&
-          a.questionIndex === index
-        );
-
-
-        if (
-          userAnswer &&
-          Number(userAnswer.selectedOption) === Number(question.correctAnswer)
-        ) {
-          score++;
+        if (!language) {
+            return res.status(404).json({
+                status: 0,
+                message: "Language not found",
+            });
         }
-      });
-    });
+
+        const attempt = await ExamAttempt.findOne({
+            userId,
+            langId: language._id,
+            examType: "final",
+            isCompleted: false,
+        }).populate("mcqIds");
+
+        if (!attempt) {
+            return res.status(404).json({
+                status: 0,
+                message: "No active attempt",
+            });
+        }
+
+        let score = 0;
+        let total = 0;
+
+        attempt.mcqIds.forEach((mcq) => {
+            mcq.questions?.forEach((question, index) => {
+
+                total++;
+
+                const userAnswer = attempt.answers.find(a =>
+                    a.mcqId?.toString() === mcq._id.toString() &&
+                    a.questionIndex === index
+                );
 
 
-    await ExamAttempt.deleteOne({ _id: attempt._id });
+                if (
+                    userAnswer &&
+                    Number(userAnswer.selectedOption) === Number(question.correctAnswer)
+                ) {
+                    score++;
+                }
+            });
+        });
 
-    const percentage = total > 0 ? ((score / total) * 100).toFixed(2) : 0;
-    const isPassed = percentage >= 40;
 
-    return res.status(200).json({
-      status: 1,
-      score,
-      total,
-      percentage,
-      isPassed,
-    });
+        await ExamAttempt.deleteOne({ _id: attempt._id });
 
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ status: 0, message: "Error" });
-  }
+        const percentage = total > 0 ? ((score / total) * 100).toFixed(2) : 0;
+        const isPassed = percentage >= 70;
+
+        if (isPassed) {
+            const progress = await UserProgressModel.findOne({ userId });
+
+            if (progress) {
+                const langIndex = progress.learningLanguages.findIndex(
+                    (l) => l.languageId.toString() === language._id.toString()
+                );
+
+                if (langIndex !== -1) {
+
+                    // Prevent overwrite
+                    if (!progress.learningLanguages[langIndex].isCourseCompleted) {
+                        progress.learningLanguages[langIndex].isCourseCompleted = true;
+                    }
+
+                    // Save completion time
+                    progress.learningLanguages[langIndex].completedAt = new Date();
+
+                    await progress.save();
+                }
+            }
+        }
+
+        return res.status(200).json({
+            status: 1,
+            score,
+            total,
+            percentage,
+            isPassed,
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ status: 0, message: "Error" });
+    }
 };
 
 export const saveFinalAnswer = async (req, res) => {
-  try {
-    const { code } = req.params;
-    const { mcqId, questionIndex, selectedOption } = req.body;
-    const userId = req.user.id;
+    try {
+        const { code } = req.params;
+        const { mcqId, questionIndex, selectedOption } = req.body;
+        const userId = req.user.id;
 
 
-    const language = await LearningLanguagesModel.findOne({ code });
+        const language = await LearningLanguagesModel.findOne({ code });
 
-    if (!language) {
-      return res.status(404).json({ status: 0, message: "Language not found" });
+        if (!language) {
+            return res.status(404).json({ status: 0, message: "Language not found" });
+        }
+
+        const attempt = await ExamAttempt.findOne({
+            userId,
+            langId: language._id,
+            examType: "final",
+            isCompleted: false,
+        });
+
+        if (!attempt) {
+            return res.status(404).json({ status: 0, message: "No attempt" });
+        }
+
+        if (new Date() > attempt.endTime) {
+            return res.status(400).json({
+                status: 0,
+                message: "Time over",
+            });
+        }
+
+        const existing = attempt.answers.find(
+            a =>
+                a.mcqId?.toString() === mcqId &&
+                a.questionIndex === questionIndex
+        );
+
+        if (existing) {
+            existing.selectedOption = selectedOption;
+        } else {
+            attempt.answers.push({
+                mcqId,
+                questionIndex,
+                selectedOption
+            });
+        }
+
+        await attempt.save();
+
+        res.json({ status: 1, message: "Saved" });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ status: 0 });
     }
-
-    const attempt = await ExamAttempt.findOne({
-      userId,
-      langId: language._id,
-      examType: "final",
-      isCompleted: false,
-    });
-
-    if (!attempt) {
-      return res.status(404).json({ status: 0, message: "No attempt" });
-    }
-
-    if (new Date() > attempt.endTime) {
-      return res.status(400).json({
-        status: 0,
-        message: "Time over",
-      });
-    }
-
-    const existing = attempt.answers.find(
-      a =>
-        a.mcqId?.toString() === mcqId &&
-        a.questionIndex === questionIndex
-    );
-
-    if (existing) {
-      existing.selectedOption = selectedOption;
-    } else {
-      attempt.answers.push({
-        mcqId,
-        questionIndex,
-        selectedOption
-      });
-    }
-
-    await attempt.save();
-
-    res.json({ status: 1, message: "Saved" });
-
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ status: 0 });
-  }
 };
