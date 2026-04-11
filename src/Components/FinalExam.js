@@ -233,7 +233,7 @@ export default function FinalExam() {
                 <div className="examHeader">
 
                     {/* Left - Back */}
-                    <div className="headerLeft">
+                    {/* <div className="headerLeft">
                         <button className="backBtn" onClick={navigateBack}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -248,7 +248,7 @@ export default function FinalExam() {
                             </svg>
                             {t("ChapterExam.back")}
                         </button>
-                    </div>
+                    </div> */}
 
                     {/* Center - Title */}
                     <div className="headerCenter">
