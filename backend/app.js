@@ -9,6 +9,7 @@ import LearningLanguagesRoutes from "./routes/LearningLanguagesRoutes.js";
 import DashboardRoutes from "./routes/DashboardRoutes.js";
 import ChapterRoutes from "./routes/ChapterRoutes.js";
 import ExamAttemptRoutes from "./routes/ExamAttemptRoutes.js";
+import UserProgressRoutes from "./routes/UserProgressRoutes.js";
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/api/LearningLanguagesModel", LearningLanguagesRoutes);
 app.use("/api/dashboard", DashboardRoutes);
 app.use("/api/ChapterModel", ChapterRoutes);
 app.use("/api/ExamAttemptModel", ExamAttemptRoutes);
+app.use("/api/UserProgressModel", UserProgressRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "Backend is running" });

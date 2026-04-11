@@ -8,7 +8,7 @@ export default function LearnChapter() {
     const { userData, activeLanguage, uiLanguage } = useAuth();
     const { chapterId } = useParams();
     const navigate = useNavigate();
-
+    const [completedChapters, setCompletedChapters] = useState([]);
 
     const REACT_APP_API_URL = process.env.REACT_APP_API_URL
 
@@ -76,7 +76,34 @@ export default function LearnChapter() {
     }, [userData, chapterId]);
 
 
+    useEffect(() => {
+        const fetchProgress = async () => {
+            try {
+                const res = await axios.get(
+                    `${REACT_APP_API_URL}/UserProgressModel/user-progress/${activeLanguage?._id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        },
+                    }
+                );
 
+                if (res.data.status === 1) {
+                    setCompletedChapters(res.data.data.completedChapters || []);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        if (activeLanguage?._id) {
+            fetchProgress();
+        }
+    }, [activeLanguage]);
+
+    const isCompleted = completedChapters.some(
+        (id) => id.toString() === chapterId
+    );
 
     const getSpeechLang = (code) => {
         if (!code) return "en-US";
@@ -122,6 +149,36 @@ export default function LearnChapter() {
         }
 
         speakText(selected, grammarLang);
+    };
+
+    const handleMarkComplete = async () => {
+        try {
+            const res = await axios.post(
+                `${REACT_APP_API_URL}/UserProgressModel/mark-complete`,
+                {
+                    userId: userData?._id,
+                    languageId: activeLanguage?._id,
+                    chapterId: chapterId,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                }
+            );
+
+            if (res.data.status === 1) {
+                setMessage("Chapter marked as completed");
+                setMessageType("success");
+            } else {
+                setMessage(res.data.message || "Something went wrong");
+                setMessageType("error");
+            }
+        } catch (err) {
+            console.error(err);
+            setMessage("Server error");
+            setMessageType("error");
+        }
     };
 
 
@@ -285,13 +342,26 @@ export default function LearnChapter() {
                             ))}
                         </div>
                     )}
-                    <div className="LearnChapter__footer">
-                        <button
-                            className="LearnChapter__completeBtn"
-                        >
-                            Mark as Complete
-                        </button>
-                    </div>
+                    <button
+                        className={`LearnChapter__completeBtn ${isCompleted ? "completed" : ""}`}
+                        onClick={handleMarkComplete}
+                        disabled={isCompleted}
+                    >
+                        {isCompleted && (
+                            <svg
+                                className="complete-icon"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                            >
+                                <path d="M20 6L9 17l-5-5" />
+                            </svg>
+                        )}
+                        <span>
+                            {isCompleted ? "Completed" : "Mark as Complete"}
+                        </span>
+                    </button>
                 </div>
             </div>
         </>
