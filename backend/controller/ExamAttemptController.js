@@ -3,6 +3,8 @@ import ExamAttempt from "../model/ExamAttemptModel.js";
 import McqsModel from "../model/McqsModel.js";
 import LearningLanguagesModel from "../model/LearningLanguagesModel.js"
 import UserProgressModel from "../model/UserProgressModel.js"
+import UserModel from "../model/UserModel.js"
+import { sendMail } from "../utils/mailService.js";
 
 export const startExam = async (req, res) => {
     try {
@@ -349,7 +351,7 @@ export const getFinalExamQuestions = async (req, res) => {
 
                     total++;
 
-                    const userAnswer = answers.find(a =>
+                    const userAnswer = attempt.answers.find(a =>
                         a.mcqId?.toString() === mcq._id.toString() &&
                         a.questionIndex === index
                     );
@@ -451,6 +453,23 @@ export const submitFinalExam = async (req, res) => {
         const percentage = total > 0 ? ((score / total) * 100).toFixed(2) : 0;
         const isPassed = percentage >= 70;
 
+        const user = await UserModel.findById(userId);
+        try {
+            await sendMail(
+                user.email,
+                "Final Exam Result",
+                "finalExam",
+                {
+                    percentage,
+                    isPassed,
+                    language: `${language.english} (${language.native})`,
+                }
+            );
+        }
+        catch (error) {
+            console.log(error)
+        }
+
         if (isPassed) {
             const progress = await UserProgressModel.findOne({ userId });
 
@@ -458,6 +477,8 @@ export const submitFinalExam = async (req, res) => {
                 const langIndex = progress.learningLanguages.findIndex(
                     (l) => l.languageId.toString() === language._id.toString()
                 );
+
+
 
                 if (langIndex !== -1) {
 

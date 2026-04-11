@@ -81,33 +81,85 @@ export const sendMail = async (to, subject, type, value) => {
 
   }
 
-  const html = `
-  <table width="100%" cellpadding="0" cellspacing="0"
-    style="background:#f2f4f8;padding:40px 0;font-family:Arial">
+  // Final Exam Result
 
-    <tr>
-      <td align="center">
+  if (type === "finalExam") {
 
-        <table width="480"
-          style="background:white;border-radius:10px;padding:30px">
+    const { percentage, isPassed, language } = value;
 
-          <tr>
-            <td align="center">
+    content = `
+    <div style="max-width:520px;margin:auto;text-align:center;">
 
-              <h2>LearnVoco</h2>
+      <h2 style="margin-bottom:10px;">Final Exam Result</h2>
 
-              ${content}
+      <p style="font-size:15px;color:#6b7280;margin-bottom:20px;">
+        Language: <strong>${language}</strong>
+      </p>
 
-            </td>
-          </tr>
+      <div style="
+        font-size:20px;
+        font-weight:600;
+        background:${isPassed ? "#16a34a" : "#dc2626"};
+        color:white;
+        padding:18px;
+        border-radius:10px;
+        margin-bottom:20px;
+      ">
+        ${isPassed ? "Congratulations! You passed 🎉" : "You did not pass"}
+      </div>
 
-        </table>
+      <div style="
+        background:#f3f4f6;
+        padding:15px;
+        border-radius:8px;
+        margin-bottom:20px;
+      ">
+        <p style="margin:0;font-size:14px;color:#374151;">Your Score</p>
+        <h3 style="margin:5px 0 0 0;font-size:24px;">
+          ${percentage}%
+        </h3>
+      </div>
 
-      </td>
-    </tr>
+      ${isPassed
+        ? `<p style="font-size:15px;color:#16a34a;">
+              You have successfully completed the course.
+            </p>`
+        : `<p style="font-size:15px;color:#dc2626;">
+              Please try again to improve your score.
+            </p>`
+      }
 
-  </table>
+    </div>
   `;
+  }
+
+  const html = `
+<table width="100%" cellpadding="0" cellspacing="0"
+  style="background:#f2f4f8;padding:40px 0;font-family:Arial">
+
+  <tr>
+    <td align="center">
+
+      <table width="600"
+        style="background:white;border-radius:12px;padding:30px;box-shadow:0 4px 12px rgba(0,0,0,0.05)">
+
+        <tr>
+          <td align="center">
+
+            <h2 style="margin-bottom:20px;">LearnVoco</h2>
+
+            ${content}
+
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+
+</table>
+`;
 
   await transporter.sendMail({
     from: process.env.SMTP_EMAIL,

@@ -2006,6 +2006,16 @@ html {
   background: var(--color-primary-light);
 }
 
+.course-completed-banner {
+  width: 100%;
+  background: rgba(22, 163, 74, 0.889);
+  color: white;
+  padding: 14px;
+  text-align: center;
+  font-weight: 600;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
 
 /* ========================================================================================== */
 /* ========================================================================================== */

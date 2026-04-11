@@ -15,6 +15,8 @@ function LearnWords() {
 
   const [chapters, setChapters] = useState([]);
   const [completedChapters, setCompletedChapters] = useState([]);
+  const [isCourseCompleted, setIsCourseCompleted] = useState(false);
+
   useEffect(() => {
     const fetchProgress = async () => {
       try {
@@ -29,6 +31,7 @@ function LearnWords() {
 
         if (res.data.status === 1) {
           setCompletedChapters(res.data.data.completedChapters || []);
+          setIsCourseCompleted(res.data.data.isCourseCompleted || false);
         }
       } catch (err) {
         console.error(err);
@@ -171,6 +174,12 @@ function LearnWords() {
   return (
     <div className="lw-page">
 
+      {isCourseCompleted && (
+        <div className="course-completed-banner">
+          {t("LearnWords.courseCompleted")}
+        </div>
+      )}
+      
       {/* TITLE */}
       <h1 className="lw-title">
         {t("LearnWords.title")} - {

@@ -102,7 +102,8 @@ export const getUserProgressByLanguage = async (req, res) => {
     return res.json({
       status: 1,
       data: {
-        completedChapters: langProgress?.completedChapters || []
+        completedChapters: langProgress?.completedChapters || [],
+        isCourseCompleted: langProgress?.isCourseCompleted || false
       }
     });
 
