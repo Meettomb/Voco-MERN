@@ -140,7 +140,7 @@ const isSingleLanguage = langCount === 1;
                 </li>
               )}
 
-              {isSingleLanguage ? (
+              {/* {isSingleLanguage ? (
                 <li>
                   <Link to="/mcqs-exam"
                     className={target === "mcqs-exam" ? "active-link" : ""}
@@ -157,7 +157,7 @@ const isSingleLanguage = langCount === 1;
                     {t("nav.mcqs")}
                   </Link>
                 </li>
-              )}
+              )} */}
 
 
               {/* <li>
@@ -388,7 +388,7 @@ const isSingleLanguage = langCount === 1;
             )}
 
 
-            {isSingleLanguage ? (
+            {/* {isSingleLanguage ? (
               <li>
                 <Link to="/mcqs-exam" state={{ target: "mcqs-exam" }} onClick={() => setMenuOpen(false)}>
                   <svg viewBox="0 -960 960 960">
@@ -416,7 +416,7 @@ const isSingleLanguage = langCount === 1;
                   {t("nav.mcqs")}
                 </Link>
               </li>
-            )}
+            )} */}
 
 
             {/* <li>
