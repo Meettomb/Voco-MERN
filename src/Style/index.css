@@ -5649,10 +5649,6 @@ svg {
 }
 
 
-
-
-
-
 .AcountSettings .form-input:focus {
   outline: none;
   border-color: var(--color-primary);
@@ -5879,8 +5875,93 @@ svg {
   height: 18px;
 }
 
+/* ========================================================================================== */
+/* Progress Page */
+/* ========================================================================================== */
+/* Page *//* Card FIX */
+.cert-page__container{
+  margin: 20px 0;
+  padding: 20px;
+  background: var(--color-bg-card);
+  border-radius: 20px;
+}
+.cert-page .cert-page__list .cert-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-radius: 14px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-sm);
+  transition: 0.3s;
+  margin: 30px 0;
+}
 
+/* LEFT SECTION FIX */
+.cert-page .cert-page__list .cert-card .cert-card__left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
 
+/* ICON */
+.cert-page .cert-page__list .cert-card .cert-card__icon {
+  width: 50px;
+  height: 50px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 22px;
+}
+
+/* CONTENT */
+.cert-page .cert-page__list .cert-card .cert-card__content h3 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--color-text-primary);
+}
+
+.cert-page .cert-page__list .cert-card .cert-card__content p {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* RIGHT SECTION */
+.cert-page .cert-page__list .cert-card .cert-card__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* BADGE */
+.cert-page .cert-page__list .cert-card .cert-badge.success {
+  background: #dcfce7;
+  color: var(--color-accent-green);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* BUTTON */
+.cert-page .cert-page__list .cert-card .cert-btn {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cert-page .cert-page__list .cert-card .cert-btn:hover {
+  background: var(--btn-primary-hover);
+}
 /* ========================================================================================== */
 /* ========================================================================================== */
 /* MCQs Add Page */
