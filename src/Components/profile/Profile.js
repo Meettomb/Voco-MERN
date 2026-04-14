@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ProfileHero from "./ProfileHero";
+import Progress from "./Progress";
 import AccountSettingTop from "./AccountSettings/AccountSettingTop";
 import { useAuth } from "../../context/AuthContext";
 import { useLocation } from "react-router-dom";
@@ -50,6 +51,12 @@ export default function Profile() {
 
 
         <AccountSettingTop
+          userData={userData}
+          refreshUser={refreshUser}
+          uiLanguage={uiLanguage}
+        />
+
+        <Progress
           userData={userData}
           refreshUser={refreshUser}
           uiLanguage={uiLanguage}

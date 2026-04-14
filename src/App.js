@@ -274,7 +274,8 @@ function App() {
 
             {/* Pages WITHOUT Header */}
             <Route path="/OtpVerify" element={<OtpVerify />} />
-            <Route path="/Certificate" element={
+
+            <Route path="/certificate/:id" element={
                 <Certificate />
             } />
 

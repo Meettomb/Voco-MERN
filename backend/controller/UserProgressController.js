@@ -115,3 +115,98 @@ export const getUserProgressByLanguage = async (req, res) => {
     });
   }
 };
+
+
+export const getCompletedCertificates = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const progress = await UserProgressModel.findOne({ userId })
+      .populate("learningLanguages.languageId");
+
+    if (!progress) {
+      return res.json({
+        status: 1,
+        data: []
+      });
+    }
+
+    // ✅ Filter only completed courses
+    const completedCourses = progress.learningLanguages.filter(
+      (lang) => lang.isCourseCompleted === true
+    );
+
+    // ✅ Format response (clean for frontend)
+    const result = completedCourses.map((lang) => ({
+      languageId: lang.languageId._id,
+      name: lang.languageId.english,
+      native: lang.languageId.native,
+      completedAt: lang.completedAt
+    }));
+
+    return res.json({
+      status: 1,
+      data: result
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: 0,
+      message: "Server error"
+    });
+  }
+};
+
+export const getSingleCertificate = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { id } = req.params;
+
+    // ✅ Fetch user + progress in parallel (optimized)
+    const [progress, user] = await Promise.all([
+      UserProgressModel.findOne({ userId })
+        .populate("learningLanguages.languageId"),
+      UserModel.findById(userId)
+    ]);
+
+    if (!progress) {
+      return res.status(404).json({
+        status: 0,
+        message: "Progress not found",
+      });
+    }
+
+    // ✅ Find completed certificate
+    const cert = progress.learningLanguages.find(
+      (l) =>
+        l.languageId._id.toString() === id &&
+        l.isCourseCompleted === true
+    );
+
+    if (!cert) {
+      return res.status(404).json({
+        status: 0,
+        message: "Certificate not found",
+      });
+    }
+
+    // ✅ Final response
+    return res.json({
+      status: 1,
+      data: {
+        userName: user.username,          // ✅ from DB
+        name: cert.languageId.english,
+        completedAt: cert.completedAt,
+        certificateId: `VOCO-${id.slice(-6)}`
+      },
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+  }
+};

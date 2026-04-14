@@ -2,7 +2,9 @@ import express from "express";
 import authMiddleware from "../utils/authMiddlware.js";
 import {
     markChapterComplete,
-    getUserProgressByLanguage
+    getUserProgressByLanguage,
+    getCompletedCertificates,
+    getSingleCertificate
 } from "../controller/UserProgressController.js";
 
 const UserProgressRoutes = express.Router();
@@ -14,4 +16,6 @@ UserProgressRoutes.get(
   getUserProgressByLanguage
 );
 
+UserProgressRoutes.get("/certificates", authMiddleware, getCompletedCertificates);
+UserProgressRoutes.get("/certificate/:id", authMiddleware, getSingleCertificate);
 export default UserProgressRoutes;

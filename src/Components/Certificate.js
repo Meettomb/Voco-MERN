@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import logo from "../assets/images/Voco.png";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -6,15 +8,38 @@ import { QRCodeCanvas } from "qrcode.react";
 import seal from "../assets/images/CertificateSeal.png"; // add a gold seal image
 import AuthorizedSignature from "../assets/images/AuthorizedSignature.png"
 
-export default function Certificate({
-    userName = "Meet Patel",
-    languageName = "English",
-    date = "April 11, 2026",
-    certificateId = "VOCO-123456"
-}) {
+export default function Certificate() {
 
     const REACT_APP_URL = process.env.REACT_APP_URL;
-    const verifyUrl = `${REACT_APP_URL}/Certificate/${certificateId}`;
+    const { id } = useParams();
+    const [cert, setCert] = useState(null);
+
+    const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+
+    useEffect(() => {
+        fetchCert();
+    }, []);
+
+    const fetchCert = async () => {
+        try {
+            const res = await axios.get(
+                `${REACT_APP_API_URL}/UserProgressModel/certificate/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                }
+            );
+
+            if (res.data.status === 1) {
+                setCert(res.data.data);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const verifyUrl = `${REACT_APP_URL}/certificate/${id}`;
 
     const downloadCertificate = async () => {
         const element = document.getElementById("certificate");
@@ -34,25 +59,29 @@ export default function Certificate({
         //  FULL FIT (NO CENTERING)
         pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
 
-        pdf.save(`${userName}-certificate.pdf`);
+        pdf.save(`${cert.userName}-certificate.pdf`);
     };
 
+
+    if (!cert) return <p>Loading...</p>;
     return (
         <div style={styles.wrapper}>
             <div id="certificate" style={styles.certificate}>
 
                 {/* 🔝 HEADER */}
                 <div style={styles.topSection}>
-                    <img src={logo} alt="logo" style={styles.logo} loading="lazy"/>
+                    <img src={logo} alt="logo" style={styles.logo} loading="lazy" />
                     <h1 style={styles.title}>Certificate of Completion</h1>
                     <p style={styles.subtitle}>This is proudly presented to</p>
                 </div>
 
                 {/* 🎯 CENTER */}
                 <div style={styles.centerSection}>
-                    <h2 style={styles.name}>{userName}</h2>
+                    <h2 style={styles.name}>{cert.userName}</h2>
                     <p style={styles.text}>for successfully completing the</p>
-                    <h3 style={styles.course}>{languageName} Language Course</h3>
+                    <h3 style={styles.course}>
+                        {cert.name} Language Course
+                    </h3>
 
                 </div>
 
@@ -64,21 +93,21 @@ export default function Certificate({
                         {/* LEFT SIDE */}
                         <div style={styles.bottomBlock}>
                             <p style={styles.label}>Date</p>
-                            <p>{date}</p>
+                            <p>{new Date(cert.completedAt).toLocaleDateString()}</p>
 
-                            <img src={AuthorizedSignature} alt="signature" style={styles.signatureImg} loading="lazy"/>
+                            <img src={AuthorizedSignature} alt="signature" style={styles.signatureImg} loading="lazy" />
                             <div style={styles.line}></div>
                         </div>
 
                         {/* CENTER → SEAL */}
                         <div style={styles.bottomBlockCenter}>
-                            <img src={seal} alt="seal" style={styles.sealFixed} loading="lazy"/>
+                            <img src={seal} alt="seal" style={styles.sealFixed} loading="lazy" />
                         </div>
 
                         {/* RIGHT SIDE */}
                         <div style={styles.bottomBlock}>
                             <p style={styles.label}>Certificate ID</p>
-                            <p>{certificateId}</p>
+                            <p>VOCO-{id.slice(-6)}</p>
 
                             <div style={styles.qr}>
                                 <QRCodeCanvas
