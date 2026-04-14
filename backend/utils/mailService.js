@@ -133,6 +133,29 @@ export const sendMail = async (to, subject, type, value) => {
   `;
   }
 
+  // ✅ PASSWORD UPDATED MAIL
+  if (type === "passwordUpdate") {
+
+    content = `
+  <h2>Password Updated</h2>
+
+  <div style="
+    font-size:20px;
+    background:#16a34a;
+    color:white;
+    padding:20px;
+    border-radius:8px;
+    display:inline-block;
+  ">
+    Your password has been changed successfully
+  </div>
+
+  <p style="margin-top:15px;">
+    If you did not make this change, please reset your password immediately or contact support.
+  </p>
+  `;
+  }
+
   const html = `
 <table width="100%" cellpadding="0" cellspacing="0"
   style="background:#f2f4f8;padding:40px 0;font-family:Arial">

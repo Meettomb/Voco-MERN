@@ -595,10 +595,10 @@ export const updateUserPasswordById = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const oldUserPassword = await UserModel.findById(id).select("password");
-    const currentPassword = req.body.currentPassword;
-    const newPassword = req.body.newPassword;
-    const confirmPassword = req.body.confirmPassword;
+    // ✅ SINGLE DB CALL
+    const user = await UserModel.findById(id).select("password email");
+
+    const { currentPassword, newPassword, confirmPassword } = req.body;
 
     if (!currentPassword || !newPassword || !confirmPassword) {
       return res.status(400).json({
@@ -606,20 +606,26 @@ export const updateUserPasswordById = async (req, res) => {
         message: "All fields are required",
       });
     }
-    if (!oldUserPassword) {
+
+    if (!user) {
       return res.status(404).json({
         status: 0,
         message: "User Not Found",
-      })
+      });
     }
 
-    const isPasswordMatch = await bcrypt.compare(currentPassword, oldUserPassword.password);
+    const isPasswordMatch = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+
     if (!isPasswordMatch) {
       return res.status(400).json({
         status: 0,
         message: "Old password not matched for this user",
-      })
+      });
     }
+
     if (newPassword !== confirmPassword) {
       return res.status(400).json({
         status: 0,
@@ -627,19 +633,34 @@ export const updateUserPasswordById = async (req, res) => {
       });
     }
 
-    // Hash and save new password
+    // ✅ Update password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const updatePassword = await UserModel.findByIdAndUpdate(
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
       id,
       { password: hashedPassword },
       { new: true }
     );
 
+    // ✅ SEND MAIL (CORRECT VARIABLE)
+    try {
+      if (user.email) {
+        await sendMail(
+          user.email,
+          "Password Updated Successfully",
+          "passwordUpdate"
+        );
+      }
+    } catch (mailError) {
+      console.error("Mail failed:", mailError.message);
+    }
+
     return res.status(200).json({
       status: 1,
       message: "Password successfully updated",
-      data: updatePassword,
+      data: updatedUser,
     });
+
   } catch (error) {
     if (error.name === "CastError") {
       return res.status(400).json({
@@ -647,14 +668,15 @@ export const updateUserPasswordById = async (req, res) => {
         message: "Invalid user ID",
       });
     }
+
     console.error(error);
+
     return res.status(500).json({
       status: 0,
       message: "Server error",
     });
   }
-}
-
+};
 // ===================================================
 // ===================================================
 // ====================== OTP ========================
