@@ -70,7 +70,6 @@ export default function UserDetailView() {
       );
 
       setUser(responce.data.data);
-      console.log(responce.data.data);
     } catch (error) {
       console.error("Error fetching user details:", error);
     }
@@ -214,7 +213,7 @@ export default function UserDetailView() {
             <span>Learning Languages</span>
             <p>
               {user?.learningLanguages?.length > 0
-                ? user.learningLanguages.join(", ")
+                ? user.learningLanguages.map(lang => lang.english).join(',')
                 : "None"}
             </p>
           </div>
