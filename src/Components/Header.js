@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import FullScreenLoader from "./FullScreenLoader";
+import axios from "axios";
 
 
 function Header({ onOpen }) {
@@ -21,14 +22,18 @@ function Header({ onOpen }) {
   const location = useLocation();
   const target = location.state?.target;
 
+  const [uiLanguage, setUiLanguage] = useState();
+
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+
 
   // get data from token
   // const user = getUser();
   // const id = user?.id;
 
-const langCount = userData?.learningLanguages?.length || 0;
+  const langCount = userData?.learningLanguages?.length || 0;
 
-const isSingleLanguage = langCount === 1;
+  const isSingleLanguage = langCount === 1;
 
 
   const handelLogout = () => {
@@ -46,6 +51,22 @@ const isSingleLanguage = langCount === 1;
     return () => (document.body.style.overflow = "");
   }, [menuOpen]);
 
+  const getUiLanguage = async () => {
+    const res = await axios.get(`${REACT_APP_API_URL}/UiLanguageModel/getUiLanguage`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }
+    );
+
+    setUiLanguage(res.data.data);
+
+  }
+
+  useEffect(() => {
+    getUiLanguage();
+  }, [])
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -170,8 +191,10 @@ const isSingleLanguage = langCount === 1;
                   value={i18n.language}
                   onChange={(e) => i18n.changeLanguage(e.target.value)}
                 >
-                  <option value="en">English</option>
-                  <option value="hi">हिंदी</option>
+                  {uiLanguage?.map((ui) => (
+                    <option value={ui.code}>{ui.nativeName}</option>
+                  ))}
+
                 </select>
               </li>
 
@@ -191,10 +214,6 @@ const isSingleLanguage = langCount === 1;
                   {profileOpen && (
                     <div className="profile-dropdown">
                       <Link to="/profile" onClick={() => setProfileOpen(false)}>{t("nav.profile")}</Link>
-
-                      <Link to="/settings" onClick={() => setProfileOpen(false)}>
-                        {t("nav.settings")}
-                      </Link>
 
                       {role === "admin" && (
                         <Link to="/admin" onClick={() => setProfileOpen(false)}>
@@ -288,17 +307,7 @@ const isSingleLanguage = langCount === 1;
                     {t("nav.profile")}
                   </button>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigate("/settings");
-                      setProfileOpen(false);
-                      setMenuOpen(false);
-                    }}
-                  >
-
-                    {t("nav.settings")}
-                  </button>
+              
 
                   {role === "admin" && (
                     <button
