@@ -13,10 +13,10 @@ const UiLanguageRoutes = express.Router()
 
 // UI Languages
 UiLanguageRoutes.post("/addUiLaunguage", authMiddleware, addUiLaunguage)
-UiLanguageRoutes.get("/getUiLanguage", authMiddleware, getUiLanguage)
+UiLanguageRoutes.get("/getUiLanguage", getUiLanguage)
 UiLanguageRoutes.delete("/deleteUiLanguage/:id", authMiddleware, deleteUiLanguageById);
 UiLanguageRoutes.put("/updateUiLanguageById/:id", authMiddleware, updateUiLanguageById);
 UiLanguageRoutes.get("/filterUiLanguages", authMiddleware, filterUiLanguages);
-UiLanguageRoutes.get("/getByCode/:code", authMiddleware, getByCode);
+UiLanguageRoutes.get("/getByCode/:code", getByCode);
 
 export default UiLanguageRoutes;
