@@ -52,13 +52,7 @@ function Header({ onOpen }) {
   }, [menuOpen]);
 
   const getUiLanguage = async () => {
-    const res = await axios.get(`${REACT_APP_API_URL}/UiLanguageModel/getUiLanguage`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-      }
-    );
+    const res = await axios.get(`${REACT_APP_API_URL}/UiLanguageModel/getUiLanguage`);
 
     setUiLanguage(res.data.data);
 
