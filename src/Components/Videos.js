@@ -13,12 +13,12 @@ const PLAYLISTS = {
     title: "Vocabulary Basics",
     languages: {
       en: {
-        hi: "PLcetZ6gSk96-FECmH9l7Vlx5VDigvgZpt", // English vocab explained in Hindi
-        en: "PLcetZ6gSk96-XmVQ1xpU3ziEtQvczLpJt", // English vocab in English
+        hi: "PLliNqwDobxOGfjWBCeH8JnYwzVqigULtr", // English vocab explained in Hindi
+        en: "PLrqHrGoMJdTRXGKFGznG5xhQAuR2pURVh", // English vocab in English
       },
       hi: {
-        en: "PLcetZ6gSk96-XmVQ1xpU3ziEtQvczLpJt",
-        hi: "PLcetZ6gSk96-FECmH9l7Vlx5VDigvgZpt",
+        en: "PLDUiflqk4hOyvJmzhkCxK_6J-bUlfKTrm",
+        hi: "PLDDC2F59E683E60B5",
       },
     },
   },
@@ -28,10 +28,10 @@ const PLAYLISTS = {
     languages: {
       en: {
         hi: "PLR2GOVaoHO5_sLiJkL22AJWuWyvgQqeK1", // conversation Hindi explanation
-        en: "PLcetZ6gSk96-XmVQ1xpU3ziEtQvczLpJt", // conversation English
+        en: "PLlcQE71Tw-F3bKWJtsNGhHKXfjIFvo4g1", // conversation English
       },
       hi: {
-        en: "PLcetZ6gSk96-XmVQ1xpU3ziEtQvczLpJt",
+        en: "PLdb6KKzTz-by4IuO4qsG8JZokr4ouvFH4",
         hi: "PLR2GOVaoHO5_sLiJkL22AJWuWyvgQqeK1",
       },
     },
@@ -41,12 +41,12 @@ const PLAYLISTS = {
     title: "Pronunciation",
     languages: {
       en: {
-        hi: "PLD6B222E02447DC07", // pronunciation basics (Hindi-friendly)
+        hi: "PLry0Rv5X75bT01n8NnF_vQOGgIXmpKlvY", // pronunciation basics (Hindi-friendly)
         en: "PLD6B222E02447DC07", // pronunciation (neutral English)
       },
       hi: {
         en: "PLD6B222E02447DC07",
-        hi: "PLD6B222E02447DC07",
+        hi: "PLt0oEzsnHGgL8Sncvj-CXnJhg5EvTcEyg",
       },
     },
   },
