@@ -59,6 +59,14 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    emailNotifications: {
+        type: Boolean,
+        default: false
+    },
+    reminderTime: {
+        type: String,
+        default: null
+    }
 }, { timestamps: true })
 
 

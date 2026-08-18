@@ -677,6 +677,97 @@ export const updateUserPasswordById = async (req, res) => {
     });
   }
 };
+
+export const updateUserPreferencesById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { emailNotifications, reminderTime } = req.body;
+
+        // Validate User ID
+        if (!id) {
+            return res.status(400).json({
+                status: 0,
+                message: "User ID is required",
+            });
+        }
+
+        // Validate emailNotifications
+        if (
+            emailNotifications !== undefined &&
+            typeof emailNotifications !== "boolean"
+        ) {
+            return res.status(400).json({
+                status: 0,
+                message: "emailNotifications must be a boolean value",
+            });
+        }
+
+        // Validate reminderTime
+        if (
+            reminderTime !== undefined &&
+            reminderTime !== null &&
+            typeof reminderTime !== "string"
+        ) {
+            return res.status(400).json({
+                status: 0,
+                message: "reminderTime must be a string or null",
+            });
+        }
+
+        // Prepare update object
+        const updateData = {};
+
+        if (emailNotifications !== undefined) {
+            updateData.emailNotifications = emailNotifications;
+        }
+
+        if (reminderTime !== undefined) {
+            updateData.reminderTime = reminderTime;
+        }
+
+        // Nothing to update
+        if (Object.keys(updateData).length === 0) {
+            return res.status(400).json({
+                status: 0,
+                message: "No preference data provided",
+            });
+        }
+
+        // Update user preferences
+        const updatedUser = await UserModel.findByIdAndUpdate(
+            id,
+            {
+                $set: updateData,
+            },
+            {
+                new: true,
+                runValidators: true,
+            }
+        ).select("emailNotifications reminderTime");
+
+        // User not found
+        if (!updatedUser) {
+            return res.status(404).json({
+                status: 0,
+                message: "User not found",
+            });
+        }
+
+        return res.status(200).json({
+            status: 1,
+            message: "User preferences updated successfully",
+            data: updatedUser,
+        });
+
+    } catch (error) {
+        console.error("Update User Preferences Error:", error);
+
+        return res.status(500).json({
+            status: 0,
+            message: "Internal Server Error",
+        });
+    }
+};
 // ===================================================
 // ===================================================
 // ====================== OTP ========================
@@ -888,3 +979,5 @@ export const Login = async (req, res) => {
   }
 
 }
+
+

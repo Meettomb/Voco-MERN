@@ -155,7 +155,7 @@
     "start": "अध्याय शुरू करें",
     "takeExam": "परीक्षा दें",
     "finalExam": "अंतिम परीक्षा",
-    "courseCompleted":"आपने यह कोर्स सफलतापूर्वक पूरा कर लिया है।"
+    "courseCompleted": "आपने यह कोर्स सफलतापूर्वक पूरा कर लिया है।"
   },
   "Videos": {
     "title": "अंग्रेज़ी सीखने के वीडियो"
@@ -320,16 +320,15 @@
     },
     "Preferences": {
       "edit": "प्राथमिकताएँ संपादित करें",
-      "dailyGoal": "दैनिक सीखने का लक्ष्य",
-      "setDailyGoal": "अपना दैनिक लक्ष्य सेट करें",
       "reminderTime": "रिमाइंडर समय",
       "difficultyLevel": "कठिनाई स्तर",
       "selectDifficulty": "कठिनाई चुनें",
       "beginner": "शुरुआती",
       "intermediate": "मध्यम",
       "advanced": "उन्नत",
-      "voicePractice": "वॉयस प्रैक्टिस",
-      "voiceSettings": "वॉयस सेटिंग्स",
+      "emailNotifications": "ईमेल सूचनाएँ",
+      "enabled": "सक्षम",
+      "disabled": "अक्षम",
       "savePreferences": "प्राथमिकताएँ सहेजें",
       "cancel": "रद्द करें"
     }

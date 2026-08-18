@@ -5875,6 +5875,81 @@ svg {
   height: 18px;
 }
 
+
+/* ===============================
+   Email Notification Toggle
+   =============================== */
+
+.AcountSettings .toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 56px;
+}
+
+/* Toggle Button */
+.AcountSettings .toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: 50px;
+  background: var(--color-border-light);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+/* Toggle ON */
+.AcountSettings .toggle-switch.active {
+  background: var(--color-primary);
+}
+
+/* Toggle Hover */
+.AcountSettings .toggle-switch:not(:disabled):hover {
+  box-shadow: 0 0 0 4px var(--color-primary-light);
+}
+
+/* Toggle Disabled */
+.AcountSettings .toggle-switch:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* Toggle Circle */
+.AcountSettings .toggle-slider {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+
+  width: 20px;
+  height: 20px;
+
+  border-radius: 50%;
+  background: #ffffff;
+
+  transition: transform 0.25s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Move Circle when ON */
+.AcountSettings .toggle-switch.active .toggle-slider {
+  transform: translateX(22px);
+}
+
+/* Toggle Status Text */
+.AcountSettings .toggle-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+/* Enabled Text */
+.AcountSettings .toggle-switch.active + .toggle-label {
+  color: var(--color-primary);
+}
+
 /* ========================================================================================== */
 /* Progress Page */
 /* ========================================================================================== */

@@ -12,7 +12,8 @@ import {
   searchUsers,
   Login,
   updateUserById,
-  verifyPhoneOtp
+  verifyPhoneOtp,
+  updateUserPreferencesById
 } from "../controller/UserTableController.js";
 
 
@@ -30,6 +31,7 @@ route.get('/getActiveUsers', authMiddleware, getActiveUsers)
 route.get("/searchUsers", authMiddleware, searchUsers);
 route.post("/Login",Login);
 route.patch("/updateUserById/:id", authMiddleware, updateUserById);
+route.patch("/updateUserPreferencesById/:id", authMiddleware, updateUserPreferencesById);
 
 
 // --------------------------------------------------
