@@ -80,6 +80,8 @@ const ExamResult = lazy(() => import("./Components/ExamResult"));
 
 const FinalExam = lazy(() => import("./Components/FinalExam"));
 
+const VerifyEmailChange = lazy(() => import("./Components/profile/VerifyEmailChange"));
+
 // Admin Components
 const AdminHeader = lazy(() => import("./Components/admin/AdminHeader"));
 const Dashboard = lazy(() => import("./Components/admin/Dashboard"));
@@ -278,6 +280,13 @@ function App() {
             <Route path="/certificate/:id" element={
                 <Certificate />
             } />
+
+            <Route path="/verify-email-change" element={
+              <AuthRoute onAuthFail={() => setAuthView("login")}>
+                <VerifyEmailChange />
+              </AuthRoute>
+            } />
+
 
             <Route path="/PhoneNumberVerify" element={
               <AuthRoute onAuthFail={() => setAuthView("login")}>

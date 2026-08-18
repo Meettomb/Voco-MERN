@@ -155,7 +155,7 @@
     "start": "Start Chapter",
     "takeExam": "Take Exam",
     "finalExam": "Final Exam",
-    "courseCompleted":"You have successfully completed this course"
+    "courseCompleted": "You have successfully completed this course"
   },
   "Videos": {
     "title": "English Learning Videos"
@@ -244,7 +244,8 @@
     "failed": "❌ Failed",
     "home": "Go Home",
     "retry": "Retry"
-  },"FinalExamResult": {
+  },
+  "FinalExamResult": {
     "title": "Final Exam Result",
     "passed": "Congratulations! You passed the final exam 🎉",
     "failed": "You failed the final exam. Try again!",
@@ -292,7 +293,7 @@
     },
     "Security": {
       "emailSettings": "Email Settings",
-      "emailAddress": "Email Address",
+      "emailAddress": "New Email Address",
       "enterEmail": "Enter your email",
       "emailHint": "This email will be used for login and notifications",
       "updateEmail": "Update Email",
@@ -319,16 +320,15 @@
     },
     "Preferences": {
       "edit": "Edit Preferences",
-      "dailyGoal": "Daily Learning Goal",
-      "setDailyGoal": "Set your daily goal",
       "reminderTime": "Reminder Time",
       "difficultyLevel": "Difficulty Level",
       "selectDifficulty": "Select difficulty",
       "beginner": "Beginner",
       "intermediate": "Intermediate",
       "advanced": "Advanced",
-      "voicePractice": "Voice Practice",
-      "voiceSettings": "Voice settings",
+      "emailNotifications": "Email Notifications",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
       "savePreferences": "Save Preferences",
       "cancel": "Cancel"
     }

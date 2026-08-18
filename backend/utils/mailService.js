@@ -155,6 +155,93 @@ export const sendMail = async (to, subject, type, value) => {
   </p>
   `;
   }
+  
+  // Email Change OTP
+  if (type === "emailChangeOtp") {
+
+    content = `
+        <h2>Email Change Verification</h2>
+
+        <p>
+            We received a request to change the email address
+            associated with your LearnVoco account.
+        </p>
+
+        <p>
+            Your verification OTP is:
+        </p>
+
+        <div style="
+            font-size:30px;
+            background:#111827;
+            color:white;
+            padding:15px 25px;
+            border-radius:8px;
+            display:inline-block;
+            letter-spacing:6px;
+            font-weight:bold;
+        ">
+            ${value}
+        </div>
+
+        <p>
+            This OTP is valid for <strong>15 minutes</strong>.
+        </p>
+
+        <p>
+            If you did not request this change, you can safely ignore
+            this email.
+        </p>
+    `;
+  }
+  // new Email Verification Link
+  if (type === "emailChangeLink") {
+
+    content = `
+        <h2 style="color:#111827;">
+            Verify Your New Email Address
+        </h2>
+
+        <p style="color:#374151;">
+            You requested to change the email address
+            associated with your LearnVoco account.
+        </p>
+
+        <p style="color:#374151;">
+            To continue, verify that you have access to
+            this email address by clicking the button below.
+        </p>
+
+        <a href="${value}"
+           style="
+                display:inline-block;
+                padding:14px 24px;
+                background:#2563eb;
+                color:#ffffff;
+                text-decoration:none;
+                border-radius:8px;
+                font-weight:bold;
+           ">
+            Verify New Email
+        </a>
+
+        <p style="
+            margin-top:20px;
+            color:#6b7280;
+            font-size:14px;
+        ">
+            This verification link will expire in 15 minutes.
+        </p>
+
+        <p style="
+            color:#6b7280;
+            font-size:14px;
+        ">
+            If you did not request an email change,
+            you can safely ignore this email.
+        </p>
+    `;
+}
 
   const html = `
 <table width="100%" cellpadding="0" cellspacing="0"
@@ -185,7 +272,7 @@ export const sendMail = async (to, subject, type, value) => {
 `;
 
   await transporter.sendMail({
-    from: process.env.SMTP_EMAIL,
+    from: `"LearnVoco" <${process.env.SMTP_EMAIL}>`,
     to,
     subject,
     html,
