@@ -13,7 +13,9 @@ import {
   Login,
   updateUserById,
   verifyPhoneOtp,
-  updateUserPreferencesById
+  updateUserPreferencesById,
+  requestEmailChange,
+  verifyEmailChange
 } from "../controller/UserTableController.js";
 
 
@@ -29,16 +31,18 @@ route.patch('/updateUserRoleById/:id', authMiddleware, updateUserRoleById)
 route.patch("/updateUserPasswordById/:id", authMiddleware, updateUserPasswordById);
 route.get('/getActiveUsers', authMiddleware, getActiveUsers)
 route.get("/searchUsers", authMiddleware, searchUsers);
-route.post("/Login",Login);
+route.post("/Login", Login);
 route.patch("/updateUserById/:id", authMiddleware, updateUserById);
 route.patch("/updateUserPreferencesById/:id", authMiddleware, updateUserPreferencesById);
 
+route.post("/requestEmailChange/:id",requestEmailChange);
+route.post("/verifyEmailChange", verifyEmailChange);
 
 // --------------------------------------------------
 // Profile Settings - Personal Details
 // -------------------------
 route.patch('/updateUserPersonalDetailById/:id', authMiddleware, updateUserPersonalDetailById)
-route.post("/verifyPhoneOtp",authMiddleware, verifyPhoneOtp);
+route.post("/verifyPhoneOtp", authMiddleware, verifyPhoneOtp);
 
 // --------------------------------------------------
 // OTP

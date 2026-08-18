@@ -133,11 +133,62 @@ export default function Security() {
     };
 
     // ================= SUBMIT HANDLERS =================
-    const handleEmailSubmit = (e) => {
+    const handleEmailSubmit = async (e) => {
+
         e.preventDefault();
+
         if (!validateEmailForm()) return;
 
-        setIsEmailEditing(false);
+        try {
+
+            setLoader(true);
+
+            const response = await axios.post(
+                `${REACT_APP_API_URL}/userModel/requestEmailChange/${id}`,
+                {
+                    newEmail: email,
+                },
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${localStorage.getItem("token")}`,
+                    },
+                }
+            );
+
+            if (response.data.status === 1) {
+
+                setMessage(response.data.message);
+                setMessageType("success");
+
+                setIsEmailEditing(false);
+
+            } else {
+
+                setMessage(response.data.message);
+                setMessageType("error");
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Email change request error:",
+                error
+            );
+
+            setMessage(
+                error.response?.data?.message ||
+                "Failed to request email change"
+            );
+
+            setMessageType("error");
+
+        } finally {
+
+            setLoader(false);
+
+        }
     };
 
     const handlePasswordSubmit = (e) => {
@@ -151,7 +202,7 @@ export default function Security() {
 
     return (
         <>
-           {loader && <FullScreenLoader/>}
+            {loader && <FullScreenLoader />}
             {message && (
                 <p
                     className={`app-message ${messageType === "success" ? "success" : "error"

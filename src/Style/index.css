@@ -8042,3 +8042,230 @@ svg {
     width: 100%;
   }
 }
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* VerifyEmailChange */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+
+/* =========================================
+   Verify Email Change
+   ========================================= */
+
+.VerifyEmailChange {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--color-bg-main);
+}
+
+.VerifyEmailChange .verify-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 2.5rem;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-light);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+.VerifyEmailChange .verify-card .verify-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.VerifyEmailChange .verify-card .verify-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.VerifyEmailChange .verify-card .verify-title {
+  margin: 0 0 0.75rem;
+  color: var(--color-text-primary);
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.VerifyEmailChange .verify-card .verify-description {
+  margin: 0 auto 1.75rem;
+  max-width: 380px;
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.VerifyEmailChange .verify-card .verify-form {
+  width: 100%;
+}
+
+.VerifyEmailChange .verify-card .otp-label {
+  display: block;
+  margin-bottom: 0.6rem;
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.VerifyEmailChange .verify-card .otp-input {
+  width: 100%;
+  height: 54px;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  border: 1px solid var(--color-border-medium);
+  border-radius: 8px;
+  background: var(--color-bg-section);
+  color: var(--color-text-primary);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 6px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.VerifyEmailChange .verify-card .otp-input::placeholder {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  letter-spacing: normal;
+  font-weight: 400;
+}
+
+.VerifyEmailChange .verify-card .otp-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.VerifyEmailChange .verify-card .verify-button {
+  width: 100%;
+  height: 48px;
+  margin-top: 1.25rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.VerifyEmailChange .verify-card .verify-button:hover:not(:disabled) {
+  background: var(--btn-primary-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.VerifyEmailChange .verify-card .verify-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.VerifyEmailChange .verify-card .verify-message {
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.VerifyEmailChange .verify-card .verify-message.success {
+  color: var(--color-accent-green);
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.VerifyEmailChange .verify-card .verify-message.error {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+
+/* =========================================
+   Responsive
+   ========================================= */
+
+@media (max-width: 600px) {
+
+  .VerifyEmailChange {
+    padding: 1rem;
+  }
+
+  .VerifyEmailChange .verify-card {
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
+  }
+
+  .VerifyEmailChange .verify-card .verify-title {
+    font-size: 1.4rem;
+  }
+
+  .VerifyEmailChange .verify-card .verify-description {
+    font-size: 0.9rem;
+  }
+
+  .VerifyEmailChange .verify-card .otp-input {
+    height: 50px;
+    font-size: 1.2rem;
+  }
+}.VerifyEmailChange .success-card {
+  text-align: center;
+}
+
+.VerifyEmailChange .success-card .verify-success-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f0fdf4;
+  color: var(--color-accent-green);
+  border: 1px solid #bbf7d0;
+}
+
+.VerifyEmailChange .success-card .verify-success-icon svg {
+  width: 34px;
+  height: 34px;
+  stroke-width: 2.5;
+}
+
+.VerifyEmailChange .success-card .verify-success-message {
+  margin: 1.5rem 0 1rem;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 8px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: var(--color-accent-green);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.VerifyEmailChange .success-card .verify-success-message span {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.VerifyEmailChange .success-card .verify-redirect-message {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}

@@ -293,7 +293,7 @@
     },
     "Security": {
       "emailSettings": "Email Settings",
-      "emailAddress": "Email Address",
+      "emailAddress": "New Email Address",
       "enterEmail": "Enter your email",
       "emailHint": "This email will be used for login and notifications",
       "updateEmail": "Update Email",

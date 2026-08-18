@@ -293,7 +293,7 @@
     },
     "Security": {
       "emailSettings": "ईमेल सेटिंग्स",
-      "emailAddress": "ईमेल पता",
+      "emailAddress": "नया ईमेल पता",
       "enterEmail": "अपना ईमेल दर्ज करें",
       "emailHint": "यह ईमेल लॉगिन और नोटिफिकेशन के लिए उपयोग किया जाएगा",
       "updateEmail": "ईमेल अपडेट करें",
