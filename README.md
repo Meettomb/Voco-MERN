@@ -109,6 +109,7 @@ npm start
 ### ✅ Frontend runs at
 ```
 http://localhost:3000
+http://Your IPV4:3000
 ```
 
 ---
