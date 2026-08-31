@@ -155,7 +155,7 @@ export const sendMail = async (to, subject, type, value) => {
   </p>
   `;
   }
-  
+
   // Email Change OTP
   if (type === "emailChangeOtp") {
 
@@ -241,6 +241,87 @@ export const sendMail = async (to, subject, type, value) => {
             you can safely ignore this email.
         </p>
     `;
+
+
+  }
+
+  // ✅ REMINDER MAIL
+// ✅ REMINDER MAIL
+if (type === "reminder") {
+
+  content = `
+    <div style="max-width:520px;margin:auto;text-align:center;">
+
+      <div style="
+        width:70px;
+        height:70px;
+        margin:0 auto 20px auto;
+        background:#2563eb;
+        border-radius:50%;
+        line-height:70px;
+        font-size:32px;
+      ">
+        🔔
+      </div>
+
+      <h2 style="
+        margin:0 0 10px 0;
+        color:#111827;
+        font-size:24px;
+      ">
+        Reminder
+      </h2>
+
+      <p style="
+        color:#6b7280;
+        font-size:15px;
+        margin-bottom:25px;
+      ">
+        It's time for your scheduled reminder.
+      </p>
+
+      <div style="
+        background:#eff6ff;
+        border:1px solid #bfdbfe;
+        padding:20px;
+        border-radius:10px;
+        margin-bottom:25px;
+      ">
+        <p style="
+          margin:0;
+          color:#1e3a8a;
+          font-size:17px;
+          font-weight:600;
+        ">
+          ${value || "This is your scheduled reminder."}
+        </p>
+      </div>
+
+      <p style="
+        color:#6b7280;
+        font-size:14px;
+        line-height:1.6;
+        margin-bottom:25px;
+      ">
+        Keep learning and make progress with LearnVoco.
+      </p>
+
+      <a href="${process.env.FRONTEND_URL}/"
+         style="
+           display:inline-block;
+           padding:14px 28px;
+           background:#2563eb;
+           color:#ffffff;
+           text-decoration:none;
+           border-radius:8px;
+           font-size:15px;
+           font-weight:bold;
+         ">
+        Go to LearnVoco
+      </a>
+
+    </div>
+  `;
 }
 
   const html = `
