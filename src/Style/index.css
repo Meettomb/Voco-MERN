@@ -6618,6 +6618,59 @@ svg {
   line-height: 1.3;
 }
 
+
+.managemcq-page__pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0 5px;
+  gap: 20px;
+}
+
+.managemcq-page__pagination-info {
+  color: #888;
+  font-size: 14px;
+}
+
+.managemcq-page__pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pagination-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #333;
+  background: #1b1b1b;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #222;
+}
+
+.pagination-btn.active {
+  background: #1e90ff;
+  border-color: #1e90ff;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.pagination-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  color: #777;
+}
+
 /* ========================================================================================== */
 /* ========================================================================================== */
 /* ViewMcq MCQs Page */
@@ -8268,4 +8321,713 @@ svg {
   margin: 0;
   color: var(--color-text-muted);
   font-size: 0.85rem;
+}
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* AiBasedLearning */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+.ai-learning-page {
+  min-height: calc(100vh - 70px);
+  padding: 40px;
+  background: var(--color-bg-main);
+  color: var(--color-text-primary);
+  box-sizing: border-box;
+}
+
+.ai-learning-page .ai-learning-page__container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.ai-learning-page .ai-learning-page__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.ai-learning-page .ai-learning-page__eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.ai-learning-page .ai-learning-page__header h1 {
+  margin: 0 0 8px;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.ai-learning-page .ai-learning-page__header p {
+  max-width: 620px;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.ai-learning-page .ai-learning-page__session-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 20px;
+  background: var(--color-bg-card);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.ai-learning-page .ai-learning-page__status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent-green);
+}
+
+.ai-learning-page .ai-learning-page__conversation-card {
+  min-height: 570px;
+  padding: 45px 55px 25px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 18px;
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-sm);
+  box-sizing: border-box;
+}
+
+.ai-learning-page .ai-learning-page__ai-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.ai-learning-page .ai-learning-page__ai-avatar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  transition: 0.3s ease;
+}
+
+.ai-learning-page .ai-learning-page__ai-avatar::before {
+  position: absolute;
+  content: "";
+  width: 130px;
+  height: 130px;
+  border: 1px solid var(--color-primary-light);
+  border-radius: 50%;
+}
+
+.ai-learning-page .ai-learning-page__ai-avatar--speaking {
+  transform: scale(1.04);
+  box-shadow: 0 0 0 10px var(--color-primary-light);
+}
+
+.ai-learning-page .ai-learning-page__avatar-face {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.ai-learning-page .ai-learning-page__eye {
+  position: absolute;
+  top: 28px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-text-inverse);
+}
+
+.ai-learning-page .ai-learning-page__eye:first-child {
+  left: 23px;
+}
+
+.ai-learning-page .ai-learning-page__eye:nth-child(2) {
+  right: 23px;
+}
+
+.ai-learning-page .ai-learning-page__mouth {
+  position: absolute;
+  bottom: 20px;
+  width: 22px;
+  height: 8px;
+  border-bottom: 2px solid var(--color-text-inverse);
+  border-radius: 0 0 20px 20px;
+}
+
+.ai-learning-page .ai-learning-page__ai-info {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 25px;
+}
+
+.ai-learning-page .ai-learning-page__ai-name {
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.ai-learning-page .ai-learning-page__ai-status {
+  margin-top: 5px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.ai-learning-page .ai-learning-page__question {
+  max-width: 720px;
+  margin: 35px auto 0;
+  padding: 22px 25px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 12px;
+  background: var(--color-bg-hover);
+  text-align: center;
+}
+
+.ai-learning-page .ai-learning-page__question-label {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.ai-learning-page .ai-learning-page__question p {
+  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.ai-learning-page .ai-learning-page__voice-area {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 35px;
+}
+
+.ai-learning-page .ai-learning-page__voice-hint {
+  margin-bottom: 15px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.ai-learning-page .ai-learning-page__voice-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 25px;
+  margin-bottom: 10px;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ai-learning-page .ai-learning-page__voice-wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 22px;
+}
+
+.ai-learning-page .ai-learning-page__voice-wave i {
+  display: block;
+  width: 3px;
+  height: 8px;
+  border-radius: 5px;
+  background: var(--color-primary);
+  animation: aiVoiceWave 0.8s ease-in-out infinite;
+}
+
+.ai-learning-page .ai-learning-page__voice-wave i:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.ai-learning-page .ai-learning-page__voice-wave i:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.ai-learning-page .ai-learning-page__voice-wave i:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.ai-learning-page .ai-learning-page__voice-wave i:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+@keyframes aiVoiceWave {
+  0%,
+  100% {
+    height: 7px;
+  }
+
+  50% {
+    height: 21px;
+  }
+}
+
+.ai-learning-page .ai-learning-page__microphone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 74px;
+  height: 74px;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+  transition: 0.2s ease;
+}
+
+.ai-learning-page .ai-learning-page__microphone:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+}
+
+.ai-learning-page .ai-learning-page__microphone--active {
+  box-shadow: 0 0 0 10px var(--color-primary-light);
+}
+
+.ai-learning-page .ai-learning-page__microphone svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ai-learning-page .ai-learning-page__microphone-label {
+  margin-top: 12px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ai-learning-page .ai-learning-page__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 42px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.ai-learning-page .ai-learning-page__conversation-tip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.ai-learning-page .ai-learning-page__conversation-tip svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ai-learning-page .ai-learning-page__end-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 17px;
+  border: 1px solid var(--color-border-medium);
+  border-radius: 8px;
+  background: var(--color-bg-card);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.ai-learning-page .ai-learning-page__end-button:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.ai-learning-page .ai-learning-page__end-button svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.ai-learning-page .ai-learning-page__session-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 18px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 12px;
+  background: var(--color-bg-card);
+  overflow: hidden;
+}
+
+.ai-learning-page .ai-learning-page__session-info > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  padding: 15px;
+  border-right: 1px solid var(--color-border-light);
+}
+
+.ai-learning-page .ai-learning-page__session-info > div:last-child {
+  border-right: none;
+}
+
+.ai-learning-page .ai-learning-page__session-info span {
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.ai-learning-page .ai-learning-page__session-info strong {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+
+/* =========================
+   SCORE SCREEN
+   ========================= */
+
+.ai-learning-page .ai-learning-page__score-card {
+  width: 100%;
+  max-width: 850px;
+  margin: 20px auto;
+  padding: 45px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 18px;
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-sm);
+  box-sizing: border-box;
+}
+
+.ai-learning-page .ai-learning-page__score-header {
+  text-align: center;
+}
+
+.ai-learning-page .ai-learning-page__score-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.ai-learning-page .ai-learning-page__score-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ai-learning-page .ai-learning-page__score-header h1 {
+  margin-bottom: 8px;
+  font-size: 27px;
+}
+
+.ai-learning-page .ai-learning-page__score-header p {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.ai-learning-page .ai-learning-page__overall-score {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-top: 35px;
+  padding: 25px;
+  border-radius: 14px;
+  background: var(--color-bg-hover);
+}
+
+.ai-learning-page .ai-learning-page__score-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 130px;
+  height: 130px;
+  border: 8px solid var(--color-primary);
+  border-radius: 50%;
+}
+
+.ai-learning-page .ai-learning-page__score-circle span {
+  color: var(--color-primary);
+  font-size: 38px;
+  font-weight: 700;
+}
+
+.ai-learning-page .ai-learning-page__score-circle small {
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.ai-learning-page .ai-learning-page__score-content h2 {
+  margin-bottom: 7px;
+  font-size: 21px;
+}
+
+.ai-learning-page .ai-learning-page__score-content p {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.ai-learning-page .ai-learning-page__metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+  margin-top: 35px;
+}
+
+.ai-learning-page .ai-learning-page__metric-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 9px;
+}
+
+.ai-learning-page .ai-learning-page__metric-top h3 {
+  margin-bottom: 3px;
+  font-size: 14px;
+}
+
+.ai-learning-page .ai-learning-page__metric-top span {
+  color: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.ai-learning-page .ai-learning-page__metric-top strong {
+  color: var(--color-primary);
+  font-size: 14px;
+}
+
+.ai-learning-page .ai-learning-page__progress {
+  width: 100%;
+  height: 7px;
+  border-radius: 10px;
+  background: var(--color-primary-light);
+  overflow: hidden;
+}
+
+.ai-learning-page .ai-learning-page__progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-primary);
+}
+
+.ai-learning-page .ai-learning-page__feedback {
+  margin-top: 35px;
+  padding: 20px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 12px;
+  background: var(--color-bg-hover);
+}
+
+.ai-learning-page .ai-learning-page__feedback-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.ai-learning-page .ai-learning-page__feedback-header span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.ai-learning-page .ai-learning-page__feedback-header svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ai-learning-page .ai-learning-page__feedback-header h3 {
+  font-size: 14px;
+}
+
+.ai-learning-page .ai-learning-page__feedback p {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.ai-learning-page .ai-learning-page__score-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.ai-learning-page .ai-learning-page__primary-button,
+.ai-learning-page .ai-learning-page__secondary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.ai-learning-page .ai-learning-page__primary-button {
+  border: 1px solid var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.ai-learning-page .ai-learning-page__primary-button:hover {
+  background: var(--color-primary-dark);
+}
+
+.ai-learning-page .ai-learning-page__primary-button svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ai-learning-page .ai-learning-page__secondary-button {
+  border: 1px solid var(--color-border-medium);
+  background: var(--color-bg-card);
+  color: var(--color-text-secondary);
+}
+
+.ai-learning-page .ai-learning-page__secondary-button:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 768px) {
+
+  .ai-learning-page {
+    padding: 25px 15px;
+  }
+
+  .ai-learning-page .ai-learning-page__header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .ai-learning-page .ai-learning-page__header h1 {
+    font-size: 24px;
+  }
+
+  .ai-learning-page .ai-learning-page__conversation-card {
+    padding: 35px 20px 20px;
+  }
+
+  .ai-learning-page .ai-learning-page__controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ai-learning-page .ai-learning-page__end-button {
+    width: 100%;
+  }
+
+  .ai-learning-page .ai-learning-page__session-info {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-learning-page .ai-learning-page__session-info > div {
+    border-right: none;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .ai-learning-page .ai-learning-page__session-info > div:last-child {
+    border-bottom: none;
+  }
+
+  .ai-learning-page .ai-learning-page__score-card {
+    padding: 30px 20px;
+  }
+
+  .ai-learning-page .ai-learning-page__overall-score {
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .ai-learning-page .ai-learning-page__metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-learning-page .ai-learning-page__score-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ai-learning-page .ai-learning-page__primary-button,
+  .ai-learning-page .ai-learning-page__secondary-button {
+    width: 100%;
+  }
 }

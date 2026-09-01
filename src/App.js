@@ -80,6 +80,7 @@ const ExamResult = lazy(() => import("./Components/ExamResult"));
 
 const FinalExam = lazy(() => import("./Components/FinalExam"));
 
+const AiBasedLearning = lazy(() => import("./Components/AiBasedLearning"));
 const VerifyEmailChange = lazy(() => import("./Components/profile/VerifyEmailChange"));
 
 // Admin Components
@@ -140,6 +141,11 @@ function App() {
               <Route path="/mcqs-exam" element={
                 <AuthRoute onAuthFail={() => setAuthView("login")}>
                   <McqsExam />
+                </AuthRoute>} />
+
+              <Route path="/ai-based-learning" element={
+                <AuthRoute onAuthFail={() => setAuthView("login")}>
+                  <AiBasedLearning />
                 </AuthRoute>} />
 
               <Route path="/choose-learning-language" element={
