@@ -25,6 +25,12 @@ export default function ManageMcq() {
   const [search, setSearch] = useState("");
   const [searchText, setSearchText] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+
+  const itemsPerPage = 10;
+
   useEffect(() => {
 
     const timer = setTimeout(() => {
@@ -36,9 +42,11 @@ export default function ManageMcq() {
   }, [search]);
 
   useEffect(() => {
-    fetchMcqs(difficulty, search);
-  }, [difficulty, search]);
-
+    setCurrentPage(1);
+  }, [difficulty, searchText]);
+  useEffect(() => {
+    fetchMcqs(difficulty, searchText, currentPage);
+  }, [difficulty, searchText, currentPage]);
   useEffect(() => {
     if (location.state?.message) {
       setMessage(location.state.message);
@@ -63,47 +71,58 @@ export default function ManageMcq() {
 
   }, [message]);
 
-  const fetchMcqs = async (diff = "", key = "") => {
+  const fetchMcqs = async (diff = "", key = "", page = 1) => {
     try {
+      setLoading(true);
 
       let url = `${REACT_APP_API_URL}/McqsModel/getAllMcqs`;
 
-      // search API
       if (key) {
+        url = `${REACT_APP_API_URL}/McqsModel/searchMcqs`;
 
-        url = `${REACT_APP_API_URL}/McqsModel/searchMcqs?key=${key}`;
+        const params = new URLSearchParams({
+          key,
+          page,
+          limit: itemsPerPage
+        });
 
+        url = `${url}?${params.toString()}`;
       }
 
-      // difficulty only
       else if (diff) {
-
-        url = `${REACT_APP_API_URL}/McqsModel/getAllMcqsByDifficulty/${diff}`;
-
+        url = `${REACT_APP_API_URL}/McqsModel/getAllMcqsByDifficulty/${diff}?page=${page}&limit=${itemsPerPage}`;
       }
 
-      const res = await axios.get(url,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
+      else {
+        url = `${REACT_APP_API_URL}/McqsModel/getAllMcqs?page=${page}&limit=${itemsPerPage}`;
+      }
+
+      const res = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         }
-      );
+      });
 
       if (res.data.status === 1) {
         setMcqs(res.data.data);
+
+        setTotalPages(res.data.pagination?.totalPages || 1);
+        setTotalItems(res.data.pagination?.totalItems || 0);
       } else {
         setMcqs([]);
+        setTotalPages(1);
+        setTotalItems(0);
       }
 
     } catch (error) {
+      console.error("Fetch MCQ error:", error);
 
-      console.error("Fetch MCQ error", error);
+      setMcqs([]);
+      setTotalPages(1);
+      setTotalItems(0);
 
     } finally {
-
       setLoading(false);
-
     }
   };
 
@@ -113,7 +132,54 @@ export default function ManageMcq() {
   }
 
 
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(prev => prev - 1);
+    }
+  };
 
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const getPaginationPages = () => {
+  const pages = [];
+
+  if (totalPages <= 5) {
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+
+  pages.push(1);
+
+  if (currentPage > 3) {
+    pages.push("...");
+  }
+
+  const start = Math.max(2, currentPage - 1);
+  const end = Math.min(totalPages - 1, currentPage + 1);
+
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+
+  if (currentPage < totalPages - 2) {
+    pages.push("...");
+  }
+
+  pages.push(totalPages);
+
+  return pages;
+};
 
   return (
     <>
@@ -191,7 +257,7 @@ export default function ManageMcq() {
                   return (
                     <tr key={mcq._id}>
 
-                      <td>{index + 1}</td>
+                      <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
 
                       {/* Chapter IDs */}
                       <td>
@@ -253,7 +319,60 @@ export default function ManageMcq() {
 
 
           </table>
+          
+          <div className="managemcq-page__pagination">
 
+            <div className="managemcq-page__pagination-info">
+              Showing {mcqs.length} of {totalItems} MCQs
+            </div>
+
+            <div className="managemcq-page__pagination-controls">
+
+              <button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                className="pagination-btn"
+              >
+                Previous
+              </button>
+
+              {getPaginationPages().map((page, index) => {
+
+  if (page === "...") {
+    return (
+      <span
+        key={`dots-${index}`}
+        className="pagination-dots"
+      >
+        ...
+      </span>
+    );
+  }
+
+  return (
+    <button
+      key={page}
+      onClick={() => setCurrentPage(page)}
+      className={`pagination-btn ${
+        currentPage === page ? "active" : ""
+      }`}
+    >
+      {page}
+    </button>
+  );
+})}
+
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className="pagination-btn"
+              >
+                Next
+              </button>
+
+            </div>
+
+          </div>
         </div>
       </div>
 

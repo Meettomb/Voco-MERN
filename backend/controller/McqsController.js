@@ -1,6 +1,7 @@
 import McqsModel from "../model/McqsModel.js";
 import fs from "fs";
 import path from "path";
+import mongoose from "mongoose";
 
 export const addMcqs = async (req, res) => {
   try {
@@ -302,22 +303,35 @@ export const deleteMcqsById = async (req, res) => {
 export const getAllMcqs = async (req, res) => {
   try {
 
-    const mcqs = await McqsModel.find().sort({ createdAt: -1 }).populate("chapterIds");
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const limit = Math.min(parseInt(req.query.limit) || 10, 100);
 
-    if (!mcqs || mcqs.length === 0) {
-      return res.status(404).json({
-        status: 0,
-        message: "No MCQs found",
-        count: 0,
-        data: [],
-      });
-    }
+    const skip = (page - 1) * limit;
+
+    // Get total number of MCQs
+    const totalItems = await McqsModel.countDocuments();
+
+    // Get MCQs for current page only
+    const mcqs = await McqsModel.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("chapterIds");
+
+    const totalPages = Math.ceil(totalItems / limit);
 
     return res.status(200).json({
       status: 1,
       message: "MCQs fetched successfully",
-      count: mcqs.length,
+
       data: mcqs,
+
+      pagination: {
+        currentPage: page,
+        totalPages: totalPages,
+        totalItems: totalItems,
+        limit: limit
+      }
     });
 
   } catch (error) {
@@ -326,7 +340,7 @@ export const getAllMcqs = async (req, res) => {
 
     return res.status(500).json({
       status: 0,
-      message: "Failed to fetch MCQs",
+      message: "Failed to fetch MCQs"
     });
 
   }
@@ -334,28 +348,46 @@ export const getAllMcqs = async (req, res) => {
 
 export const getAllMcqsByDifficulty = async (req, res) => {
   try {
-
     const { difficultyLevel } = req.params;
 
-    const mcqs = await McqsModel.find({
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const limit = Math.min(parseInt(req.query.limit) || 10, 100);
+
+    const skip = (page - 1) * limit;
+
+    const filter = {
       difficultyLevel: {
         $regex: `^${difficultyLevel}$`,
-        $options: "i",
-      },
-    })
-      .populate("chapterIds")   // ✅ add this
-      .sort({ createdAt: -1 });
+        $options: "i"
+      }
+    };
+
+    const total = await McqsModel.countDocuments(filter);
+
+    const mcqs = await McqsModel.find(filter)
+      .populate("chapterIds")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
     return res.status(200).json({
       status: 1,
+      message: "MCQs fetched successfully",
       data: mcqs,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        limit
+      }
     });
 
   } catch (error) {
     console.log(error);
-    res.status(500).json({
+
+    return res.status(500).json({
       status: 0,
-      message: "error",
+      message: "Error"
     });
   }
 };
@@ -633,7 +665,6 @@ export const getMcqsById = async (req, res) => {
 
 export const searchMcqs = async (req, res) => {
   try {
-
     const { key } = req.query;
 
     if (!key) {
@@ -643,10 +674,14 @@ export const searchMcqs = async (req, res) => {
       });
     }
 
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const limit = Math.min(parseInt(req.query.limit) || 10, 100);
+
+    const skip = (page - 1) * limit;
+
     const regex = new RegExp(key, "i");
 
-    const mcqs = await McqsModel.aggregate([
-
+    const pipeline = [
       {
         $lookup: {
           from: "chapters",
@@ -655,46 +690,65 @@ export const searchMcqs = async (req, res) => {
           as: "chapterData"
         }
       },
-
       {
         $match: {
           $or: [
-
             { difficultyLevel: { $regex: regex } },
-
             { "questions.question.en": { $regex: regex } },
-
             { "chapterData.translations.en": { $regex: regex } }
-
           ]
         }
       },
-
       {
-        $sort: { createdAt: -1 }
+        $sort: {
+          createdAt: -1
+        }
       }
+    ];
 
+    // Get total count
+    const countResult = await McqsModel.aggregate([
+      ...pipeline,
+      {
+        $count: "total"
+      }
+    ]);
+
+    const total = countResult[0]?.total || 0;
+
+    // Get paginated data
+    const mcqs = await McqsModel.aggregate([
+      ...pipeline,
+      {
+        $skip: skip
+      },
+      {
+        $limit: limit
+      }
     ]);
 
     return res.status(200).json({
       status: 1,
-      count: mcqs.length,
-      data: mcqs
+      message: "MCQs fetched successfully",
+      data: mcqs,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        limit
+      }
     });
 
   } catch (error) {
-
     console.log(error);
 
-    res.status(500).json({
+    return res.status(500).json({
       status: 0,
       message: "Server error"
     });
-
   }
 };
 
-import mongoose from "mongoose";
 
 export const getMcqByChapterId = async (req, res) => {
   try {
