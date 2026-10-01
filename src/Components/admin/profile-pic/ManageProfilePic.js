@@ -100,45 +100,59 @@ export default function ManageProfilePic() {
     // =========================
 
     const handleConfirmDelete = async () => {
-        if (!selectedImage) return;
+    if (!selectedImage) return;
 
-        try {
-            setLoading(true);
+    try {
+        setLoading(true);
 
-            /*
-             * Delete API will be added here.
-             *
-             * Example:
-             *
-             * await fetch(
-             *     `${REACT_APP_API_URL}/api/profile-pics/${selectedImage.id}`,
-             *     {
-             *         method: "DELETE"
-             *     }
-             * );
-             */
+        const response = await axios.delete(
+            `${REACT_APP_API_URL}/ProfilePicModel/deleteProfilePic/${selectedImage._id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            }
+        );
 
+        if (response.data.status === 1) {
             setShowDeletePopup(false);
             setSelectedImage(null);
 
-            setMessage("Profile image deleted successfully.");
+            setMessage(
+                response.data.message
+            );
+
             setMessageType("success");
 
-            // Refresh list after successful deletion
+            // Refresh list
             await fetchProfilePics();
 
-        } catch (error) {
-            console.error("Error deleting profile picture:", error);
+        } else {
+            setMessage(
+                response.data.message ||
+                "Failed to delete profile image."
+            );
 
-            setShowDeletePopup(false);
-            setSelectedImage(null);
-
-            setMessage("Failed to delete profile image.");
             setMessageType("error");
-        } finally {
-            setLoading(false);
         }
-    };
+
+    } catch (error) {
+        console.error(
+            "Error deleting profile picture:",
+            error
+        );
+
+        setMessage(
+            error.response?.data?.message ||
+            "Failed to delete profile image."
+        );
+
+        setMessageType("error");
+
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
         <div className="manage-profile-pic">
