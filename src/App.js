@@ -61,6 +61,7 @@ const EditMcq = lazy(() => import("./Components/admin/msq/EditMcq"));
 const ViewMcq = lazy(() => import("./Components/admin/msq/VewMcq"));
 
 const AddProfilePic = lazy(() => import("./Components/admin/profile-pic/AddProfilePic"));
+const ManageProfilePic = lazy(() => import("./Components/admin/profile-pic/ManageProfilePic"));
 
 // Globle Components
 const AuthRoute = lazy(() => import("./Components/AuthRoute"));
@@ -234,6 +235,11 @@ function App() {
               <Route path="profile-pic/add" element={
                 <AuthRoute onAuthFail={() => setAuthView("login")}>
                   <AddProfilePic />
+                </AuthRoute>} />
+
+              <Route path="profile-pic/manage" element={
+                <AuthRoute onAuthFail={() => setAuthView("login")}>
+                  <ManageProfilePic />
                 </AuthRoute>} />
 
             </Route>

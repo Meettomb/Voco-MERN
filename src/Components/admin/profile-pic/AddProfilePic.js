@@ -332,6 +332,7 @@ function AddProfilePic() {
                                                 type="button"
                                                 className="browse-button"
                                                 onClick={handleBrowse}
+                                                name="browse-button"
                                             >
 
                                                 <svg
@@ -419,6 +420,7 @@ function AddProfilePic() {
                                                     type="button"
                                                     className="change-button"
                                                     onClick={handleBrowse}
+                                                    name="change-button"
                                                 >
 
                                                     <svg
@@ -456,6 +458,7 @@ function AddProfilePic() {
                                                     type="button"
                                                     className="remove-button"
                                                     onClick={handleRemove}
+                                                    name="remove-button"
                                                 >
 
                                                     <svg
@@ -656,6 +659,7 @@ function AddProfilePic() {
                                 <button
                                     type="submit"
                                     className="save-button"
+                                    name="save-button"
                                 >
 
                                     <svg

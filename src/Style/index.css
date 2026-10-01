@@ -2130,6 +2130,7 @@ html {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -5946,20 +5947,22 @@ svg {
 }
 
 /* Enabled Text */
-.AcountSettings .toggle-switch.active + .toggle-label {
+.AcountSettings .toggle-switch.active+.toggle-label {
   color: var(--color-primary);
 }
 
 /* ========================================================================================== */
 /* Progress Page */
 /* ========================================================================================== */
-/* Page *//* Card FIX */
-.cert-page__container{
+/* Page */
+/* Card FIX */
+.cert-page__container {
   margin: 20px 0;
   padding: 20px;
   background: var(--color-bg-card);
   border-radius: 20px;
 }
+
 .cert-page .cert-page__list .cert-card {
   display: flex;
   justify-content: space-between;
@@ -6037,6 +6040,7 @@ svg {
 .cert-page .cert-page__list .cert-card .cert-btn:hover {
   background: var(--btn-primary-hover);
 }
+
 /* ========================================================================================== */
 /* ========================================================================================== */
 /* MCQs Add Page */
@@ -6662,6 +6666,7 @@ svg {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
 .pagination-dots {
   display: flex;
   align-items: center;
@@ -7876,11 +7881,9 @@ svg {
   justify-content: center;
 
   /* Use theme colors */
-  background: linear-gradient(
-    135deg,
-    var(--color-primary),
-    var(--color-primary-dark)
-  );
+  background: linear-gradient(135deg,
+      var(--color-primary),
+      var(--color-primary-dark));
 }
 
 /* Wrapper */
@@ -8000,7 +8003,8 @@ svg {
 }
 
 .resultPage .resultCard .resultStatus.fail {
-  color: #ef4444; /* better red than previous */
+  color: #ef4444;
+  /* better red than previous */
 }
 
 /* =========================
@@ -8274,7 +8278,9 @@ svg {
     height: 50px;
     font-size: 1.2rem;
   }
-}.VerifyEmailChange .success-card {
+}
+
+.VerifyEmailChange .success-card {
   text-align: center;
 }
 
@@ -8578,6 +8584,7 @@ svg {
 }
 
 @keyframes aiVoiceWave {
+
   0%,
   100% {
     height: 7px;
@@ -8696,7 +8703,7 @@ svg {
   overflow: hidden;
 }
 
-.ai-learning-page .ai-learning-page__session-info > div {
+.ai-learning-page .ai-learning-page__session-info>div {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8706,7 +8713,7 @@ svg {
   border-right: 1px solid var(--color-border-light);
 }
 
-.ai-learning-page .ai-learning-page__session-info > div:last-child {
+.ai-learning-page .ai-learning-page__session-info>div:last-child {
   border-right: none;
 }
 
@@ -8998,12 +9005,12 @@ svg {
     grid-template-columns: 1fr;
   }
 
-  .ai-learning-page .ai-learning-page__session-info > div {
+  .ai-learning-page .ai-learning-page__session-info>div {
     border-right: none;
     border-bottom: 1px solid var(--color-border-light);
   }
 
-  .ai-learning-page .ai-learning-page__session-info > div:last-child {
+  .ai-learning-page .ai-learning-page__session-info>div:last-child {
     border-bottom: none;
   }
 
@@ -9599,6 +9606,487 @@ svg {
 
   .add-profile-page .add-profile-container .add-profile-card .profile-form .upload-section .upload-area .selected-upload .image-actions button {
     width: 100%;
+  }
+
+}
+
+
+/* ========================================================================================== */
+/* ========================================================================================== */
+/* ManageProfilePic */
+/* ========================================================================================== */
+/* ========================================================================================== */
+
+/* =========================
+   Main Container
+   ========================= */
+
+.manage-profile-pic {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   Success / Error Message
+   ========================= */
+/* =========================
+   Page Header
+   ========================= */
+
+.manage-profile-pic-header {
+  margin-bottom: 24px;
+}
+
+.manage-profile-pic-header h1 {
+  margin: 0 0 6px;
+
+  color: var(--color-text-primary);
+
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.manage-profile-pic-header p {
+  margin: 0;
+
+  color: var(--color-text-secondary);
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.manage-profile-pic-message {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+
+  border: 1px solid var(--color-accent-green);
+  border-radius: 8px;
+
+  background: var(--color-bg-section);
+  color: var(--color-text-primary);
+
+  font-size: 14px;
+  font-weight: 500;
+
+  box-shadow: var(--shadow-sm);
+}
+
+
+/* =========================
+   Image List
+   ========================= */
+
+.manage-profile-pic-list {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(180px, 1fr)
+  );
+
+  gap: 20px;
+  width: 100%;
+}
+
+
+/* =========================
+   Image Card
+   ========================= */
+
+.manage-profile-pic-card {
+  min-width: 0;
+  overflow: hidden;
+
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-light);
+  border-radius: 12px;
+
+  box-shadow: var(--shadow-sm);
+
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.manage-profile-pic-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+
+/* =========================
+   Image
+   ========================= */
+
+.manage-profile-pic-image-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+
+  overflow: hidden;
+
+  background: var(--color-bg-hover);
+}
+
+.manage-profile-pic-image {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+
+/* =========================
+   Actions
+   ========================= */
+
+.manage-profile-pic-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  padding: 12px;
+}
+
+
+/* =========================
+   Action Buttons
+   ========================= */
+
+.manage-profile-pic-view,
+.manage-profile-pic-delete {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border-radius: 8px;
+  background: transparent;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+
+/* =========================
+   View Button
+   ========================= */
+
+.manage-profile-pic-view {
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.manage-profile-pic-view:hover {
+  background: var(--color-primary-light);
+}
+
+
+/* =========================
+   Delete Button
+   ========================= */
+
+.manage-profile-pic-delete {
+  border: 1px solid var(--color-accent-orange);
+  color: var(--color-accent-orange);
+}
+
+.manage-profile-pic-delete:hover {
+  background: var(--color-primary-light);
+}
+
+
+/* =========================
+   SVG Icons
+   ========================= */
+
+.manage-profile-pic-view svg,
+.manage-profile-pic-delete svg {
+  width: 20px;
+  height: 20px;
+
+  fill: none;
+  stroke: currentColor;
+
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* =========================
+   Empty State
+   ========================= */
+
+.manage-profile-pic-empty {
+  padding: 50px 20px;
+
+  text-align: center;
+
+  color: var(--color-text-muted);
+
+  font-size: 14px;
+}
+
+
+/* =========================
+   Popup Overlay
+   ========================= */
+
+.manage-profile-pic-popup-overlay {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(15, 23, 42, 0.45);
+}
+
+
+/* =========================
+   Delete Popup
+   ========================= */
+
+.manage-profile-pic-popup {
+  width: 100%;
+  max-width: 420px;
+
+  padding: 28px;
+
+  box-sizing: border-box;
+
+  background: var(--color-bg-card);
+
+  border: 1px solid var(--color-border-light);
+  border-radius: 14px;
+
+  box-shadow: var(--shadow-md);
+
+  text-align: center;
+}
+
+
+/* =========================
+   Popup Icon
+   ========================= */
+
+.manage-profile-pic-popup-icon {
+  width: 52px;
+  height: 52px;
+
+  margin: 0 auto 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.manage-profile-pic-popup-icon svg {
+  width: 24px;
+  height: 24px;
+
+  fill: none;
+  stroke: currentColor;
+
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* =========================
+   Popup Content
+   ========================= */
+
+.manage-profile-pic-popup h3 {
+  margin: 0 0 10px;
+
+  color: var(--color-text-primary);
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.manage-profile-pic-popup p {
+  margin: 0;
+
+  color: var(--color-text-secondary);
+
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+
+/* =========================
+   Popup Actions
+   ========================= */
+
+.manage-profile-pic-popup-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 24px;
+}
+
+
+/* =========================
+   Cancel Button
+   ========================= */
+
+.manage-profile-pic-cancel {
+  min-width: 90px;
+
+  padding: 10px 16px;
+
+  border: 1px solid var(--color-border-medium);
+  border-radius: 8px;
+
+  background: transparent;
+  color: var(--color-text-secondary);
+
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.manage-profile-pic-cancel:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-primary);
+}
+
+
+/* =========================
+   Confirm Delete
+   ========================= */
+
+.manage-profile-pic-confirm-delete {
+  min-width: 90px;
+
+  padding: 10px 16px;
+
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.manage-profile-pic-confirm-delete:hover {
+  background: var(--btn-primary-hover);
+}
+
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 768px) {
+
+  .manage-profile-pic {
+    padding: 18px;
+  }
+
+  .manage-profile-pic-list {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(150px, 1fr)
+    );
+
+    gap: 16px;
+  }
+
+  .manage-profile-pic-actions {
+    padding: 10px;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
+  .manage-profile-pic {
+    padding: 14px;
+  }
+
+  .manage-profile-pic-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .manage-profile-pic-view,
+  .manage-profile-pic-delete {
+    width: 36px;
+    height: 36px;
+  }
+
+  .manage-profile-pic-view svg,
+  .manage-profile-pic-delete svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .manage-profile-pic-popup {
+    padding: 22px;
+  }
+
+  .manage-profile-pic-popup-actions {
+    flex-direction: column-reverse;
+  }
+
+  .manage-profile-pic-cancel,
+  .manage-profile-pic-confirm-delete {
+    width: 100%;
+  }
+
+}
+@media (max-width: 480px) {
+
+  .manage-profile-pic-header h1 {
+    font-size: 22px;
+  }
+
+  .manage-profile-pic-header p {
+    font-size: 13px;
   }
 
 }

@@ -66,3 +66,24 @@ export const uploadProfilePic = async (req, res) => {
     });
   }
 };
+
+export const getProfilePics = async (req, res) => {
+    try {
+        const profilePics = await ProfilePic.find()
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            status: 1,
+            message: "Profile pictures retrieved successfully",
+            data: profilePics,
+        });
+
+    } catch (error) {
+        console.error("Error retrieving profile pictures:", error);
+
+        res.status(500).json({
+            status: 0,
+            message: "Server error",
+        });
+    }
+};
