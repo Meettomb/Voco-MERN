@@ -8,6 +8,7 @@ export default function AdminSidebar() {
   const [openLanguage, setOpenLanguage] = useState(false);
   const [openWords, setOpenWords] = useState(false);
   const [openMcqs, setOpenMcqs] = useState(false);
+  const [openProfilePic, setOpenProfilePic] = useState(false);
 
   const [collapsed, setCollapsed] = useState(true);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -15,8 +16,8 @@ export default function AdminSidebar() {
   const navigate = useNavigate();
 
   const isLoggedIn = localStorage.getItem('token');
-  
-  const handelLogout = () =>{
+
+  const handelLogout = () => {
     localStorage.removeItem('token');
     navigate('/');
   }
@@ -228,15 +229,28 @@ export default function AdminSidebar() {
             </div>
           )}
 
-          {/* 
-          <Link to="/admin/settings" className="nav-item" onClick={handleNavClick}>
+
+          {/* ==================== Profile Picture Manage ==================== */}
+
+          <button className="nav-item" onClick={() => setOpenProfilePic(v => !v)}>
             <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h.1A1.7 1.7 0 0 0 10 3.1V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="12" cy="12" r="4" />
             </svg>
 
-            {!collapsed && <span>Settings</span>}
-          </Link> */}
+            {!collapsed && <span>Profile Picture</span>}
+            {!collapsed && (
+              <svg className={openProfilePic ? "arrow open" : "arrow"} viewBox="0 0 24 24">
+                <path d="M7 10l5 5 5-5" />
+              </svg>
+            )}
+          </button>
+
+          {openProfilePic && !collapsed && (
+            <div className="submenu">
+              <Link to="profile-pic/add" onClick={handleNavClick}>Add Profile Picture</Link>
+            </div>
+          )}
 
         </nav>
 
@@ -273,13 +287,13 @@ export default function AdminSidebar() {
                 <Link to="/" onClick={() => setProfileOpen(false)}>Client side</Link>
 
                 {isLoggedIn &&
-                  <Link to="#" 
-                  onClick={(e)=>{
-                    e.preventDefault(); 
-                    handelLogout(); 
-                    setProfileOpen(false);
-                  }}
-                  >Logout</Link> 
+                  <Link to="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handelLogout();
+                      setProfileOpen(false);
+                    }}
+                  >Logout</Link>
 
                 }
               </div>

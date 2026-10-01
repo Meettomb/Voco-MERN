@@ -1239,3 +1239,10 @@ export const verifyEmailChange = async (req, res) => {
         });
     }
 };
+
+
+// ==================================================
+
+export const uploadProfilePicture = async (req, res) => {
+  
+}
