@@ -192,7 +192,12 @@ function Header({ onOpen }) {
                   onChange={(e) => i18n.changeLanguage(e.target.value)}
                 >
                   {uiLanguage?.map((ui) => (
-                    <option value={ui.code}>{ui.nativeName}</option>
+                    <option
+                      key={ui._id}
+                      value={ui.code}
+                    >
+                      {ui.nativeName}
+                    </option>
                   ))}
 
                 </select>

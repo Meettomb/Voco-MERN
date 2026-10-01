@@ -307,6 +307,7 @@ export default function UiLanguages() {
                             className="ui-lang-page__btn"
                             disabled={!formData.englishName || !formData.nativeName || !formData.code}
                             onClick={submitForm}
+                            name="add-language-button"
                         >
 
                             Add Language
