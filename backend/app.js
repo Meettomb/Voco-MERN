@@ -10,6 +10,7 @@ import DashboardRoutes from "./routes/DashboardRoutes.js";
 import ChapterRoutes from "./routes/ChapterRoutes.js";
 import ExamAttemptRoutes from "./routes/ExamAttemptRoutes.js";
 import UserProgressRoutes from "./routes/UserProgressRoutes.js";
+import ProfilePicRoutes from "./routes/ProfilePicRouter.js";
 
 const app = express();
 
@@ -48,6 +49,8 @@ app.use("/api/dashboard", DashboardRoutes);
 app.use("/api/ChapterModel", ChapterRoutes);
 app.use("/api/ExamAttemptModel", ExamAttemptRoutes);
 app.use("/api/UserProgressModel", UserProgressRoutes);
+app.use("/api/ProfilePicModel", ProfilePicRoutes);
+
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "Backend is running" });

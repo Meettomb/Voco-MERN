@@ -1,12 +1,22 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import FullScreenLoader from "../../FullScreenLoader";
+
 function AddProfilePic() {
     const fileInputRef = useRef(null);
+
+    const [loading, setLoading] = useState(false);
 
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [isDragging, setIsDragging] = useState(false);
+
+    const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState("");
+
+    const REACT_APP_API_URL = process.env.REACT_APP_API_URL
 
     const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -16,7 +26,23 @@ function AddProfilePic() {
         "image/webp",
     ];
 
+
+    useEffect(() => {
+
+        if (message) {
+
+            const timer = setTimeout(() => {
+                setMessage("");
+                setMessageType("");
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+
+    }, [message]);
+
     const validateFile = (file) => {
+        if (loading) return;
         setErrorMessage("");
         setSuccessMessage("");
 
@@ -38,6 +64,7 @@ function AddProfilePic() {
         }
 
         return true;
+
     };
 
     const handleFile = (file) => {
@@ -121,243 +148,189 @@ function AddProfilePic() {
         }
 
         try {
-            /*
-             * API integration goes here.
-             *
-             * Example:
-             *
-             * const formData = new FormData();
-             * formData.append("profileImage", selectedFile);
-             *
-             * const response = await fetch(
-             *   "YOUR_API_URL/api/profile/upload",
-             *   {
-             *     method: "POST",
-             *     body: formData,
-             *   }
-             * );
-             *
-             * if (!response.ok) {
-             *   throw new Error("Upload failed");
-             * }
-             */
+            setLoading(true);
 
-            setSuccessMessage(
-                "Profile picture is ready to be saved."
+            const formData = new FormData();
+            formData.append("image", selectedFile);
+
+            const response = await axios.post(
+                `${REACT_APP_API_URL}/ProfilePicModel/uploadProfilePic`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                }
             );
 
-            console.log("Selected profile image:", selectedFile);
+            if (response.data.status === 1) {
+                setSuccessMessage(response.data.message);
+
+                console.log(
+                    "Profile picture:",
+                    response.data.data
+                );
+
+                // Clear selected image
+                if (previewUrl) {
+                    URL.revokeObjectURL(previewUrl);
+                }
+
+                setSelectedFile(null);
+                setPreviewUrl("");
+
+                // Clear file input
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                }
+
+            } else {
+                setErrorMessage(response.data.message);
+            }
 
         } catch (error) {
+            console.error(
+                "Error uploading profile picture:",
+                error
+            );
+
             setErrorMessage(
+                error.response?.data?.message ||
                 "Something went wrong while uploading the profile picture."
             );
+
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <main className="add-profile-page">
+        <>
+            {loading && <FullScreenLoader />}
+            {message && (
+                <p
+                    className={`app-message ${messageType === "success" ? "success" : "error"
+                        }`}
+                >
+                    {message}
+                </p>
+            )}
 
-            <div className="add-profile-container">
+            <main className="add-profile-page">
 
-                <section className="add-profile-card">
+                <div className="add-profile-container">
 
-                    {/* =========================
+                    <section className="add-profile-card">
+
+                        {/* =========================
               Header
               ========================= */}
 
-                    <div className="add-profile-header">
+                        <div className="add-profile-header">
 
-                        <div className="header-content">
+                            <div className="header-content">
 
-                            <h1>
-                                Add Profile Picture
-                            </h1>
+                                <h1>
+                                    Add Profile Picture
+                                </h1>
 
-                            <p>
-                                Upload a profile picture to personalize your account.
-                            </p>
+                                <p>
+                                    Upload a profile picture to personalize your account.
+                                </p>
+
+                            </div>
 
                         </div>
 
-                    </div>
 
-
-                    {/* =========================
+                        {/* =========================
               Form
               ========================= */}
 
-                    <form
-                        className="profile-form"
-                        onSubmit={handleSubmit}
-                    >
+                        <form
+                            className="profile-form"
+                            onSubmit={handleSubmit}
+                        >
 
-                        {/* =========================
+                            {/* =========================
                 Upload Section
                 ========================= */}
 
-                        <div className="upload-section">
+                            <div className="upload-section">
 
-                            <div
-                                className={`upload-area ${isDragging ? "dragging" : ""
-                                    } ${previewUrl ? "has-preview" : ""}`}
-                                onDrop={handleDrop}
-                                onDragOver={handleDragOver}
-                                onDragLeave={handleDragLeave}
-                            >
+                                <div
+                                    className={`upload-area ${isDragging ? "dragging" : ""
+                                        } ${previewUrl ? "has-preview" : ""}`}
+                                    onDrop={handleDrop}
+                                    onDragOver={handleDragOver}
+                                    onDragLeave={handleDragLeave}
+                                >
 
-                                {!previewUrl ? (
+                                    {!previewUrl ? (
 
-                                    /* =========================
-                                       Empty Upload
-                                       ========================= */
+                                        /* =========================
+                                           Empty Upload
+                                           ========================= */
 
-                                    <div className="empty-upload">
+                                        <div className="empty-upload">
 
-                                        <div className="upload-icon">
+                                            <div className="upload-icon">
 
-                                            <svg
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                aria-hidden="true"
-                                            >
+                                                <svg
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    aria-hidden="true"
+                                                >
 
-                                                <path
-                                                    d="M12 16V4"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.8"
-                                                    strokeLinecap="round"
-                                                />
+                                                    <path
+                                                        d="M12 16V4"
+                                                        stroke="currentColor"
+                                                        strokeWidth="1.8"
+                                                        strokeLinecap="round"
+                                                    />
 
-                                                <path
-                                                    d="M7 9L12 4L17 9"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.8"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                />
+                                                    <path
+                                                        d="M7 9L12 4L17 9"
+                                                        stroke="currentColor"
+                                                        strokeWidth="1.8"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
 
-                                                <path
-                                                    d="M5 20H19"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.8"
-                                                    strokeLinecap="round"
-                                                />
+                                                    <path
+                                                        d="M5 20H19"
+                                                        stroke="currentColor"
+                                                        strokeWidth="1.8"
+                                                        strokeLinecap="round"
+                                                    />
 
-                                            </svg>
+                                                </svg>
 
-                                        </div>
-
-
-                                        <div className="upload-text">
-
-                                            <h2>
-                                                Upload profile picture
-                                            </h2>
-
-                                            <p>
-                                                Drag and drop your image here or browse
-                                                from your device.
-                                            </p>
-
-                                            <span>
-                                                JPG, PNG or WEBP · Maximum 5 MB
-                                            </span>
-
-                                        </div>
+                                            </div>
 
 
-                                        <button
-                                            type="button"
-                                            className="browse-button"
-                                            onClick={handleBrowse}
-                                        >
+                                            <div className="upload-text">
 
-                                            <svg
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                aria-hidden="true"
-                                            >
+                                                <h2>
+                                                    Upload profile picture
+                                                </h2>
 
-                                                <path
-                                                    d="M12 16V4"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.8"
-                                                    strokeLinecap="round"
-                                                />
+                                                <p>
+                                                    Drag and drop your image here or browse
+                                                    from your device.
+                                                </p>
 
-                                                <path
-                                                    d="M7 9L12 4L17 9"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.8"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                />
+                                                <span>
+                                                    JPG, PNG or WEBP · Maximum 5 MB
+                                                </span>
 
-                                                <path
-                                                    d="M5 20H19"
-                                                    stroke="currentColor"
-                                                    strokeWidth="1.8"
-                                                    strokeLinecap="round"
-                                                />
+                                            </div>
 
-                                            </svg>
-
-                                            Browse Image
-
-                                        </button>
-
-                                    </div>
-
-                                ) : (
-
-                                    /* =========================
-                                       Selected Image
-                                       ========================= */
-
-                                    <div className="selected-upload">
-
-                                        <div className="preview-wrapper">
-
-                                            <img
-                                                src={previewUrl}
-                                                alt="Profile preview"
-                                            />
-
-                                        </div>
-
-
-                                        <div className="file-information">
-
-                                            <h2>
-                                                Profile picture selected
-                                            </h2>
-
-                                            <p title={selectedFile?.name}>
-                                                {selectedFile?.name}
-                                            </p>
-
-                                            <span>
-                                                {(
-                                                    selectedFile?.size /
-                                                    1024 /
-                                                    1024
-                                                ).toFixed(2)}{" "}
-                                                MB
-                                            </span>
-
-                                        </div>
-
-
-                                        <div className="image-actions">
-
-                                            {/* Change Button */}
 
                                             <button
                                                 type="button"
-                                                className="change-button"
+                                                className="browse-button"
                                                 onClick={handleBrowse}
                                             >
 
@@ -369,51 +342,14 @@ function AddProfilePic() {
                                                 >
 
                                                     <path
-                                                        d="M12 20H21"
+                                                        d="M12 16V4"
                                                         stroke="currentColor"
                                                         strokeWidth="1.8"
                                                         strokeLinecap="round"
                                                     />
 
                                                     <path
-                                                        d="M16.5 3.5C17.328 2.672 18.672 2.672 19.5 3.5C20.328 4.328 20.328 5.672 19.5 6.5L8 18L3 19L4 14L16.5 3.5Z"
-                                                        stroke="currentColor"
-                                                        strokeWidth="1.8"
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                    />
-
-                                                </svg>
-
-                                                Change
-
-                                            </button>
-
-
-                                            {/* Remove Button */}
-
-                                            <button
-                                                type="button"
-                                                className="remove-button"
-                                                onClick={handleRemove}
-                                            >
-
-                                                <svg
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    aria-hidden="true"
-                                                >
-
-                                                    <path
-                                                        d="M4 7H20"
-                                                        stroke="currentColor"
-                                                        strokeWidth="1.8"
-                                                        strokeLinecap="round"
-                                                    />
-
-                                                    <path
-                                                        d="M9 7V4H15V7"
+                                                        d="M7 9L12 4L17 9"
                                                         stroke="currentColor"
                                                         strokeWidth="1.8"
                                                         strokeLinecap="round"
@@ -421,22 +357,7 @@ function AddProfilePic() {
                                                     />
 
                                                     <path
-                                                        d="M7 7L8 20H16L17 7"
-                                                        stroke="currentColor"
-                                                        strokeWidth="1.8"
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                    />
-
-                                                    <path
-                                                        d="M10 11V17"
-                                                        stroke="currentColor"
-                                                        strokeWidth="1.8"
-                                                        strokeLinecap="round"
-                                                    />
-
-                                                    <path
-                                                        d="M14 11V17"
+                                                        d="M5 20H19"
                                                         stroke="currentColor"
                                                         strokeWidth="1.8"
                                                         strokeLinecap="round"
@@ -444,204 +365,344 @@ function AddProfilePic() {
 
                                                 </svg>
 
-                                                Remove
+                                                Browse Image
 
                                             </button>
 
                                         </div>
 
-                                    </div>
+                                    ) : (
 
-                                )}
+                                        /* =========================
+                                           Selected Image
+                                           ========================= */
+
+                                        <div className="selected-upload">
+
+                                            <div className="preview-wrapper">
+
+                                                <img
+                                                    src={previewUrl}
+                                                    alt="Profile preview"
+                                                />
+
+                                            </div>
 
 
-                                {/* Hidden File Input */}
+                                            <div className="file-information">
 
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept="image/jpeg,image/png,image/webp"
-                                    onChange={handleFileChange}
-                                    hidden
-                                />
+                                                <h2>
+                                                    Profile picture selected
+                                                </h2>
+
+                                                <p title={selectedFile?.name}>
+                                                    {selectedFile?.name}
+                                                </p>
+
+                                                <span>
+                                                    {(
+                                                        selectedFile?.size /
+                                                        1024 /
+                                                        1024
+                                                    ).toFixed(2)}{" "}
+                                                    MB
+                                                </span>
+
+                                            </div>
+
+
+                                            <div className="image-actions">
+
+                                                {/* Change Button */}
+
+                                                <button
+                                                    type="button"
+                                                    className="change-button"
+                                                    onClick={handleBrowse}
+                                                >
+
+                                                    <svg
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        aria-hidden="true"
+                                                    >
+
+                                                        <path
+                                                            d="M12 20H21"
+                                                            stroke="currentColor"
+                                                            strokeWidth="1.8"
+                                                            strokeLinecap="round"
+                                                        />
+
+                                                        <path
+                                                            d="M16.5 3.5C17.328 2.672 18.672 2.672 19.5 3.5C20.328 4.328 20.328 5.672 19.5 6.5L8 18L3 19L4 14L16.5 3.5Z"
+                                                            stroke="currentColor"
+                                                            strokeWidth="1.8"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
+
+                                                    </svg>
+
+                                                    Change
+
+                                                </button>
+
+
+                                                {/* Remove Button */}
+
+                                                <button
+                                                    type="button"
+                                                    className="remove-button"
+                                                    onClick={handleRemove}
+                                                >
+
+                                                    <svg
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        aria-hidden="true"
+                                                    >
+
+                                                        <path
+                                                            d="M4 7H20"
+                                                            stroke="currentColor"
+                                                            strokeWidth="1.8"
+                                                            strokeLinecap="round"
+                                                        />
+
+                                                        <path
+                                                            d="M9 7V4H15V7"
+                                                            stroke="currentColor"
+                                                            strokeWidth="1.8"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
+
+                                                        <path
+                                                            d="M7 7L8 20H16L17 7"
+                                                            stroke="currentColor"
+                                                            strokeWidth="1.8"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
+
+                                                        <path
+                                                            d="M10 11V17"
+                                                            stroke="currentColor"
+                                                            strokeWidth="1.8"
+                                                            strokeLinecap="round"
+                                                        />
+
+                                                        <path
+                                                            d="M14 11V17"
+                                                            stroke="currentColor"
+                                                            strokeWidth="1.8"
+                                                            strokeLinecap="round"
+                                                        />
+
+                                                    </svg>
+
+                                                    Remove
+
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    )}
+
+
+                                    {/* Hidden File Input */}
+
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="image/jpeg,image/png,image/webp"
+                                        onChange={handleFileChange}
+                                        hidden
+                                    />
+
+                                </div>
 
                             </div>
 
-                        </div>
 
-
-                        {/* =========================
+                            {/* =========================
                 Error Message
                 ========================= */}
 
-                        {errorMessage && (
-                            <div className="message-box error-message red">
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    aria-hidden="true"
-                                >
-                                    <circle
-                                        cx="12"
-                                        cy="12"
-                                        r="9"
-                                        stroke="currentColor"
-                                        strokeWidth="1.8"
-                                    />
+                            {errorMessage && (
+                                <div className="message-box error-message red">
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        aria-hidden="true"
+                                    >
+                                        <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="9"
+                                            stroke="currentColor"
+                                            strokeWidth="1.8"
+                                        />
 
-                                    <path
-                                        d="M12 8V13"
-                                        stroke="currentColor"
-                                        strokeWidth="1.8"
-                                        strokeLinecap="round"
-                                    />
+                                        <path
+                                            d="M12 8V13"
+                                            stroke="currentColor"
+                                            strokeWidth="1.8"
+                                            strokeLinecap="round"
+                                        />
 
-                                    <circle
-                                        cx="12"
-                                        cy="16.5"
-                                        r="1"
-                                        fill="currentColor"
-                                    />
-                                </svg>
+                                        <circle
+                                            cx="12"
+                                            cy="16.5"
+                                            r="1"
+                                            fill="currentColor"
+                                        />
+                                    </svg>
 
-                                <span>{errorMessage}</span>
-                            </div>
-                        )}
+                                    <span>{errorMessage}</span>
+                                </div>
+                            )}
 
 
-                        {/* =========================
+                            {/* =========================
                 Success Message
                 ========================= */}
 
-                        {successMessage && (
+                            {successMessage && (
 
-                            <div className="message-box success-message">
+                                <div className="message-box success-message">
 
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    aria-hidden="true"
-                                >
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        aria-hidden="true"
+                                    >
 
-                                    <circle
-                                        cx="12"
-                                        cy="12"
-                                        r="9"
-                                        stroke="currentColor"
-                                        strokeWidth="1.8"
-                                    />
+                                        <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="9"
+                                            stroke="currentColor"
+                                            strokeWidth="1.8"
+                                        />
 
-                                    <path
-                                        d="M8 12L10.5 14.5L16 9"
-                                        stroke="currentColor"
-                                        strokeWidth="1.8"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
+                                        <path
+                                            d="M8 12L10.5 14.5L16 9"
+                                            stroke="currentColor"
+                                            strokeWidth="1.8"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
 
-                                </svg>
+                                    </svg>
 
-                                <span>
-                                    {successMessage}
-                                </span>
+                                    <span>
+                                        {successMessage}
+                                    </span>
 
-                            </div>
+                                </div>
 
-                        )}
+                            )}
 
 
-                        {/* =========================
+                            {/* =========================
                 Footer
                 ========================= */}
 
-                        <div className="form-footer">
+                            <div className="form-footer">
 
-                            <div className="upload-info">
+                                <div className="upload-info">
 
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    aria-hidden="true"
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        aria-hidden="true"
+                                    >
+
+                                        <path
+                                            d="M5 12C5 8.134 8.134 5 12 5C15.866 5 19 8.134 19 12C19 15.866 15.866 19 12 19"
+                                            stroke="currentColor"
+                                            strokeWidth="1.8"
+                                            strokeLinecap="round"
+                                        />
+
+                                        <path
+                                            d="M5 8V12H9"
+                                            stroke="currentColor"
+                                            strokeWidth="1.8"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
+
+                                    </svg>
+
+                                    <span>
+                                        Supported formats: JPG, PNG and WEBP
+                                    </span>
+
+                                </div>
+
+
+                                {/* Save Button */}
+
+                                <button
+                                    type="submit"
+                                    className="save-button"
                                 >
 
-                                    <path
-                                        d="M5 12C5 8.134 8.134 5 12 5C15.866 5 19 8.134 19 12C19 15.866 15.866 19 12 19"
-                                        stroke="currentColor"
-                                        strokeWidth="1.8"
-                                        strokeLinecap="round"
-                                    />
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        aria-hidden="true"
+                                    >
 
-                                    <path
-                                        d="M5 8V12H9"
-                                        stroke="currentColor"
-                                        strokeWidth="1.8"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
+                                        <path
+                                            d="M5 4H16L20 8V20H5V4Z"
+                                            stroke="currentColor"
+                                            strokeWidth="1.8"
+                                            strokeLinejoin="round"
+                                        />
 
-                                </svg>
+                                        <path
+                                            d="M8 4V10H16V4"
+                                            stroke="currentColor"
+                                            strokeWidth="1.8"
+                                            strokeLinejoin="round"
+                                        />
 
-                                <span>
-                                    Supported formats: JPG, PNG and WEBP
-                                </span>
+                                        <circle
+                                            cx="12"
+                                            cy="15"
+                                            r="2"
+                                            stroke="currentColor"
+                                            strokeWidth="1.8"
+                                        />
+
+                                    </svg>
+
+                                    Save Profile Picture
+
+                                </button>
 
                             </div>
 
+                        </form>
 
-                            {/* Save Button */}
+                    </section>
 
-                            <button
-                                type="submit"
-                                className="save-button"
-                            >
+                </div>
 
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    aria-hidden="true"
-                                >
-
-                                    <path
-                                        d="M5 4H16L20 8V20H5V4Z"
-                                        stroke="currentColor"
-                                        strokeWidth="1.8"
-                                        strokeLinejoin="round"
-                                    />
-
-                                    <path
-                                        d="M8 4V10H16V4"
-                                        stroke="currentColor"
-                                        strokeWidth="1.8"
-                                        strokeLinejoin="round"
-                                    />
-
-                                    <circle
-                                        cx="12"
-                                        cy="15"
-                                        r="2"
-                                        stroke="currentColor"
-                                        strokeWidth="1.8"
-                                    />
-
-                                </svg>
-
-                                Save Profile Picture
-
-                            </button>
-
-                        </div>
-
-                    </form>
-
-                </section>
-
-            </div>
-
-        </main>
+            </main>
+        </>
     );
 }
 

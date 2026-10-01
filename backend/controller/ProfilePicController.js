@@ -1,0 +1,68 @@
+import fs from "fs/promises";
+
+import ProfilePic from "../model/ProfilePicModel.js";
+
+import {
+  uploadImageToGitHub,
+} from "../services/GitHubImageService.js";
+
+export const uploadProfilePic = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        status: 0,
+        message: "Profile image is required",
+      });
+    }
+
+    const extension = req.file.originalname
+      .split(".")
+      .pop()
+      .toLowerCase();
+
+    const fileName =
+      `profile_${Date.now()}.${extension}`;
+
+    const githubResult =
+      await uploadImageToGitHub(
+        req.file,
+        fileName
+      );
+
+    const profilePic = await ProfilePic.create({
+      imageUrl: githubResult.imageUrl,
+    });
+
+    // Delete temporary local image
+    await fs.unlink(req.file.path);
+
+    res.status(201).json({
+      status: 1,
+      message: "Profile picture uploaded successfully",
+      data: profilePic,
+    });
+
+  } catch (error) {
+    console.error(
+      "Profile picture upload error:",
+      error
+    );
+
+    // Delete temporary file if it exists
+    if (req.file?.path) {
+      try {
+        await fs.unlink(req.file.path);
+      } catch (deleteError) {
+        console.error(
+          "Temporary file deletion error:",
+          deleteError
+        );
+      }
+    }
+
+    res.status(500).json({
+      status: 0,
+      message: "Server error",
+    });
+  }
+};
