@@ -50,18 +50,29 @@ export default function ResultPage() {
 
                     {/* Actions */}
                     <div className="resultActions">
-                        <button className="btnPrimary" onClick={() => navigate("/")}>
+                        <button className="btnPrimary" onClick={() => navigate("/")} name="home">
                             {t(isFinal ? "FinalExamResult.home" : "ChapterExamResult.home")}
                         </button>
 
 
-                        <button
+                        <button name="retry"
                             className="btnSecondary"
                             onClick={() => {
                                 if (isFinal) {
-                                    navigate("/"); // or language page
+                                    navigate("/");
                                 } else {
-                                    navigate(-1); // chapter retry
+                                    // Clear previous exam timer
+                                    localStorage.removeItem("examEndTime");
+
+                                    // Go back to the same chapter exam
+                                    navigate(`/ChapterExam/${state.chapterId}`, {
+                                        replace: true,
+                                        state: {
+                                            chapterNumber: state.chapterNumber,
+                                            chapterTitle: state.chapterTitle,
+                                            retry: true
+                                        }
+                                    });
                                 }
                             }}
                         >

@@ -427,16 +427,20 @@ export const getLearningWords = async (req, res) => {
 
     try {
 
-        const learningWords = await LearningWord.find()
+        const { languageId } = req.query;
+
+        const query = languageId
+            ? { learningWordsLangauge: languageId }
+            : {};
+
+        const learningWords = await LearningWord.find(query)
             .populate("learningWordsLangauge")
             .populate("chapterId");
-
 
         res.status(200).json({
             message: "Learning words fetched",
             data: learningWords
         });
-
 
     } catch (error) {
 
