@@ -3,8 +3,10 @@ import axios from 'axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import usePageTitle from '../../../hooks/usePageTitle';
 
 export default function PersonalDetails() {
+    usePageTitle("Profile - Personal Details");
     const REACT_APP_API_URL = process.env.REACT_APP_API_URL
     const { t } = useTranslation()
     const [isEditing, setIsEditing] = useState(false);

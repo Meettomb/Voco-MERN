@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import FullScreenLoader from "../../FullScreenLoader";
 import axios from "axios";
+import usePageTitle from '../../../hooks/usePageTitle';
 
 export default function ManageProfilePic() {
+    usePageTitle("Manage Profile Pictures");
     const [images, setImages] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
