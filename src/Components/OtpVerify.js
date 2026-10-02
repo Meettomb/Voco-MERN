@@ -124,7 +124,7 @@ function OtpVerify() {
 
       if (data.status === 1) {
         localStorage.removeItem("otpExpiry");
-      localStorage.removeItem("otpData");
+        localStorage.removeItem("otpData");
         setMessage("Registration successful");
         setMessageType("success");
 
@@ -185,6 +185,31 @@ function OtpVerify() {
 
     }
   };
+  const handlePaste = (e) => {
+    e.preventDefault();
+
+    const pastedData = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
+
+    if (!pastedData) return;
+
+    const newOtp = [...otp];
+
+    pastedData.split("").forEach((digit, index) => {
+      newOtp[index] = digit;
+    });
+
+    setOtp(newOtp);
+
+    const nextIndex = Math.min(pastedData.length, 5);
+
+    document
+      .getElementById(`otp-${nextIndex}`)
+      ?.focus();
+  };
+
   return (
     <>
 
@@ -220,6 +245,7 @@ function OtpVerify() {
                   value={digit}
                   onChange={(e) => handleChange(e.target.value, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
+                  onPaste={handlePaste}
                 />
               ))}
             </div>
