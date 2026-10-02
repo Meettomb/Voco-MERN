@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import FullScreenLoader from "../../FullScreenLoader";
+import usePageTitle from '../../../hooks/usePageTitle';
 
 function AddProfilePic() {
+    usePageTitle("Add Profile Picture");
     const fileInputRef = useRef(null);
 
     const [loading, setLoading] = useState(false);

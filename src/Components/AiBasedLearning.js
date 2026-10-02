@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import usePageTitle from '../hooks/usePageTitle';
 
 export default function AiBasedLearning() {
     const [isListening, setIsListening] = useState(false);
     const [isAiSpeaking, setIsAiSpeaking] = useState(false);
     const [conversationEnded, setConversationEnded] = useState(false);
+    
+    usePageTitle("AI-Based Learning");
 
     const toggleListening = () => {
         setIsListening((prev) => !prev);

@@ -2,8 +2,10 @@ import React,{useState, useEffect} from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../context/AuthContext';
+import usePageTitle from '../../../hooks/usePageTitle';
 
 export default function Preferences() {
+    usePageTitle("Profile - Preferences");
     const [isEditing, setIsEditing] = React.useState(false);
     const { t } = useTranslation();
     const REACT_APP_API_URL = process.env.REACT_APP_API_URL

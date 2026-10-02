@@ -4,8 +4,10 @@ import { useAuth } from '../../../context/AuthContext';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import FullScreenLoader from "../../FullScreenLoader"
+import usePageTitle from '../../../hooks/usePageTitle';
 
 export default function Security() {
+    usePageTitle("Profile - Security");
     const [isEmailEditing, setIsEmailEditing] = useState(false);
     const [isPasswordEditing, setIsPasswordEditing] = useState(false);
     const [email, setEmail] = useState("");

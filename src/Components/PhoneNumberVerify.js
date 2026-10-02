@@ -220,6 +220,32 @@ export default function PhoneNumberVerify() {
 
         }
     };
+
+    const handlePaste = (e) => {
+        e.preventDefault();
+
+        const pastedData = e.clipboardData
+            .getData("text")
+            .replace(/\D/g, "")
+            .slice(0, 6);
+
+        if (!pastedData) return;
+
+        const newOtp = [...otp];
+
+        pastedData.split("").forEach((digit, index) => {
+            newOtp[index] = digit;
+        });
+
+        setOtp(newOtp);
+
+        const nextIndex = Math.min(pastedData.length, 5);
+
+        document
+            .getElementById(`otp-${nextIndex}`)
+            ?.focus();
+    };
+
     return (
         <>
 
@@ -252,6 +278,7 @@ export default function PhoneNumberVerify() {
                                     value={digit}
                                     onChange={(e) => handleChange(e.target.value, index)}
                                     onKeyDown={(e) => handleKeyDown(e, index)}
+                                    onPaste={handlePaste}
                                 />
                             ))}
                         </div>

@@ -32,7 +32,8 @@ export default function ProfileHero({ userData, uiLanguage }) {
                     <div className="hero-info">
                         <h1 id="userName">{userData?.username || t("Profile.ProfileHero.userNotFound")}</h1>
                         <div className="language-tags">
-                            <span className="language-tag">{t("Profile.ProfileHero.uiLanguage")}: {userData?.uiSupportLangauge || "Not Specified"}</span><span className="language-tag">
+                            <span className="language-tag">
+                                {/* {t("Profile.ProfileHero.uiLanguage")}: {userData?.uiSupportLangauge || "Not Specified"}</span><span className="language-tag"> */}
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
@@ -63,7 +64,7 @@ export default function ProfileHero({ userData, uiLanguage }) {
                             </span>
 
                         </div>
-                        <div className="hero-stats">
+                        {/* <div className="hero-stats">
                             <div className="stat-item">
                                 <div className="stat-value" id="stat1">127</div>
                                 <div className="stat-label">{t("Profile.ProfileHero.dayStreak")}</div>
@@ -76,7 +77,7 @@ export default function ProfileHero({ userData, uiLanguage }) {
                                 <div className="stat-value" id="stat3">48hrs</div>
                                 <div className="stat-label">{t("Profile.ProfileHero.thisMonth")}</div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
