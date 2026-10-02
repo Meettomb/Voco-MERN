@@ -807,6 +807,7 @@ export const getFinalExamQuestions = async (req, res) => {
     try {
 
         const { code } = req.params;
+        const { retry } = req.query;
         const userId = req.user.id;
 
 
@@ -828,20 +829,36 @@ export const getFinalExamQuestions = async (req, res) => {
         }
 
 
+        /*
+         * Find existing active final exam attempt
+         */
         let attempt =
             await ExamAttempt.findOne({
-
                 userId,
-
                 langId: language._id,
-
                 examType: "final",
-
                 isCompleted: false,
-
             }).populate("mcqIds");
 
 
+        /*
+         * RETRY:
+         * Delete the existing attempt so a completely
+         * new attempt can be created.
+         */
+        if (attempt && retry === "true") {
+
+            await ExamAttempt.deleteOne({
+                _id: attempt._id
+            });
+
+            attempt = null;
+        }
+
+
+        /*
+         * Create new attempt if there is no active attempt
+         */
         if (!attempt) {
 
             const chapterIds =
@@ -870,7 +887,7 @@ export const getFinalExamQuestions = async (req, res) => {
 
 
             /*
-             * Shuffle + limit
+             * Shuffle MCQs
              */
             const shuffled =
                 mcqs.sort(
@@ -878,6 +895,10 @@ export const getFinalExamQuestions = async (req, res) => {
                 );
 
 
+            /*
+             * Select MCQs until at least
+             * 15 questions are available.
+             */
             let selectedMcqs = [];
 
             let questionCount = 0;
@@ -897,6 +918,9 @@ export const getFinalExamQuestions = async (req, res) => {
             }
 
 
+            /*
+             * Create 15-minute exam
+             */
             const startTime =
                 new Date();
 
@@ -908,6 +932,9 @@ export const getFinalExamQuestions = async (req, res) => {
                 );
 
 
+            /*
+             * Create new attempt
+             */
             attempt =
                 await ExamAttempt.create({
 
@@ -938,7 +965,15 @@ export const getFinalExamQuestions = async (req, res) => {
 
 
         /*
-         * Time check
+         * IMPORTANT:
+         * populate MCQ documents because a newly created
+         * attempt initially contains only ObjectIds.
+         */
+        await attempt.populate("mcqIds");
+
+
+        /*
+         * Check whether exam time has expired
          */
         if (new Date() > attempt.endTime) {
 
@@ -985,18 +1020,24 @@ export const getFinalExamQuestions = async (req, res) => {
             });
 
 
+            /*
+             * Calculate percentage
+             */
             const percentage =
                 total > 0
                     ? ((score / total) * 100).toFixed(2)
                     : 0;
 
 
+            /*
+             * Pass/fail
+             */
             const isPassed =
                 percentage >= 70;
 
 
             /*
-             * DELETE attempt
+             * Delete expired attempt
              */
             await ExamAttempt.deleteOne({
                 _id: attempt._id
@@ -1022,6 +1063,9 @@ export const getFinalExamQuestions = async (req, res) => {
         }
 
 
+        /*
+         * Return active exam
+         */
         return res.status(200).json({
 
             status: 1,
@@ -1044,15 +1088,21 @@ export const getFinalExamQuestions = async (req, res) => {
 
     } catch (err) {
 
-        console.log(err);
+        console.log(
+            "Get Final Exam Questions Error:",
+            err
+        );
 
-        res.status(500).json({
+
+        return res.status(500).json({
+
             status: 0,
+
             message: "Error"
+
         });
     }
 };
-
 
 export const submitFinalExam = async (req, res) => {
 

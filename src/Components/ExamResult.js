@@ -59,7 +59,16 @@ export default function ResultPage() {
                             className="btnSecondary"
                             onClick={() => {
                                 if (isFinal) {
-                                    navigate("/");
+
+                                    localStorage.removeItem("examEndTime");
+
+                                    navigate(`/FinalExam/${state.code}`, {
+                                        replace: true,
+                                        state: {
+                                            retry: true
+                                        }
+                                    });
+
                                 } else {
                                     // Clear previous exam timer
                                     localStorage.removeItem("examEndTime");

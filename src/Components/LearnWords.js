@@ -197,89 +197,76 @@ function LearnWords() {
    */
   const handleFinalExam = async () => {
 
-    try {
+  try {
 
-      const existingEndTime =
-        localStorage.getItem("examEndTime");
+    const chapterTitle = "Final Exam";
 
+    const chapterNumber =
+      chapters.length + 1;
 
-      const chapterTitle = "Final Exam";
-
-      const chapterNumber =
-        chapters.length + 1;
+    const code = activeLanguage?.code;
 
 
-      const code = activeLanguage?.code;
+    if (!code) {
+
+      alert("Language not selected");
+
+      return;
+    }
 
 
-      if (!code) {
-
-        alert("Language not selected");
-
-        return;
-      }
-
-
-      /*
-       * Get the final exam and its server-side end time.
-       */
-      const res = await axios.get(
-        `${REACT_APP_API_URL}/ExamAttemptModel/getFinalExamQuestions/${code}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-
-      /*
-       * Resume existing timer.
-       */
-      if (existingEndTime) {
-
-        navigate(`/FinalExam/${code}`, {
-          state: {
-            chapterTitle,
-            chapterNumber,
-          },
-        });
-
-        return;
-      }
-
-
-      /*
-       * Use the backend-generated exam end time.
-       */
-      const endTime =
-        new Date(res.data.data.endTime).getTime();
-
-
-      localStorage.setItem(
-        "examEndTime",
-        endTime
-      );
-
-
-      navigate(`/FinalExam/${code}`, {
-        state: {
-          chapterTitle,
-          chapterNumber,
+    /*
+     * Get/create the final exam attempt.
+     *
+     * The backend is responsible for:
+     * - creating the attempt
+     * - selecting MCQs
+     * - generating the 15-minute endTime
+     */
+    const res = await axios.get(
+      `${REACT_APP_API_URL}/ExamAttemptModel/getFinalExamQuestions/${code}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      });
+      }
+    );
 
 
-    } catch (err) {
+    if (res.data.status !== 1 || !res.data.data) {
 
       console.error(
         "Failed to start final exam:",
-        err
+        res.data
       );
 
-      alert("Failed to start final exam");
+      return;
     }
-  };
+
+
+    /*
+     * Navigate to FinalExam.
+     *
+     * FinalExam will use the backend endTime
+     * to start the timer.
+     */
+    navigate(`/FinalExam/${code}`, {
+      state: {
+        chapterTitle,
+        chapterNumber,
+      },
+    });
+
+  } catch (err) {
+
+    console.error(
+      "Failed to start final exam:",
+      err
+    );
+
+    alert("Failed to start final exam");
+  }
+};
 
 
   return (
@@ -406,8 +393,8 @@ function LearnWords() {
 
             <button
               className={`btn-primary ${!isFinalExamUnlocked
-                  ? "locked"
-                  : ""
+                ? "locked"
+                : ""
                 }`}
               onClick={handleFinalExam}
               disabled={!isFinalExamUnlocked}
