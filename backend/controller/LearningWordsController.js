@@ -665,19 +665,13 @@ export const updateLearningWordById = async (req, res) => {
          * Database retrieval and saving remain outside the
          * strategy, keeping the pattern lightweight.
          */
-        if (contentStrategy) {
 
-            const strategyData =
-                contentType === "TextBlock"
-                    ? difficulties
-                    : grammarContent;
+        if (contentType === "TextBlock") {
+            doc.grammarContent = {};
 
-
-            contentStrategy.process(
-                doc,
-                strategyData
-            );
+            doc.difficulties = difficulties || [];
         }
+
 
 
         await doc.save();
