@@ -1,42 +1,48 @@
-import { useEffect, useState } from "react";
+// import react from "react";
 import heroImage from '../assets/images/hero-visual.png'
 import usePageTitle from '../hooks/usePageTitle';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
+import useMessage from '../hooks/useMessage';
+import AppMessage from '../Components/AppMessage';
 
 function Home({ onOpen }) {
 
     usePageTitle("Learn Languages");
     const { t, i18n } = useTranslation();
-    const navigate = useNavigate();
-    const location = useLocation();
+    // const navigate = useNavigate();
+    // const location = useLocation();
 
-    const [message, setMessage] = useState("");
-    const [messageType, setMessageType] = useState("");
+    // const [message, setMessage] = useState("");
+    // const [messageType, setMessageType] = useState("");
 
-    useEffect(() => {
-        if (location.state?.message) {
-            setMessage(location.state.message);
-            setMessageType(location.state.messageType);
+    // useEffect(() => {
+    //     if (location.state?.message) {
+    //         setMessage(location.state.message);
+    //         setMessageType(location.state.messageType);
 
-            // clear state after reading
-            navigate(location.pathname, { replace: true });
-        }
-    }, [location]);
+    //         // clear state after reading
+    //         navigate(location.pathname, { replace: true });
+    //     }
+    // }, [location]);
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        if (message) {
+    //     if (message) {
 
-            const timer = setTimeout(() => {
-                setMessage("");
-                setMessageType("");
-            }, 2000);
+    //         const timer = setTimeout(() => {
+    //             setMessage("");
+    //             setMessageType("");
+    //         }, 2000);
 
-            return () => clearTimeout(timer);
-        }
+    //         return () => clearTimeout(timer);
+    //     }
 
-    }, [message]);
+    // }, [message]);
+    const {
+        message,
+        messageType,
+    } = useMessage();
+
 
     const speakText = () => {
         if (!window.speechSynthesis) {
@@ -71,13 +77,20 @@ function Home({ onOpen }) {
     return (
         <>
             {message && (
-                <p
-                    className={`app-message ${messageType === "success" ? "success" : "error"
-                        }`}
-                >
-                    {message}
-                </p>
+                // <p
+                //     className={`app-message ${messageType === "success" ? "success" : "error"
+                //         }`}
+                // >
+                //     {message}
+                // </p>
+                <AppMessage
+                    message={message}
+                    messageType={messageType}
+                />
             )}
+
+
+
             <div>
                 <main className="homePage_main">
                     <div className="homePage_main_outer">
