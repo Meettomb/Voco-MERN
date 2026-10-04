@@ -3,52 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import FullScreenLoader from "./Components/FullScreenLoader";
 
 
-// Comen Components
-// import OtpVerify from "./Components/OtpVerify";
-// import MainLayout from "./MainLayout";
-
-// User Components
-// import Home from "./Components/Home";
-// import SignIn from "./Components/SIgnInPopup";
-// import RegisterPopup from "./Components/RegisterPopup";
-// import LearnWords from "./Components/LearnWords";
-// import Videos from "./Components/Videos";
-// import VideoPlayer from "./Components/VideoPlayer";
-// import McqsExam from "./Components/McqsExam";
-// import ChooseLearningLanguage from "./Components/ChooseLearningLanguage";
-// import Profile from "./Components/profile/Profile";
-
-// import EnterEmail from "./Components/forgotPassword/EnterEmail";
-// import ForgotPasswordOtpVerify from "./Components/forgotPassword/ForgotPasswordOtpVerify";
-// import EnterNewPassword from "./Components/forgotPassword/EnterNewPassword";
-// import LearnChapter from "./Components/LearnChapter";
-
-// Admin Components
-// import AdminHeader from "./Components/admin/AdminHeader";
-// import Dashboard from "./Components/admin/Dashboard";
-// import AllUsers from "./Components/admin/users/AllUsers";
-// import UserDetailView from "./Components/admin/users/manage_users/UserDetailView";
-// import UpdateUserDetails from "./Components/admin/users/manage_users/UpdateUserDetails";
-// import ActiveUsers from "./Components/admin/users/ActiveUsers";
-// import UiLanguages from "./Components/admin/language/UiLanguages";
-// import LearningLanguages from "./Components/admin/language/learning-languages/LearningLanguages";
-// import AddWords from "./Components/admin/words/AddWords";
-// import ViewAllLearningLanguages from "./Components/admin/language/learning-languages/ViewAllLearningLanguages";
-// import ViewLearningLanguages from "./Components/admin/language/learning-languages/ViewLearningLanguages";
-// import UpdateLearningLanguage from "./Components/admin/language/learning-languages/UpdateLearningLanguage";
-
-// import ViewWord from "./Components/admin/words/ViewWord";
-// import EditWords from "./Components/admin/words/EditWords";
-// import ViewLanguages from "./Components/admin/words/ViewLanguages"
-// import ViewChapters from "./Components/admin/words/ViewChapters"
-// import AddMcq from "./Components/admin/msq/AddMcq";
-// import ManageMcq from "./Components/admin/msq/ManageMcq";
-// import EditMcq from "./Components/admin/msq/EditMcq";
-// import ViewMcq from "./Components/admin/msq/VewMcq";
-
-// Globle Components
-// import AuthRoute from "./Components/AuthRoute";
-// import AdminRoute from "./Components/AdminRoute";
 import { AuthProvider } from "./context/AuthContext";
 
 
@@ -105,6 +59,9 @@ const AddMcq = lazy(() => import("./Components/admin/msq/AddMcq"));
 const ManageMcq = lazy(() => import("./Components/admin/msq/ManageMcq"));
 const EditMcq = lazy(() => import("./Components/admin/msq/EditMcq"));
 const ViewMcq = lazy(() => import("./Components/admin/msq/VewMcq"));
+
+const AddProfilePic = lazy(() => import("./Components/admin/profile-pic/AddProfilePic"));
+const ManageProfilePic = lazy(() => import("./Components/admin/profile-pic/ManageProfilePic"));
 
 // Globle Components
 const AuthRoute = lazy(() => import("./Components/AuthRoute"));
@@ -230,11 +187,6 @@ function App() {
                   <AddWords />
                 </AuthRoute>} />
 
-              {/* <Route path="words/manage" element={
-              <AuthRoute onAuthFail={() => setAuthView("login")}>
-                <ManageWords />
-              </AuthRoute>} /> */}
-
               <Route path="words/view/:chapterId" element={
                 <AuthRoute onAuthFail={() => setAuthView("login")}>
                   <ViewWord />
@@ -257,7 +209,7 @@ function App() {
 
 
 
-              {/* ======================= <Manage MCQs ======================= */}
+              {/* ======================= Manage MCQs ======================= */}
               <Route path="mcq/add" element={
                 <AuthRoute onAuthFail={() => setAuthView("login")}>
                   <AddMcq />
@@ -276,6 +228,18 @@ function App() {
               <Route path="mcq/view/:id" element={
                 <AuthRoute onAuthFail={() => setAuthView("login")}>
                   <ViewMcq />
+                </AuthRoute>} />
+
+                {/* ==================== Profile Picture Routes ==================== */}
+
+              <Route path="profile-pic/add" element={
+                <AuthRoute onAuthFail={() => setAuthView("login")}>
+                  <AddProfilePic />
+                </AuthRoute>} />
+
+              <Route path="profile-pic/manage" element={
+                <AuthRoute onAuthFail={() => setAuthView("login")}>
+                  <ManageProfilePic />
                 </AuthRoute>} />
 
             </Route>

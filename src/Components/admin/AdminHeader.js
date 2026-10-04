@@ -8,6 +8,7 @@ export default function AdminSidebar() {
   const [openLanguage, setOpenLanguage] = useState(false);
   const [openWords, setOpenWords] = useState(false);
   const [openMcqs, setOpenMcqs] = useState(false);
+  const [openProfilePic, setOpenProfilePic] = useState(false);
 
   const [collapsed, setCollapsed] = useState(true);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -15,8 +16,8 @@ export default function AdminSidebar() {
   const navigate = useNavigate();
 
   const isLoggedIn = localStorage.getItem('token');
-  
-  const handelLogout = () =>{
+
+  const handelLogout = () => {
     localStorage.removeItem('token');
     navigate('/');
   }
@@ -79,7 +80,7 @@ export default function AdminSidebar() {
             {!collapsed && <span>Dashboard</span>}
           </Link>
 
-          <button className="nav-item" onClick={() => setOpenUser(v => !v)}>
+          <button className="nav-item" onClick={() => setOpenUser(v => !v)} name="user-management-button">
             <svg viewBox="0 0 24 24">
               <circle cx="12" cy="8" r="4" />
               <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />
@@ -126,6 +127,7 @@ export default function AdminSidebar() {
           <button
             className="nav-item"
             onClick={() => setOpenLanguage(v => !v)}
+            name="learning-languages-button"
           >
             <svg viewBox="0 0 24 24">
               <path d="M4 4h13a3 3 0 0 1 3 3v13H7a3 3 0 0 0-3 3V4z" />
@@ -172,7 +174,7 @@ export default function AdminSidebar() {
           {/* =======================
    Words Management
 ======================= */}
-          <button className="nav-item" onClick={() => setOpenWords(v => !v)}>
+          <button className="nav-item" onClick={() => setOpenWords(v => !v)} name="words-management-button">
             <svg viewBox="0 0 24 24">
               <rect x="4" y="4" width="16" height="4" rx="1" />
               <rect x="4" y="10" width="16" height="4" rx="1" />
@@ -200,7 +202,7 @@ export default function AdminSidebar() {
           {/* =======================
    MCQs Management
 ======================= */}
-          <button className="nav-item" onClick={() => setOpenMcqs(v => !v)}>
+          <button className="nav-item" onClick={() => setOpenMcqs(v => !v)} name="mcqs-management-button">
             <svg viewBox="0 0 24 24">
               <circle cx="5" cy="7" r="2" />
               <circle cx="5" cy="12" r="2" />
@@ -228,15 +230,34 @@ export default function AdminSidebar() {
             </div>
           )}
 
-          {/* 
-          <Link to="/admin/settings" className="nav-item" onClick={handleNavClick}>
+
+          {/* ==================== Profile Picture Manage ==================== */}
+
+          <button className="nav-item" onClick={() => setOpenProfilePic(v => !v)} name="profile-picture-management-button">
             <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h.1A1.7 1.7 0 0 0 10 3.1V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="12" cy="12" r="4" />
             </svg>
 
-            {!collapsed && <span>Settings</span>}
-          </Link> */}
+            {!collapsed && <span>Profile Picture</span>}
+            {!collapsed && (
+              <svg className={openProfilePic ? "arrow open" : "arrow"} viewBox="0 0 24 24">
+                <path d="M7 10l5 5 5-5" />
+              </svg>
+            )}
+          </button>
+
+          {openProfilePic && !collapsed && (
+            <div className="submenu">
+              <Link to="profile-pic/add" onClick={handleNavClick}>Add Profile Picture</Link>
+            </div>
+          )}
+
+          {openProfilePic && !collapsed && (
+            <div className="submenu">
+              <Link to="profile-pic/manage" onClick={handleNavClick}>Manage Profile Picture</Link>
+            </div>
+          )}
 
         </nav>
 
@@ -252,7 +273,7 @@ export default function AdminSidebar() {
 
         <div className="topbar">
 
-          <button className="menu-btn" onClick={() => setCollapsed(v => !v)}>
+          <button className="menu-btn" onClick={() => setCollapsed(v => !v)} name="menu-button">
             <svg viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none">
               <line x1="4" y1="6" x2="20" y2="6" />
               <line x1="4" y1="12" x2="20" y2="12" />
@@ -261,7 +282,7 @@ export default function AdminSidebar() {
           </button>
 
           <div className="profile" ref={profileRef}>
-            <button className="profile-btn" onClick={() => setProfileOpen(v => !v)}>
+            <button className="profile-btn" onClick={() => setProfileOpen(v => !v)} name="profile-button">
               <svg viewBox="0 0 24 24">
                 <path d="M12 12a5 5 0 1 0-0.001-10.001A5 5 0 0 0 12 12zm0 2c-4 0-8 2-8 6v2h16v-2c0-4-4-6-8-6z" />
               </svg>
@@ -273,13 +294,13 @@ export default function AdminSidebar() {
                 <Link to="/" onClick={() => setProfileOpen(false)}>Client side</Link>
 
                 {isLoggedIn &&
-                  <Link to="#" 
-                  onClick={(e)=>{
-                    e.preventDefault(); 
-                    handelLogout(); 
-                    setProfileOpen(false);
-                  }}
-                  >Logout</Link> 
+                  <Link to="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handelLogout();
+                      setProfileOpen(false);
+                    }}
+                  >Logout</Link>
 
                 }
               </div>

@@ -469,12 +469,20 @@ export const updateUserPersonalDetailById = async (req, res) => {
       };
       const formattedPhone = `+91${phoneToVerify}`;
 
-      const smsResponse = await sendOTP(formattedPhone, "otp", otp);
+      const smsResponse = await sendOTP(
+        formattedPhone,
+        "otp",
+        otp
+      );
 
       if (smsResponse.status === 0) {
+        delete otpStore[key];
+
         return res.status(500).json({
           status: 0,
           message: "Failed to send OTP. Try again.",
+          error: smsResponse.error,
+          code: smsResponse.code,
         });
       }
       return res.status(200).json({
@@ -680,94 +688,94 @@ export const updateUserPasswordById = async (req, res) => {
 };
 
 export const updateUserPreferencesById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { emailNotifications, reminderTime } = req.body;
+  try {
+    const { id } = req.params;
+    const { emailNotifications, reminderTime } = req.body;
 
-        // Validate User ID
-        if (!id) {
-            return res.status(400).json({
-                status: 0,
-                message: "User ID is required",
-            });
-        }
-
-        // Validate emailNotifications
-        if (
-            emailNotifications !== undefined &&
-            typeof emailNotifications !== "boolean"
-        ) {
-            return res.status(400).json({
-                status: 0,
-                message: "emailNotifications must be a boolean value",
-            });
-        }
-
-        // Validate reminderTime
-        if (
-            reminderTime !== undefined &&
-            reminderTime !== null &&
-            typeof reminderTime !== "string"
-        ) {
-            return res.status(400).json({
-                status: 0,
-                message: "reminderTime must be a string or null",
-            });
-        }
-
-        // Prepare update object
-        const updateData = {};
-
-        if (emailNotifications !== undefined) {
-            updateData.emailNotifications = emailNotifications;
-        }
-
-        if (reminderTime !== undefined) {
-            updateData.reminderTime = reminderTime;
-        }
-
-        // Nothing to update
-        if (Object.keys(updateData).length === 0) {
-            return res.status(400).json({
-                status: 0,
-                message: "No preference data provided",
-            });
-        }
-
-        // Update user preferences
-        const updatedUser = await UserModel.findByIdAndUpdate(
-            id,
-            {
-                $set: updateData,
-            },
-            {
-                new: true,
-                runValidators: true,
-            }
-        ).select("emailNotifications reminderTime");
-
-        // User not found
-        if (!updatedUser) {
-            return res.status(404).json({
-                status: 0,
-                message: "User not found",
-            });
-        }
-
-        return res.status(200).json({
-            status: 1,
-            message: "User preferences updated successfully",
-            data: updatedUser,
-        });
-
-    } catch (error) {
-        console.error("Update User Preferences Error:", error);
-
-        return res.status(500).json({
-            status: 0,
-            message: "Internal Server Error",
-        });
+    // Validate User ID
+    if (!id) {
+      return res.status(400).json({
+        status: 0,
+        message: "User ID is required",
+      });
     }
+
+    // Validate emailNotifications
+    if (
+      emailNotifications !== undefined &&
+      typeof emailNotifications !== "boolean"
+    ) {
+      return res.status(400).json({
+        status: 0,
+        message: "emailNotifications must be a boolean value",
+      });
+    }
+
+    // Validate reminderTime
+    if (
+      reminderTime !== undefined &&
+      reminderTime !== null &&
+      typeof reminderTime !== "string"
+    ) {
+      return res.status(400).json({
+        status: 0,
+        message: "reminderTime must be a string or null",
+      });
+    }
+
+    // Prepare update object
+    const updateData = {};
+
+    if (emailNotifications !== undefined) {
+      updateData.emailNotifications = emailNotifications;
+    }
+
+    if (reminderTime !== undefined) {
+      updateData.reminderTime = reminderTime;
+    }
+
+    // Nothing to update
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({
+        status: 0,
+        message: "No preference data provided",
+      });
+    }
+
+    // Update user preferences
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      id,
+      {
+        $set: updateData,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).select("emailNotifications reminderTime");
+
+    // User not found
+    if (!updatedUser) {
+      return res.status(404).json({
+        status: 0,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: 1,
+      message: "User preferences updated successfully",
+      data: updatedUser,
+    });
+
+  } catch (error) {
+    console.error("Update User Preferences Error:", error);
+
+    return res.status(500).json({
+      status: 0,
+      message: "Internal Server Error",
+    });
+  }
 };
 // ===================================================
 // ===================================================
@@ -984,258 +992,258 @@ export const Login = async (req, res) => {
 
 // ===================================================
 export const requestEmailChange = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { newEmail } = req.body;
+  try {
+    const { id } = req.params;
+    const { newEmail } = req.body;
 
-        if (!id) {
-            return res.status(400).json({
-                status: 0,
-                message: "User ID is required",
-            });
-        }
-
-        if (!newEmail) {
-            return res.status(400).json({
-                status: 0,
-                message: "New email is required",
-            });
-        }
-
-        const normalizedEmail = newEmail.trim().toLowerCase();
-
-        // Basic email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (!emailRegex.test(normalizedEmail)) {
-            return res.status(400).json({
-                status: 0,
-                message: "Invalid email address",
-            });
-        }
-
-        const user = await UserModel.findById(id);
-
-        if (!user) {
-            return res.status(404).json({
-                status: 0,
-                message: "User not found",
-            });
-        }
-
-        // Don't allow same email
-        if (user.email.toLowerCase() === normalizedEmail) {
-            return res.status(400).json({
-                status: 0,
-                message: "New email is same as current email",
-            });
-        }
-
-        // Check whether new email is already registered
-        const existingUser = await UserModel.findOne({
-            email: normalizedEmail,
-        });
-
-        if (existingUser) {
-            return res.status(409).json({
-                status: 0,
-                message: "This email is already registered",
-            });
-        }
-
-        // Generate 6 digit OTP
-        const otp = Math.floor(
-            100000 + Math.random() * 900000
-        ).toString();
-
-        // Generate secure verification token
-        const crypto = await import("crypto");
-
-        const verificationToken =
-            crypto.randomBytes(32).toString("hex");
-
-        // Store verification data
-        emailChangeStore[id] = {
-            oldEmail: user.email,
-            newEmail: normalizedEmail,
-
-            otp,
-
-            otpExpiresAt:
-                Date.now() + 2 * 60 * 1000,
-
-            verificationToken,
-
-            tokenExpiresAt:
-                Date.now() + 15 * 60 * 1000,
-
-            newEmailVerified: false,
-        };
-
-        // Send OTP to OLD email
-        await sendMail(
-            user.email,
-            "Verify Your Email Change",
-            "emailChangeOtp",
-            otp
-        );
-
-        // Create verification link for NEW email
-        const verificationLink =
-            `${process.env.FRONTEND_URL}/verify-email-change?token=${verificationToken}`;
-
-        // Send link to NEW email
-        await sendMail(
-            normalizedEmail,
-            "Verify your new LearnVoco email address",
-            "emailChangeLink",
-            verificationLink
-        );
-
-        return res.status(200).json({
-            status: 1,
-            message:
-                "Verification instructions have been sent to your old and new email addresses",
-        });
-
-    } catch (error) {
-
-        console.error(
-            "Request Email Change Error:",
-            error
-        );
-
-        return res.status(500).json({
-            status: 0,
-            message: "Internal Server Error",
-        });
+    if (!id) {
+      return res.status(400).json({
+        status: 0,
+        message: "User ID is required",
+      });
     }
+
+    if (!newEmail) {
+      return res.status(400).json({
+        status: 0,
+        message: "New email is required",
+      });
+    }
+
+    const normalizedEmail = newEmail.trim().toLowerCase();
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(normalizedEmail)) {
+      return res.status(400).json({
+        status: 0,
+        message: "Invalid email address",
+      });
+    }
+
+    const user = await UserModel.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        status: 0,
+        message: "User not found",
+      });
+    }
+
+    // Don't allow same email
+    if (user.email.toLowerCase() === normalizedEmail) {
+      return res.status(400).json({
+        status: 0,
+        message: "New email is same as current email",
+      });
+    }
+
+    // Check whether new email is already registered
+    const existingUser = await UserModel.findOne({
+      email: normalizedEmail,
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        status: 0,
+        message: "This email is already registered",
+      });
+    }
+
+    // Generate 6 digit OTP
+    const otp = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+
+    // Generate secure verification token
+    const crypto = await import("crypto");
+
+    const verificationToken =
+      crypto.randomBytes(32).toString("hex");
+
+    // Store verification data
+    emailChangeStore[id] = {
+      oldEmail: user.email,
+      newEmail: normalizedEmail,
+
+      otp,
+
+      otpExpiresAt:
+        Date.now() + 2 * 60 * 1000,
+
+      verificationToken,
+
+      tokenExpiresAt:
+        Date.now() + 15 * 60 * 1000,
+
+      newEmailVerified: false,
+    };
+
+    // Send OTP to OLD email
+    await sendMail(
+      user.email,
+      "Verify Your Email Change",
+      "emailChangeOtp",
+      otp
+    );
+
+    // Create verification link for NEW email
+    const verificationLink =
+      `${process.env.FRONTEND_URL}/verify-email-change?token=${verificationToken}`;
+
+    // Send link to NEW email
+    await sendMail(
+      normalizedEmail,
+      "Verify your new LearnVoco email address",
+      "emailChangeLink",
+      verificationLink
+    );
+
+    return res.status(200).json({
+      status: 1,
+      message:
+        "Verification instructions have been sent to your old and new email addresses",
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Request Email Change Error:",
+      error
+    );
+
+    return res.status(500).json({
+      status: 0,
+      message: "Internal Server Error",
+    });
+  }
 };
 
 export const verifyEmailChange = async (req, res) => {
 
-    try {
+  try {
 
-        const { token, otp } = req.body;
+    const { token, otp } = req.body;
 
-        if (!token || !otp) {
-            return res.status(400).json({
-                status: 0,
-                message: "Verification token and OTP are required",
-            });
-        }
-
-        // Find pending email change
-        const entry = Object.entries(emailChangeStore)
-            .find(
-                ([, data]) =>
-                    data.verificationToken === token
-            );
-
-        if (!entry) {
-            return res.status(400).json({
-                status: 0,
-                message: "Invalid or expired verification link",
-            });
-        }
-
-        const [userId, data] = entry;
-
-        // Check link expiration
-        if (Date.now() > data.tokenExpiresAt) {
-
-            delete emailChangeStore[userId];
-
-            return res.status(400).json({
-                status: 0,
-                message: "Verification link has expired",
-            });
-        }
-
-        // Check OTP expiration
-        if (Date.now() > data.otpExpiresAt) {
-
-            delete emailChangeStore[userId];
-
-            return res.status(400).json({
-                status: 0,
-                message: "OTP has expired",
-            });
-        }
-
-        // Check OTP
-        if (otp !== data.otp) {
-
-            return res.status(400).json({
-                status: 0,
-                message: "Invalid OTP",
-            });
-        }
-
-        // Make sure new email still isn't registered
-        const existingUser = await UserModel.findOne({
-            email: data.newEmail,
-        });
-
-        if (
-            existingUser &&
-            existingUser._id.toString() !== userId
-        ) {
-
-            delete emailChangeStore[userId];
-
-            return res.status(409).json({
-                status: 0,
-                message: "This email is already registered",
-            });
-        }
-
-        // Update email
-        const updatedUser =
-            await UserModel.findByIdAndUpdate(
-                userId,
-                {
-                    $set: {
-                        email: data.newEmail,
-                    },
-                },
-                {
-                    new: true,
-                    runValidators: true,
-                }
-            );
-
-        if (!updatedUser) {
-
-            delete emailChangeStore[userId];
-
-            return res.status(404).json({
-                status: 0,
-                message: "User not found",
-            });
-        }
-
-        // Delete pending verification
-        delete emailChangeStore[userId];
-
-        return res.status(200).json({
-            status: 1,
-            message: "Email address updated successfully",
-            data: {
-                email: updatedUser.email,
-            },
-        });
-
-    } catch (error) {
-
-        console.error(
-            "Verify Email Change Error:",
-            error
-        );
-
-        return res.status(500).json({
-            status: 0,
-            message: "Internal Server Error",
-        });
+    if (!token || !otp) {
+      return res.status(400).json({
+        status: 0,
+        message: "Verification token and OTP are required",
+      });
     }
+
+    // Find pending email change
+    const entry = Object.entries(emailChangeStore)
+      .find(
+        ([, data]) =>
+          data.verificationToken === token
+      );
+
+    if (!entry) {
+      return res.status(400).json({
+        status: 0,
+        message: "Invalid or expired verification link",
+      });
+    }
+
+    const [userId, data] = entry;
+
+    // Check link expiration
+    if (Date.now() > data.tokenExpiresAt) {
+
+      delete emailChangeStore[userId];
+
+      return res.status(400).json({
+        status: 0,
+        message: "Verification link has expired",
+      });
+    }
+
+    // Check OTP expiration
+    if (Date.now() > data.otpExpiresAt) {
+
+      delete emailChangeStore[userId];
+
+      return res.status(400).json({
+        status: 0,
+        message: "OTP has expired",
+      });
+    }
+
+    // Check OTP
+    if (otp !== data.otp) {
+
+      return res.status(400).json({
+        status: 0,
+        message: "Invalid OTP",
+      });
+    }
+
+    // Make sure new email still isn't registered
+    const existingUser = await UserModel.findOne({
+      email: data.newEmail,
+    });
+
+    if (
+      existingUser &&
+      existingUser._id.toString() !== userId
+    ) {
+
+      delete emailChangeStore[userId];
+
+      return res.status(409).json({
+        status: 0,
+        message: "This email is already registered",
+      });
+    }
+
+    // Update email
+    const updatedUser =
+      await UserModel.findByIdAndUpdate(
+        userId,
+        {
+          $set: {
+            email: data.newEmail,
+          },
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+
+    if (!updatedUser) {
+
+      delete emailChangeStore[userId];
+
+      return res.status(404).json({
+        status: 0,
+        message: "User not found",
+      });
+    }
+
+    // Delete pending verification
+    delete emailChangeStore[userId];
+
+    return res.status(200).json({
+      status: 1,
+      message: "Email address updated successfully",
+      data: {
+        email: updatedUser.email,
+      },
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Verify Email Change Error:",
+      error
+    );
+
+    return res.status(500).json({
+      status: 0,
+      message: "Internal Server Error",
+    });
+  }
 };

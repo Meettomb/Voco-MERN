@@ -3,8 +3,12 @@ import axios from 'axios';
 import { useAuth } from '../../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import usePageTitle from '../../../hooks/usePageTitle';
+import AppMessage from '../../../Components/AppMessage';
+import useMessage from '../../../hooks/useMessage';
 
 export default function PersonalDetails() {
+    usePageTitle("Profile - Personal Details");
     const REACT_APP_API_URL = process.env.REACT_APP_API_URL
     const { t } = useTranslation()
     const [isEditing, setIsEditing] = useState(false);
@@ -23,19 +27,25 @@ export default function PersonalDetails() {
 
     // Errors
     const [errors, setErrors] = useState({});
-    const [message, setMessage] = useState("");
-    const [messageType, setMessageType] = useState("");
-    useEffect(() => {
-        if (message) {
-            const timer = setTimeout(() => {
-                setMessage("");
-                setMessageType("");
-            }, 3000);
+    // const [message, setMessage] = useState("");
+    // const [messageType, setMessageType] = useState("");
+    // useEffect(() => {
+    //     if (message) {
+    //         const timer = setTimeout(() => {
+    //             setMessage("");
+    //             setMessageType("");
+    //         }, 3000);
 
-            return () => clearTimeout(timer);
-        }
+    //         return () => clearTimeout(timer);
+    //     }
 
-    }, [message]);
+    // }, [message]);
+
+    const {
+        message,
+        messageType,
+        showMessage
+    } = useMessage();
 
     const { userData, refreshUser } = useAuth();
     const id = userData?._id;
@@ -55,7 +65,7 @@ export default function PersonalDetails() {
         } catch (error) {
             console.error("Error fetching learning languages:", error);
         }
-    }, []);
+    }, [REACT_APP_API_URL]);
     useEffect(() => {
         getLearningLanguages();
     }, [getLearningLanguages]);
@@ -169,15 +179,16 @@ export default function PersonalDetails() {
                 });
                 return;
             } else if (response.data.status === 1) {
-                setMessage(t("Profile.PersonalDetails.messages.success"));
-                setMessageType("success");
+                
+                showMessage(t("Profile.PersonalDetails.messages.success"), "success");
 
                 await refreshUser(); // refetch to get updated data
                 setIsEditing(false);
 
             } else {
-                setMessage(t("Profile.PersonalDetails.messages.failed"));
-                setMessageType("error");
+                // setMessage(t("Profile.PersonalDetails.messages.failed"));
+                // setMessageType("error");
+                showMessage(t("Profile.PersonalDetails.messages.failed"), "error");
             }
         }
         catch (error) {
@@ -191,13 +202,18 @@ export default function PersonalDetails() {
     return (
         <>
             {message && (
-                <p
-                    className={`app-message ${messageType === "success" ? "success" : "error"
-                        }`}
-                >
-                    {message}
-                </p>
+                // <p
+                //     className={`app-message ${messageType === "success" ? "success" : "error"
+                //         }`}
+                // >
+                //     {message}
+                // </p>
+                <AppMessage
+                    message={message}
+                    messageType={messageType}
+                />
             )}
+
             <div className='PersonalDetails AcountSettings'>
                 <div className="tab-content active" id="personalTab">
 

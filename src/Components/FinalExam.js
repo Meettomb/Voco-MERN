@@ -12,6 +12,7 @@ export default function FinalExam() {
     const { activeLanguage, uiLanguage } = useAuth();
     const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
     const [timeLeft, setTimeLeft] = useState(0);
+    const [examEndTime, setExamEndTime] = useState(null);
     const navigate = useNavigate();
     const [mcqa, setMcqs] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -21,6 +22,7 @@ export default function FinalExam() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { code } = useParams();
+    const { state } = useLocation();
     // console.log("CLICK CODE:", code);   
 
     const allAnswered = questions.length > 0 &&
@@ -39,28 +41,63 @@ export default function FinalExam() {
     }, []);
 
     useEffect(() => {
-        const endTime = localStorage.getItem("examEndTime");
 
-        if (!endTime) return;
+        if (!examEndTime) {
+            return;
+        }
 
-        const interval = setInterval(() => {
-            const now = Date.now();
-            const remaining = Math.floor((endTime - now) / 1000);
+
+        const updateTimer = () => {
+
+            const remaining =
+                Math.floor(
+                    (examEndTime - Date.now()) / 1000
+                );
+
 
             if (remaining <= 0) {
-                clearInterval(interval);
+
                 setTimeLeft(0);
 
+                setExamEndTime(null);
+
                 localStorage.removeItem("examEndTime");
+
                 handleSubmitExam();
-                return;
+
+                return false;
             }
 
-            setTimeLeft(remaining);
-        }, 1000);
 
-        return () => clearInterval(interval);
-    }, []);
+            setTimeLeft(remaining);
+
+            return true;
+        };
+
+
+        /*
+         * Run immediately.
+         */
+        updateTimer();
+
+
+        const interval =
+            setInterval(() => {
+
+                const shouldContinue =
+                    updateTimer();
+
+                if (!shouldContinue) {
+                    clearInterval(interval);
+                }
+
+            }, 1000);
+
+
+        return () =>
+            clearInterval(interval);
+
+    }, [examEndTime]);
 
     const handleSubmitExam = async () => {
         try {
@@ -88,7 +125,8 @@ export default function FinalExam() {
                     replace: true,
                     state: {
                         ...res.data,
-                        examType: "final"
+                        examType: "final",
+                        code: code
                     }
                 });
             }
@@ -119,67 +157,172 @@ export default function FinalExam() {
     };
 
     const loadFinalExam = async () => {
+
         try {
+
+            /*
+             * Clear old exam state when retrying.
+             */
+            if (state?.retry) {
+
+                setTimeLeft(0);
+
+                setExamEndTime(null);
+
+                setMcqs([]);
+
+                setAnswers({});
+
+                setCurrentIndex(0);
+
+                localStorage.removeItem("examEndTime");
+            }
+
+
+            /*
+             * Ask backend for the exam.
+             *
+             * retry=true tells backend to delete the
+             * previous active attempt and create a new one.
+             */
             const res = await axios.get(
-                `${REACT_APP_API_URL}/ExamAttemptModel/getFinalExamQuestions/${code}`,
+                `${REACT_APP_API_URL}/ExamAttemptModel/getFinalExamQuestions/${code}?retry=${state?.retry === true}`,
                 {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                        Authorization:
+                            `Bearer ${localStorage.getItem("token")}`
                     }
                 }
             );
 
-            // ✅ CASE 1: NORMAL EXAM
-            if (res.data.status === 1 && res.data.data) {
 
-                setMcqs(res.data.data.mcqs);
+            /*
+             * Successful exam load.
+             */
+            if (
+                res.data.status === 1 &&
+                res.data.data
+            ) {
 
+                setMcqs(
+                    res.data.data.mcqs
+                );
+
+
+                /*
+                 * Restore saved answers.
+                 */
                 const formattedAnswers = {};
+
+
                 res.data.data.answers?.forEach(a => {
-                    const mcq = res.data.data.mcqs.find(m => m._id === a.mcqId);
 
-                    if (!mcq) return;
+                    const mcq =
+                        res.data.data.mcqs.find(
+                            m => m._id === a.mcqId
+                        );
 
-                    const question = mcq.questions?.[a.questionIndex];
+
+                    if (!mcq) {
+                        return;
+                    }
+
+
+                    const question =
+                        mcq.questions?.[
+                        a.questionIndex
+                        ];
+
 
                     if (question) {
-                        formattedAnswers[question._id] = a.selectedOption;
+
+                        formattedAnswers[
+                            question._id
+                        ] =
+                            a.selectedOption;
                     }
+
                 });
 
-                setAnswers(formattedAnswers);
 
-                const endTime = new Date(res.data.data.endTime).getTime();
-                localStorage.setItem("examEndTime", endTime);
+                setAnswers(
+                    formattedAnswers
+                );
 
-                const remaining = Math.floor((endTime - Date.now()) / 1000);
-                setTimeLeft(remaining > 0 ? remaining : 0);
-            }
 
-            // ✅ CASE 2: TIME EXPIRED → GO TO RESULT
-            else {
-                navigate("/ExamResult", {
-                    replace: true,
-                    state: {
-                        ...res.data,
-                        examType: "final"
+                /*
+                 * IMPORTANT:
+                 * Get the official backend endTime.
+                 */
+                const endTime =
+                    new Date(
+                        res.data.data.endTime
+                    ).getTime();
+
+
+                /*
+                 * Store it in React state.
+                 *
+                 * This starts the timer.
+                 */
+                setExamEndTime(endTime);
+
+
+                /*
+                 * Optional persistence.
+                 */
+                localStorage.setItem(
+                    "examEndTime",
+                    endTime
+                );
+
+
+                /*
+                 * Immediately show the correct time.
+                 */
+                const remaining =
+                    Math.floor(
+                        (endTime - Date.now()) / 1000
+                    );
+
+
+                setTimeLeft(
+                    remaining > 0
+                        ? remaining
+                        : 0
+                );
+
+            } else {
+
+                /*
+                 * Backend returned an expired/invalid result.
+                 */
+                navigate(
+                    "/ExamResult",
+                    {
+                        replace: true,
+                        state: {
+                            message: "Exam already submitted",
+                            examType: "final",
+                            code: code
+                        }
                     }
-                });
+                );
             }
+
 
         } catch (error) {
-            console.log(error);
+
+            console.error(
+                "Load Final Exam Error:",
+                error
+            );
         }
     };
 
-    const hasStarted = React.useRef(false);
-
     useEffect(() => {
-        if (hasStarted.current) return;
-        hasStarted.current = true;
-
         loadFinalExam();
-    }, [code]);
+    }, [code, state?.retry]);
 
 
     const handleNext = () => {
@@ -253,7 +396,7 @@ export default function FinalExam() {
     return (
         <>
             {isSubmitting && (
-               <FullScreenLoader/>
+                <FullScreenLoader />
             )}
             <div className="ChapterExamContainer">
                 {/* Header */}

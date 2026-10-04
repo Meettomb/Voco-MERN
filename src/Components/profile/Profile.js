@@ -4,9 +4,11 @@ import Progress from "./Progress";
 import AccountSettingTop from "./AccountSettings/AccountSettingTop";
 import { useAuth } from "../../context/AuthContext";
 import { useLocation } from "react-router-dom";
+import usePageTitle from '../../hooks/usePageTitle';
 
 
 export default function Profile() {
+  usePageTitle("Profile");
   const { userData, refreshUser, uiLanguage } = useAuth();
   const location = useLocation();
 

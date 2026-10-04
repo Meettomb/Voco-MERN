@@ -66,7 +66,12 @@ const userSchema = mongoose.Schema({
     reminderTime: {
         type: String,
         default: null
-    }
+    },
+    profilePicId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ProfilePic",
+        default: null,
+    },
 }, { timestamps: true })
 
 

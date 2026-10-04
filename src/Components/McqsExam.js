@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import usePageTitle from "../hooks/usePageTitle";
 
 
 export default function McqsExam() {
+  usePageTitle("MCQs Exam");
     const { t } = useTranslation();
 
     const questions = [

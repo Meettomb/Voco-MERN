@@ -57,7 +57,11 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUiLanguage = async (langCodeParam) => {
     try {
-      const langCode = langCodeParam || i18n.language || "en";
+      const langCode = (
+        langCodeParam ||
+        i18n.language ||
+        "en"
+      ).split("-")[0];
 
       const res = await axios.get(
         `${REACT_APP_API_URL}/UiLanguageModel/getByCode/${langCode}`,
@@ -75,7 +79,6 @@ export const AuthProvider = ({ children }) => {
       setUiLanguage(null);
     }
   };
-
   useEffect(() => {
     fetchUser();
     fetchUiLanguage(); // initial load

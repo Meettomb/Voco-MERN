@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../context/AuthContext';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import FullScreenLoader from "../../FullScreenLoader"
+import usePageTitle from '../../../hooks/usePageTitle';
+import AppMessage from '../../AppMessage';
+import useMessage from '../../../hooks/useMessage';
 
 export default function Security() {
+    usePageTitle("Profile - Security");
     const [isEmailEditing, setIsEmailEditing] = useState(false);
     const [isPasswordEditing, setIsPasswordEditing] = useState(false);
     const [email, setEmail] = useState("");
@@ -14,25 +18,17 @@ export default function Security() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const navigate = useNavigate();
     const { t } = useTranslation();
-    const [message, setMessage] = useState("");
-    const [messageType, setMessageType] = useState("");
+    const { message,
+        messageType,
+        showMessage,
+    } = useMessage();
     const [loader, setLoader] = useState(false);
 
 
     const REACT_APP_API_URL = process.env.REACT_APP_API_URL
     const { userData } = useAuth();
     const id = userData?._id;
-    useEffect(() => {
-        if (message) {
-            const timer = setTimeout(() => {
-                setMessage("");
-                setMessageType("");
-            }, 3000);
-
-            return () => clearTimeout(timer);
-        }
-
-    }, [message]);
+    
 
     const updateUserPassword = async () => {
         try {
@@ -60,8 +56,7 @@ export default function Security() {
                     }
                 });
             } else {
-                setMessage(res.data.message || "Something went wrong");
-                setMessageType("error");
+                showMessage(res.data.message || "Something went wrong", "error");
             }
 
         } catch (e) {
@@ -76,13 +71,13 @@ export default function Security() {
                         currentPassword: msg
                     }));
                 } else {
-                    setMessage(msg);
+                    showMessage(msg, "error");
                 }
             } else {
-                setMessage("Server error");
+                showMessage("Server error", "error");
             }
 
-            setMessageType("error");
+            showMessage("Something went wrong", "error");
         } finally {
             setLoader(false); // ✅ SINGLE SOURCE OF TRUTH
         }
@@ -158,15 +153,13 @@ export default function Security() {
 
             if (response.data.status === 1) {
 
-                setMessage(response.data.message);
-                setMessageType("success");
+                showMessage(response.data.message, "success");
 
                 setIsEmailEditing(false);
 
             } else {
 
-                setMessage(response.data.message);
-                setMessageType("error");
+                showMessage(response.data.message || "Failed to request email change", "error");
 
             }
 
@@ -177,12 +170,7 @@ export default function Security() {
                 error
             );
 
-            setMessage(
-                error.response?.data?.message ||
-                "Failed to request email change"
-            );
-
-            setMessageType("error");
+            showMessage("Failed to request email change", "error");
 
         } finally {
 
@@ -204,12 +192,7 @@ export default function Security() {
         <>
             {loader && <FullScreenLoader />}
             {message && (
-                <p
-                    className={`app-message ${messageType === "success" ? "success" : "error"
-                        }`}
-                >
-                    {message}
-                </p>
+                <AppMessage message={message} messageType={messageType} />
             )}
             <div>
                 <div className="tab-content AcountSettings" id="securityTab">
