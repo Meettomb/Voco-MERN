@@ -5,22 +5,39 @@ services** to run together locally.
 
 ## Prerequisites
 
-Make sure the following are installed:
-
 -   Python (latest version recommended)
 -   Node.js and npm
 -   Ollama
 -   Git
 
-## 1. Setup Python
+------------------------------------------------------------------------
 
-Upgrade/install Python to the latest available version.
+## 1. Python Environment Setup
 
-Verify the installation:
+Before starting the AI service, open a terminal inside the `ai-services`
+folder and run:
+
+``` bash
+python -m venv venv
+venv\Scripts\activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+Verify Python:
 
 ``` bash
 python --version
 ```
+
+The virtual environment must be activated before starting the AI
+service. You should see `(venv)` in the terminal prompt.
+
+> The virtual environment and dependencies only need to be
+> created/installed the first time, unless the environment is deleted or
+> `requirements.txt` changes.
+
+------------------------------------------------------------------------
 
 ## 2. Install Ollama
 
@@ -28,19 +45,15 @@ Download and install Ollama for Windows:
 
 https://ollama.com/download/ollamaSetup.exe
 
-After completing the installation, open a new Command Prompt or terminal
-and verify Ollama:
+After installation, open a new terminal and verify:
 
 ``` bash
 ollama
 ```
 
-If the Ollama help/command output is displayed, the installation is
-successful.
+------------------------------------------------------------------------
 
 ## 3. Download the Required Ollama Model
-
-Pull the required model:
 
 ``` bash
 ollama pull qwen2.5:3b
@@ -48,9 +61,11 @@ ollama pull qwen2.5:3b
 
 This downloads the `qwen2.5:3b` model required by the AI service.
 
-## 4. Run the Ollama Model
+------------------------------------------------------------------------
 
-Start the model with:
+## 4. Run Ollama
+
+Start the model:
 
 ``` bash
 ollama run qwen2.5:3b
@@ -58,11 +73,19 @@ ollama run qwen2.5:3b
 
 Keep this terminal running while using the application.
 
+------------------------------------------------------------------------
+
 ## 5. Run the AI Service
 
-Open a terminal inside the `ai-services` folder.
+Open another terminal inside the `ai-services` folder.
 
-Start the Python server with:
+Activate the virtual environment:
+
+``` bash
+venv\Scripts\activate
+```
+
+Then start the Python/FastAPI server:
 
 ``` bash
 uvicorn app:app --reload --host 127.0.0.1 --port 8000
@@ -74,25 +97,47 @@ The AI service will run at:
 http://127.0.0.1:8000
 ```
 
-## 6. Run the Backend
+------------------------------------------------------------------------
 
-Open a separate terminal inside the `backend` folder and run:
+## 6. Run the Node.js Backend
+
+Open a separate terminal inside the `backend` folder.
+
+For the first-time setup:
+
+``` bash
+npm install
+```
+
+Then run:
 
 ``` bash
 npm run dev
 ```
 
+------------------------------------------------------------------------
+
 ## 7. Run the React Frontend
 
-Open another terminal in the React/frontend project folder and run:
+Open another terminal in the React/frontend project folder.
+
+For the first-time setup:
+
+``` bash
+npm install
+```
+
+Then run:
 
 ``` bash
 npm start
 ```
 
+------------------------------------------------------------------------
+
 ## 8. Run All Services Together
 
-A total of **4 services** need to be running:
+A total of **4 processes** need to be running:
 
   ---------------------------------------------------------------------------------------------------------
   Service                 Command                                                   Location
@@ -106,44 +151,82 @@ A total of **4 services** need to be running:
   Ollama                  `ollama run qwen2.5:3b`                                   Any terminal
   ---------------------------------------------------------------------------------------------------------
 
-Keep all four terminals/processes running while developing and testing
-the application.
+Keep all four processes running while developing and testing.
+
+------------------------------------------------------------------------
 
 ## Recommended Startup Order
 
-For a clean startup, use this order:
+### Terminal 1 --- Ollama
 
-1.  Start Ollama:
+``` bash
+ollama run qwen2.5:3b
+```
 
-    ``` bash
-    ollama run qwen2.5:3b
-    ```
+### Terminal 2 --- AI Service
 
-2.  Start the AI service:
+``` bash
+cd ai-services
+venv\Scripts\activate
+uvicorn app:app --reload --host 127.0.0.1 --port 8000
+```
 
-    ``` bash
-    cd ai-services
-    uvicorn app:app --reload --host 127.0.0.1 --port 8000
-    ```
+### Terminal 3 --- Node.js Backend
 
-3.  Start the Node.js backend:
+``` bash
+cd backend
+npm run dev
+```
 
-    ``` bash
-    cd backend
-    npm run dev
-    ```
+### Terminal 4 --- React Frontend
 
-4.  Start the React frontend:
+``` bash
+npm start
+```
 
-    ``` bash
-    npm start
-    ```
+------------------------------------------------------------------------
+
+## First-Time Setup Summary
+
+### AI Service
+
+``` bash
+cd ai-services
+python -m venv venv
+venv\Scripts\activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### Ollama
+
+``` bash
+ollama pull qwen2.5:3b
+```
+
+### Backend
+
+``` bash
+cd backend
+npm install
+```
+
+### Frontend
+
+``` bash
+npm install
+```
+
+After completing the first-time setup, use the **Recommended Startup
+Order** for subsequent runs.
+
+------------------------------------------------------------------------
 
 ## Troubleshooting
 
 ### Ollama command is not recognized
 
-Close and reopen the terminal after installing Ollama. Then run:
+Close and reopen the terminal after installing Ollama, then run:
 
 ``` bash
 ollama
@@ -151,47 +234,56 @@ ollama
 
 ### Model is not available
 
-Pull the model again:
-
 ``` bash
 ollama pull qwen2.5:3b
-```
-
-Then start it:
-
-``` bash
 ollama run qwen2.5:3b
 ```
 
+### Virtual environment is not activated
+
+Inside `ai-services`, run:
+
+``` bash
+venv\Scripts\activate
+```
+
+You should see `(venv)` at the beginning of the terminal prompt.
+
 ### AI service does not start
 
-Make sure you are inside the `ai-services` directory and run:
+Make sure you are inside `ai-services`, the virtual environment is
+activated, and dependencies are installed:
+
+``` bash
+venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Then:
 
 ``` bash
 uvicorn app:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Also verify that Python and Uvicorn are installed correctly.
+### Backend does not start
 
-### Backend or frontend does not start
-
-Run the following inside the corresponding Node.js project directory:
+Inside `backend`:
 
 ``` bash
 npm install
-```
-
-Then retry:
-
-``` bash
 npm run dev
 ```
 
-or:
+### React frontend does not start
+
+Inside the React/frontend folder:
 
 ``` bash
+npm install
 npm start
 ```
+
+------------------------------------------------------------------------
 
 ## Development Architecture
 
@@ -211,6 +303,6 @@ Ollama
 Qwen 2.5 3B Model
 ```
 
-The React frontend communicates with the Node.js backend, while
-AI-related requests are handled by the Python AI service, which uses
-Ollama and the `qwen2.5:3b` model.
+The React frontend communicates with the Node.js backend. AI-related
+requests are handled by the Python AI service, which communicates with
+Ollama and uses the `qwen2.5:3b` model.

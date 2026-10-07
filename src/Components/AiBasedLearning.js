@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef} from "react";
 import usePageTitle from "../hooks/usePageTitle";
 
 export default function AiBasedLearning() {
