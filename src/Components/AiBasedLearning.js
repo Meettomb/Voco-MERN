@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import usePageTitle from "../hooks/usePageTitle";
 
 export default function AiBasedLearning() {
@@ -57,7 +57,7 @@ export default function AiBasedLearning() {
       conversationHistoryRef.current = [];
 
       const greeting =
-        "Hello! Welcome to VOCO. Which language would you like to practice?";
+        "Hello! Welcome to voco. Which language would you like to practice?";
 
       setAiMessage(greeting);
 
@@ -332,14 +332,15 @@ export default function AiBasedLearning() {
         "voco-recording.webm"
       );
 
-      const transcriptionResponse =
-        await fetch(
-          "http://127.0.0.1:8000/transcribe",
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
+      const AI_SERVICE_URL = process.env.REACT_APP_AI_SERVICE_URL;
+
+      const transcriptionResponse = await fetch(
+        `${AI_SERVICE_URL}/transcribe`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
 
       const transcriptionData =
         await transcriptionResponse.json();
@@ -390,27 +391,24 @@ export default function AiBasedLearning() {
         userText
       );
 
-      const conversationResponse =
-        await fetch(
-          "http://127.0.0.1:8000/conversation",
-          {
-            method: "POST",
+      const conversationResponse = await fetch(
+        `${AI_SERVICE_URL}/conversation`,
+        {
+          method: "POST",
 
-            headers: {
-              "Content-Type": "application/json",
-            },
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-            body: JSON.stringify({
-              message: userText,
+          body: JSON.stringify({
+            message: userText,
 
-              language:
-                language || "English",
+            language: language || "English",
 
-              history:
-                conversationHistoryRef.current,
-            }),
-          }
-        );
+            history: conversationHistoryRef.current,
+          }),
+        },
+      );
 
       const conversationData =
         await conversationResponse.json();
