@@ -1,3 +1,6 @@
-fastapi 
+fastapi
 uvicorn
+faster-whisper
+python-multipart
 requests
+av==12.3.0
