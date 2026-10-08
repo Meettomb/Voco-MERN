@@ -45,7 +45,7 @@ export default function ChooseLearningLanguage() {
     const langCount = userData?.learningLanguages?.length || 0;
 
     try {
-      // Update DB only if 0 language
+      // Update DB only if no language exists
       if (langCount === 0) {
         const response = await axios.patch(
           `${REACT_APP_API_URL}/userModel/updateUserById/${id}`,
@@ -61,27 +61,42 @@ export default function ChooseLearningLanguage() {
 
         if (response.data.status !== 1) {
           setMessageType("error");
-          setMessage("Failed to set learning language: " + response.data.message);
+          setMessage(
+            "Failed to set learning language: " +
+            response.data.message
+          );
           return;
         }
 
         await refreshUser();
       }
 
+      // Existing application state
       updateActiveLanguage(selectedLanguage);
 
-      // Navigation (common for all cases)
+      // Persist language for AI conversation
+      localStorage.setItem(
+        "vocoActiveLanguage",
+        JSON.stringify(selectedLanguage)
+      );
+
+      // Navigation
       if (targetPage === "videos") {
         navigate("/videos", {
           replace: true
         });
-      }
-      else if (targetPage === "mcqs-exam") {
+      } else if (targetPage === "mcqs-exam") {
         navigate("/mcqs-exam", {
           replace: true
         });
-      }
-      else {
+      } else if (targetPage === "ai-based-learning") {
+        navigate("/ai-based-learning", {
+          replace: true,
+          state: {
+            language: selectedLanguage
+          }
+        });
+      } else {
         navigate("/learn-words", {
           replace: true
         });
@@ -89,8 +104,10 @@ export default function ChooseLearningLanguage() {
 
     } catch (err) {
       setMessageType("error");
-      setMessage("An error occurred while setting learning language.");
-      console.log(err);
+      setMessage(
+        "An error occurred while setting learning language."
+      );
+      console.error(err);
     }
   };
 

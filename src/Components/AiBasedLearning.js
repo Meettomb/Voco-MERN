@@ -1,1076 +1,819 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { transcribeAudio } from "../services/sttService";
+import { synthesizeSpeech } from "../services/ttsService";
+import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import usePageTitle from "../hooks/usePageTitle";
+import useAIConversation from "../hooks/useAIConversation";
 
 export default function AiBasedLearning() {
-    const [isListening, setIsListening] = useState(false);
-    const [isAiSpeaking, setIsAiSpeaking] = useState(false);
-    const [conversationEnded, setConversationEnded] = useState(false);
+    const location = useLocation();
+    const { t } = useTranslation();
 
     usePageTitle("AI-Based Learning");
-    
-  const [transcript, setTranscript] = useState("");
-  const [aiMessage, setAiMessage] = useState("");
-  const [isTranscribing, setIsTranscribing] = useState(false);
-  const [isThinking, setIsThinking] = useState(false);
-  const [error, setError] = useState("");
 
-  const [conversationStarted, setConversationStarted] = useState(false);
-  const [language, setLanguage] = useState("");
+    const mediaRecorderRef = useRef(null);
+    const audioChunksRef = useRef([]);
 
-  // ---------------------------------------------------------
-  // REFERENCES
-  // ---------------------------------------------------------
+    /*
+     * Get selected language from navigation.
+     *
+     * If the user refreshes the page, recover it
+     * from localStorage.
+     */
+    const [activeLanguage, setActiveLanguage] = useState(() => {
+        if (location.state?.language) {
+            return location.state.language;
+        }
 
-  const mediaRecorderRef = useRef(null);
-  const audioChunksRef = useRef([]);
-  const streamRef = useRef(null);
+        try {
+            const savedLanguage = localStorage.getItem(
+                "vocoActiveLanguage"
+            );
 
-  const audioContextRef = useRef(null);
-  const analyserRef = useRef(null);
-  const animationFrameRef = useRef(null);
+            return savedLanguage
+                ? JSON.parse(savedLanguage)
+                : null;
 
-  // Conversation history for Ollama
-  const conversationHistoryRef = useRef([]);
+        } catch (error) {
+            console.error(
+                "Failed to load active language:",
+                error
+            );
 
-  // Prevent multiple automatic listening calls
-  const isProcessingTurnRef = useRef(false);
-
-  // ---------------------------------------------------------
-  // SETTINGS
-  // ---------------------------------------------------------
-
-  const SILENCE_THRESHOLD = 0.015;
-  const SILENCE_DURATION = 1200;
-
-  // ---------------------------------------------------------
-  // START CONVERSATION
-  // ---------------------------------------------------------
-
-  const startConversation = async () => {
-    try {
-      setConversationEnded(false);
-      setConversationStarted(true);
-      setError("");
-      setTranscript("");
-      setAiMessage("");
-
-      conversationHistoryRef.current = [];
-
-      const greeting =
-        "Hello! Welcome to voco. Which language would you like to practice?";
-
-      setAiMessage(greeting);
-
-      setIsAiSpeaking(true);
-
-      await speakAI(greeting);
-
-      setIsAiSpeaking(false);
-
-      if (!conversationEnded) {
-        await startListening();
-      }
-    } catch (err) {
-      console.error("Conversation start error:", err);
-
-      setError("Could not start the conversation.");
-      setIsAiSpeaking(false);
-    }
-  };
-
-  // ---------------------------------------------------------
-  // AI VOICE
-  // Temporary browser TTS.
-  // Later we will replace this with local TTS.
-  // ---------------------------------------------------------
-
-  const speakAI = (text) => {
-    return new Promise((resolve) => {
-      if (!("speechSynthesis" in window)) {
-        console.warn("Speech synthesis is not supported.");
-        resolve();
-        return;
-      }
-
-      window.speechSynthesis.cancel();
-
-      const utterance = new SpeechSynthesisUtterance(text);
-
-      utterance.rate = 0.95;
-      utterance.pitch = 1;
-      utterance.volume = 1;
-
-      utterance.onend = () => {
-        resolve();
-      };
-
-      utterance.onerror = () => {
-        resolve();
-      };
-
-      window.speechSynthesis.speak(utterance);
+            return null;
+        }
     });
-  };
 
-  // ---------------------------------------------------------
-  // START LISTENING
-  // ---------------------------------------------------------
-
-  const startListening = async () => {
-    if (conversationEnded || isProcessingTurnRef.current) {
-      return;
-    }
-
-    try {
-      setError("");
-      setTranscript("");
-      setIsListening(true);
-
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-      });
-
-      streamRef.current = stream;
-
-      const mediaRecorder = new MediaRecorder(stream);
-
-      mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = [];
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
-
-      mediaRecorder.onstop = async () => {
-        stream.getTracks().forEach((track) => track.stop());
-
-        stopSilenceDetection();
-
-        const audioBlob = new Blob(audioChunksRef.current, {
-          type: mediaRecorder.mimeType || "audio/webm",
-        });
-
-        setIsListening(false);
-
-        if (audioBlob.size > 0) {
-          await processUserTurn(audioBlob);
-        }
-      };
-
-      mediaRecorder.start();
-
-      startSilenceDetection(stream);
-    } catch (err) {
-      console.error("Microphone error:", err);
-
-      setIsListening(false);
-
-      setError(
-        "Microphone permission is required. Please allow microphone access."
-      );
-    }
-  };
-
-  // ---------------------------------------------------------
-  // SILENCE DETECTION
-  // ---------------------------------------------------------
-
-  const startSilenceDetection = (stream) => {
-    try {
-      const AudioContext =
-        window.AudioContext || window.webkitAudioContext;
-
-      if (!AudioContext) {
-        console.warn("Web Audio API is not supported.");
-        return;
-      }
-
-      const audioContext = new AudioContext();
-
-      const analyser = audioContext.createAnalyser();
-
-      analyser.fftSize = 2048;
-
-      const microphone =
-        audioContext.createMediaStreamSource(stream);
-
-      microphone.connect(analyser);
-
-      audioContextRef.current = audioContext;
-      analyserRef.current = analyser;
-
-      const dataArray = new Uint8Array(analyser.fftSize);
-
-      let silenceStartedAt = null;
-      let hasDetectedSpeech = false;
-
-      const detect = () => {
-        if (!analyserRef.current) {
-          return;
-        }
-
-        analyser.getByteTimeDomainData(dataArray);
-
-        let sum = 0;
-
-        for (let i = 0; i < dataArray.length; i++) {
-          const normalized =
-            (dataArray[i] - 128) / 128;
-
-          sum += normalized * normalized;
-        }
-
-        const volume = Math.sqrt(
-          sum / dataArray.length
-        );
-
-        // User is speaking
-        if (volume > SILENCE_THRESHOLD) {
-          hasDetectedSpeech = true;
-          silenceStartedAt = null;
-        }
-
-        // User stopped speaking
-        if (
-          hasDetectedSpeech &&
-          volume <= SILENCE_THRESHOLD
-        ) {
-          if (!silenceStartedAt) {
-            silenceStartedAt = Date.now();
-          }
-
-          const silenceDuration =
-            Date.now() - silenceStartedAt;
-
-          if (
-            silenceDuration >= SILENCE_DURATION
-          ) {
-            stopListening();
+    /*
+     * Keep language synchronized with navigation.
+     */
+    useEffect(() => {
+        if (!location.state?.language) {
             return;
-          }
         }
 
-        animationFrameRef.current =
-          requestAnimationFrame(detect);
-      };
+        setActiveLanguage(location.state.language);
 
-      detect();
-    } catch (err) {
-      console.error(
-        "Silence detection error:",
-        err
-      );
-    }
-  };
-
-  // ---------------------------------------------------------
-  // STOP LISTENING
-  // ---------------------------------------------------------
-
-  const stopListening = () => {
-    stopSilenceDetection();
-
-    if (
-      mediaRecorderRef.current &&
-      mediaRecorderRef.current.state !==
-        "inactive"
-    ) {
-      mediaRecorderRef.current.stop();
-    }
-  };
-
-  // ---------------------------------------------------------
-  // STOP SILENCE DETECTION
-  // ---------------------------------------------------------
-
-  const stopSilenceDetection = () => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(
-        animationFrameRef.current
-      );
-
-      animationFrameRef.current = null;
-    }
-
-    if (audioContextRef.current) {
-      audioContextRef.current
-        .close()
-        .catch(() => {});
-
-      audioContextRef.current = null;
-    }
-
-    analyserRef.current = null;
-  };
-
-  // ---------------------------------------------------------
-  // PROCESS ONE COMPLETE USER TURN
-  // ---------------------------------------------------------
-
-  const processUserTurn = async (audioBlob) => {
-    if (isProcessingTurnRef.current) {
-      return;
-    }
-
-    isProcessingTurnRef.current = true;
-
-    try {
-      // ---------------------------------------------
-      // STEP 1: WHISPER
-      // ---------------------------------------------
-
-      setIsTranscribing(true);
-      setError("");
-
-      const formData = new FormData();
-
-      formData.append(
-        "file",
-        audioBlob,
-        "voco-recording.webm"
-      );
-
-      const AI_SERVICE_URL = process.env.REACT_APP_AI_SERVICE_URL;
-
-      const transcriptionResponse = await fetch(
-        `${AI_SERVICE_URL}/transcribe`,
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
-
-      const transcriptionData =
-        await transcriptionResponse.json();
-
-      if (!transcriptionResponse.ok) {
-        throw new Error(
-          JSON.stringify(transcriptionData)
+        localStorage.setItem(
+            "vocoActiveLanguage",
+            JSON.stringify(location.state.language)
         );
-      }
+    }, [location.state]);
 
-      const userText =
-        transcriptionData.text || "";
+    /*
+     * Language code sent to backend.
+     */
+    const languageCode = activeLanguage?.code || "en";
 
-      console.log(
-        "Whisper response:",
-        transcriptionData
-      );
+    const languageName =
+        languageCode === "hi"
+            ? "Hindi"
+            : "English";
 
-      setIsTranscribing(false);
+    /*
+     * AI conversation.
+     */
+    const {
+        messages,
+        loading,
+        error,
+        sendMessage,
+        clearConversation
+    } = useAIConversation(languageCode);
 
-      if (!userText.trim()) {
-        console.log(
-          "No speech detected. Listening again."
-        );
+    const [input, setInput] = useState("");
 
-        isProcessingTurnRef.current = false;
+    const [isListening, setIsListening] =
+        useState(false);
 
-        setTimeout(() => {
-          if (!conversationEnded) {
-            startListening();
-          }
-        }, 300);
+    const [isAiSpeaking, setIsAiSpeaking] =
+        useState(false);
 
-        return;
-      }
+    const [conversationEnded, setConversationEnded] =
+        useState(false);
+    const hasStartedConversationRef = useRef(false);
 
-      // Show what user said
-      setTranscript(userText);
+    /*
+     * Start the conversation automatically.
+     */
+    useEffect(() => {
+        if (!languageCode) return;
 
-      // ---------------------------------------------
-      // STEP 2: SEND TO OLLAMA
-      // ---------------------------------------------
+        if (hasStartedConversationRef.current) {
+            return;
+        }
 
-      setIsThinking(true);
+        if (messages.length > 0) {
+            return;
+        }
 
-      console.log(
-        "Sending to conversation API:",
-        userText
-      );
+        hasStartedConversationRef.current = true;
 
-      const conversationResponse = await fetch(
-        `${AI_SERVICE_URL}/conversation`,
-        {
-          method: "POST",
+        const startConversation = async () => {
+            setIsAiSpeaking(true);
 
-          headers: {
-            "Content-Type": "application/json",
-          },
+            const openingMessage =
+                languageCode === "hi"
+                    ? "नमस्ते। बातचीत शुरू करें और मुझसे हिंदी में बात करें।"
+                    : "Hello. Start a natural English conversation with me.";
 
-          body: JSON.stringify({
-            message: userText,
+            const reply = await sendMessage(openingMessage);
 
-            language: language || "English",
+            if (reply) {
+                await speakAIResponse(reply);
+            }
 
-            history: conversationHistoryRef.current,
-          }),
-        },
-      );
-
-      const conversationData =
-        await conversationResponse.json();
-
-      if (!conversationResponse.ok) {
-        throw new Error(
-          JSON.stringify(conversationData)
-        );
-      }
-
-      console.log(
-        "Ollama response:",
-        conversationData
-      );
-
-      // ---------------------------------------------
-      // STEP 3: PARSE LLM JSON
-      // ---------------------------------------------
-
-      let aiResult;
-
-      try {
-        aiResult =
-          typeof conversationData.response ===
-          "string"
-            ? JSON.parse(
-                conversationData.response
-              )
-            : conversationData.response;
-      } catch (parseError) {
-        console.error(
-          "Could not parse LLM response:",
-          parseError
-        );
-
-        // Fallback if model doesn't return JSON
-        aiResult = {
-          reply:
-            conversationData.response ||
-            "I'm sorry, could you say that again?",
-          correction_needed: false,
-          correction: "",
-          next_question: "",
+            setIsAiSpeaking(false);
         };
-      }
 
-      const aiReply =
-        aiResult.reply ||
-        "Could you tell me more?";
+        startConversation();
 
-      // ---------------------------------------------
-      // DETECT LANGUAGE
-      // ---------------------------------------------
+    }, [languageCode]);
 
-      if (!language && userText.trim()) {
-        // The first answer is assumed to be
-        // the selected practice language.
-        setLanguage(userText.trim());
-      }
+    /*
+     * Latest AI message.
+     */
+    const latestAIMessage =
+        [...messages]
+            .reverse()
+            .find(
+                (message) =>
+                    message.role === "assistant"
+            )?.content ||
+        (
+            languageCode === "hi"
+                ? "नमस्ते! चलिए बातचीत शुरू करते हैं।"
+                : "Hello! Let's start our conversation."
+        );
 
-      // ---------------------------------------------
-      // UPDATE CONVERSATION HISTORY
-      // ---------------------------------------------
+    /*
+     * Latest user message.
+     */
+    const latestUserMessage =
+        [...messages]
+            .reverse()
+            .find(
+                (message) =>
+                    message.role === "user"
+            )?.content || "";
 
-      conversationHistoryRef.current.push({
-        role: "user",
-        content: userText,
-      });
+    /*
+     * Temporary text conversation.
+     *
+     * Later microphone → Whisper will call
+     * the exact same sendMessage() function.
+     */
+    const handleSendMessage = async (event) => {
+        event?.preventDefault();
 
-      conversationHistoryRef.current.push({
-        role: "assistant",
-        content: aiReply,
-      });
-
-      console.log(
-        "Conversation history:",
-        conversationHistoryRef.current
-      );
-
-      // ---------------------------------------------
-      // DISPLAY AI RESPONSE
-      // ---------------------------------------------
-
-      setIsThinking(false);
-
-      setAiMessage(aiReply);
-
-      // ---------------------------------------------
-      // STEP 4: AI SPEAKS
-      // ---------------------------------------------
-
-      setIsAiSpeaking(true);
-
-      await speakAI(aiReply);
-
-      setIsAiSpeaking(false);
-
-      // ---------------------------------------------
-      // STEP 5: LISTEN AGAIN
-      // ---------------------------------------------
-
-      isProcessingTurnRef.current = false;
-
-      if (!conversationEnded) {
-        setTimeout(() => {
-          if (!conversationEnded) {
-            startListening();
-          }
-        }, 300);
-      }
-    } catch (err) {
-      console.error(
-        "Conversation processing error:",
-        err
-      );
-
-      setIsTranscribing(false);
-      setIsThinking(false);
-      setIsAiSpeaking(false);
-
-      setError(
-        err.message ||
-          "Could not process your response."
-      );
-
-      isProcessingTurnRef.current = false;
-
-      // Continue listening after an error
-      setTimeout(() => {
-        if (!conversationEnded) {
-          startListening();
+        if (!input.trim() || loading) {
+            return;
         }
-      }, 1000);
+
+        const message = input.trim();
+
+        setInput("");
+
+        setIsAiSpeaking(true);
+
+        await sendMessage(message);
+
+        setIsAiSpeaking(false);
+    };
+
+    /*
+     * Temporary microphone state.
+     *
+     * Real microphone implementation comes
+     * after this text conversation works.
+     */
+    const toggleListening = async () => {
+        if (loading || isAiSpeaking) return;
+
+        if (isListening) {
+            mediaRecorderRef.current?.stop();
+            return;
+        }
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true
+            });
+
+            const mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorderRef.current = mediaRecorder;
+            audioChunksRef.current = [];
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    audioChunksRef.current.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = async () => {
+                try {
+                    setIsListening(false);
+
+                    stream.getTracks().forEach((track) => track.stop());
+
+                    const audioBlob = new Blob(
+                        audioChunksRef.current,
+                        {
+                            type: mediaRecorder.mimeType || "audio/webm"
+                        }
+                    );
+
+                    if (!audioBlob.size) {
+                        return;
+                    }
+
+                    setIsAiSpeaking(true);
+
+                    const result = await transcribeAudio(
+                        audioBlob,
+                        languageCode
+                    );
+
+                    if (!result?.success) {
+                        throw new Error(
+                            result?.message || "Speech recognition failed"
+                        );
+                    }
+
+                    const transcript = result.text?.trim();
+
+                    console.log("Whisper transcript:", transcript);
+
+                    if (transcript) {
+                        const reply = await sendMessage(transcript);
+
+                        if (reply) {
+                            await speakAIResponse(reply);
+                        }
+                    }
+
+                } catch (error) {
+                    console.error("Speech-to-text error:", error);
+                } finally {
+                    setIsAiSpeaking(false);
+                }
+            };
+
+            mediaRecorder.start();
+
+            setIsListening(true);
+
+        } catch (error) {
+            console.error("Microphone error:", error);
+            setIsListening(false);
+        }
+    };
+    /*
+     * End conversation.
+     */
+    const endConversation = () => {
+        setIsListening(false);
+        setIsAiSpeaking(false);
+        setConversationEnded(true);
+    };
+
+    /*
+     * Start a new conversation.
+     */
+    const startAgain = () => {
+        clearConversation();
+
+        setConversationEnded(false);
+        setIsListening(false);
+        setIsAiSpeaking(false);
+        setInput("");
+    };
+
+    const speakAIResponse = async (text) => {
+        if (!text?.trim()) return;
+
+        try {
+            setIsAiSpeaking(true);
+
+            const audioBlob = await synthesizeSpeech(text, languageCode);
+
+            console.log("TTS blob:", {
+                type: audioBlob.type,
+                size: audioBlob.size
+            });
+
+            if (!audioBlob || audioBlob.size === 0) {
+                throw new Error("TTS returned empty audio");
+            }
+
+            if (!audioBlob.type.includes("audio")) {
+                const errorText = await audioBlob.text();
+
+                console.error("TTS returned non-audio response:", errorText);
+
+                throw new Error("TTS server returned non-audio data");
+            }
+
+            const audioUrl = URL.createObjectURL(audioBlob);
+
+            const audio = new Audio(audioUrl);
+
+            audio.onended = () => {
+                URL.revokeObjectURL(audioUrl);
+                setIsAiSpeaking(false);
+            };
+
+            audio.onerror = (error) => {
+                console.error("Audio playback error:", error);
+                URL.revokeObjectURL(audioUrl);
+                setIsAiSpeaking(false);
+            };
+
+            await audio.play();
+
+        } catch (error) {
+            console.error("TTS error:", error);
+            setIsAiSpeaking(false);
+        }
+    };
+
+    /*
+     * Conversation completed.
+     */
+    if (conversationEnded) {
+        return (
+            <div className="ai-learning-page">
+                <div className="ai-learning-page__container">
+
+                    <div className="ai-learning-page__score-card">
+
+                        <div className="ai-learning-page__score-header">
+
+                            <span className="ai-learning-page__score-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 3l2.8 5.7L21 9.6l-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9L12 3Z" />
+                                </svg>
+                            </span>
+
+                            <h1>Conversation Complete</h1>
+
+                            <p>
+                                Here is your performance from this
+                                conversation.
+                            </p>
+
+                        </div>
+
+                        <div className="ai-learning-page__overall-score">
+
+                            <div className="ai-learning-page__score-circle">
+                                <span>--</span>
+                                <small>/ 100</small>
+                            </div>
+
+                            <div className="ai-learning-page__score-content">
+
+                                <h2>Conversation Finished</h2>
+
+                                <p>
+                                    AI evaluation will be connected
+                                    after the voice conversation system
+                                    is complete.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <div className="ai-learning-page__metrics">
+
+                            <ScoreItem
+                                title="Fluency"
+                                score={0}
+                                description="Evaluation coming soon"
+                            />
+
+                            <ScoreItem
+                                title="Grammar"
+                                score={0}
+                                description="Evaluation coming soon"
+                            />
+
+                            <ScoreItem
+                                title="Accent"
+                                score={0}
+                                description="Evaluation coming soon"
+                            />
+
+                            <ScoreItem
+                                title="Vocabulary"
+                                score={0}
+                                description="Evaluation coming soon"
+                            />
+
+                            <ScoreItem
+                                title="Pronunciation"
+                                score={0}
+                                description="Evaluation coming soon"
+                            />
+
+                        </div>
+
+                        <div className="ai-learning-page__feedback">
+
+                            <div className="ai-learning-page__feedback-header">
+
+                                <span>
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M12 3a9 9 0 1 0 9 9" />
+                                        <path d="M12 7v5l3 2" />
+                                    </svg>
+                                </span>
+
+                                <h3>AI Feedback</h3>
+
+                            </div>
+
+                            <p>
+                                Detailed language feedback will be
+                                available after the evaluation system
+                                is connected.
+                            </p>
+
+                        </div>
+
+                        <div className="ai-learning-page__score-actions">
+
+                            <button
+                                className="ai-learning-page__primary-button"
+                                onClick={startAgain}
+                            >
+                                Practice Again
+                            </button>
+
+                            <button
+                                className="ai-learning-page__secondary-button"
+                                onClick={() =>
+                                    setConversationEnded(false)
+                                }
+                            >
+                                Back to Learning
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        );
     }
-  };
 
-  // ---------------------------------------------------------
-  // END CONVERSATION
-  // ---------------------------------------------------------
-
-  const endConversation = () => {
-    setConversationEnded(true);
-
-    window.speechSynthesis?.cancel();
-
-    stopSilenceDetection();
-
-    if (
-      mediaRecorderRef.current &&
-      mediaRecorderRef.current.state !==
-        "inactive"
-    ) {
-      mediaRecorderRef.current.stop();
-    }
-
-    if (streamRef.current) {
-      streamRef.current
-        .getTracks()
-        .forEach((track) => track.stop());
-
-      streamRef.current = null;
-    }
-
-    setIsListening(false);
-    setIsAiSpeaking(false);
-    setIsThinking(false);
-    setIsTranscribing(false);
-
-    isProcessingTurnRef.current = false;
-  };
-
-  // ---------------------------------------------------------
-  // START AGAIN
-  // ---------------------------------------------------------
-
-  const startAgain = () => {
-    setConversationEnded(false);
-    setConversationStarted(false);
-
-    setIsListening(false);
-    setIsAiSpeaking(false);
-    setIsThinking(false);
-    setIsTranscribing(false);
-
-    setTranscript("");
-    setAiMessage("");
-    setError("");
-    setLanguage("");
-
-    conversationHistoryRef.current = [];
-
-    setTimeout(() => {
-      startConversation();
-    }, 300);
-  };
-
-  // ---------------------------------------------------------
-  // SCORE SCREEN
-  // ---------------------------------------------------------
-
-  if (conversationEnded) {
+    /*
+     * Main conversation page.
+     */
     return (
-      <div className="ai-learning-page">
-        <div className="ai-learning-page .ai-learning-page__score-card">
+        <div className="ai-learning-page">
 
-          <div className="ai-learning-page__score-header">
+            <div className="ai-learning-page__container">
 
-            <span className="ai-learning-page__score-icon">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 3l2.8 5.7L21 9.6l-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6 9.2 8.7 12 3Z" />
-              </svg>
-            </span>
+                {/* Header */}
+                <header className="ai-learning-page__header">
 
-            <h1>Conversation Complete</h1>
+                    <div>
 
-            <p>
-              Here is your performance from
-              this conversation.
-            </p>
+                        <span className="ai-learning-page__eyebrow">
+                            AI SPEAKING PRACTICE
+                        </span>
 
-          </div>
+                        <h1>
+                            Let's have a conversation
+                        </h1>
 
-          <div className="ai-learning-page__overall-score">
+                        <p>
+                            Practice {languageName} naturally with
+                            your AI conversation partner.
+                        </p>
 
-            <div className="ai-learning-page__score-circle">
-              <span>86</span>
-              <small>/ 100</small>
+                    </div>
+
+                    <div className="ai-learning-page__session-status">
+
+                        <span className="ai-learning-page__status-dot" />
+
+                        Live Session
+
+                    </div>
+
+                </header>
+
+                {/* Conversation */}
+                <main className="ai-learning-page__conversation-card">
+
+                    {/* AI */}
+                    <div className="ai-learning-page__ai-section">
+
+                        <div
+                            className={`ai-learning-page__ai-avatar ${isAiSpeaking
+                                ? "ai-learning-page__ai-avatar--speaking"
+                                : ""
+                                }`}
+                        >
+
+                            <div className="ai-learning-page__avatar-face">
+
+                                <span className="ai-learning-page__eye" />
+
+                                <span className="ai-learning-page__eye" />
+
+                                <span className="ai-learning-page__mouth" />
+
+                            </div>
+
+                        </div>
+
+                        <div className="ai-learning-page__ai-info">
+
+                            <span className="ai-learning-page__ai-name">
+                                AI Conversation Partner
+                            </span>
+
+                            <span className="ai-learning-page__ai-status">
+
+                                {isAiSpeaking
+                                    ? "Speaking..."
+                                    : loading
+                                        ? "Thinking..."
+                                        : "Ready to listen"}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    {/* AI message */}
+                    <div className="ai-learning-page__question">
+
+                        <span className="ai-learning-page__question-label">
+                            AI says
+                        </span>
+
+                        <p>
+                            {latestAIMessage}
+                        </p>
+
+                    </div>
+
+                    {/* User message */}
+                    {latestUserMessage && (
+                        <div className="ai-learning-page__question">
+
+                            <span className="ai-learning-page__question-label">
+                                You said
+                            </span>
+
+                            <p>
+                                {latestUserMessage}
+                            </p>
+
+                        </div>
+                    )}
+
+                    {/* Error */}
+                    {error && (
+                        <div className="ai-learning-page__question">
+
+                            <span className="ai-learning-page__question-label">
+                                Error
+                            </span>
+
+                            <p>
+                                {error}
+                            </p>
+
+                        </div>
+                    )}
+
+                    {/* Voice area */}
+                    <div className="ai-learning-page__voice-area">
+
+                        {isListening && (
+                            <div className="ai-learning-page__voice-status">
+
+                                <span className="ai-learning-page__voice-wave">
+
+                                    <i />
+                                    <i />
+                                    <i />
+                                    <i />
+                                    <i />
+
+                                </span>
+
+                                <span>
+                                    Listening to you...
+                                </span>
+
+                            </div>
+                        )}
+
+                        {!isListening && (
+                            <span className="ai-learning-page__voice-hint">
+                                Press the microphone and start speaking
+                            </span>
+                        )}
+
+                        {/* Microphone */}
+                        <button
+                            className={`ai-learning-page__microphone ${isListening
+                                ? "ai-learning-page__microphone--active"
+                                : ""
+                                }`}
+                            onClick={toggleListening}
+                            aria-label="Start speaking"
+                            disabled={
+                                loading ||
+                                isAiSpeaking
+                            }
+                        >
+
+                            <svg viewBox="0 0 24 24">
+
+                                <rect
+                                    x="9"
+                                    y="2"
+                                    width="6"
+                                    height="12"
+                                    rx="3"
+                                />
+
+                                <path d="M5 11a7 7 0 0 0 14 0" />
+
+                                <path d="M12 18v4" />
+
+                                <path d="M8 22h8" />
+
+                            </svg>
+
+                        </button>
+
+                        <span className="ai-learning-page__microphone-label">
+
+                            {isListening
+                                ? "Stop speaking"
+                                : "Click to speak"}
+
+                        </span>
+
+                    </div>
+
+                    {/* Temporary text testing */}
+                    <form
+                        onSubmit={handleSendMessage}
+                        style={{
+                            display: "flex",
+                            gap: "10px",
+                            marginTop: "20px"
+                        }}
+                    >
+
+                        <input
+                            type="text"
+                            value={input}
+                            onChange={(event) =>
+                                setInput(event.target.value)
+                            }
+                            placeholder={
+                                languageCode === "hi"
+                                    ? "हिंदी में लिखें..."
+                                    : "Type your response..."
+                            }
+                            disabled={
+                                loading ||
+                                isAiSpeaking
+                            }
+                            style={{
+                                flex: 1,
+                                padding: "12px",
+                                borderRadius: "8px",
+                                border: "1px solid #ccc"
+                            }}
+                        />
+
+                        <button
+                            type="submit"
+                            disabled={
+                                loading ||
+                                isAiSpeaking ||
+                                !input.trim()
+                            }
+                        >
+                            Send
+                        </button>
+
+                    </form>
+
+                    {/* Controls */}
+                    <div className="ai-learning-page__controls">
+
+                        <div className="ai-learning-page__conversation-tip">
+
+                            <svg viewBox="0 0 24 24">
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="9"
+                                />
+
+                                <path d="M12 10v6" />
+
+                                <path d="M12 7h.01" />
+
+                            </svg>
+
+                            <span>
+                                Speak naturally. There is no need
+                                to rush.
+                            </span>
+
+                        </div>
+
+                        <button
+                            className="ai-learning-page__end-button"
+                            onClick={endConversation}
+                        >
+                            End Conversation
+                        </button>
+
+                    </div>
+
+                </main>
+
+                {/* Session info */}
+                <div className="ai-learning-page__session-info">
+
+                    <div>
+                        <span>Conversation</span>
+                        <strong>Speaking Practice</strong>
+                    </div>
+
+                    <div>
+                        <span>Language</span>
+                        <strong>{languageName}</strong>
+                    </div>
+
+                    <div>
+                        <span>Mode</span>
+                        <strong>AI Conversation</strong>
+                    </div>
+
+                </div>
+
             </div>
-
-            <div className="ai-learning-page__score-content">
-
-              <h2>Excellent Conversation</h2>
-
-              <p>
-                You communicated clearly and
-                maintained a good flow throughout
-                the conversation.
-              </p>
-
-            </div>
-
-          </div>
-
-          <div className="ai-learning-page__metrics">
-
-            <ScoreItem
-              title="Fluency"
-              score={88}
-              description="Good speaking flow"
-            />
-
-            <ScoreItem
-              title="Grammar"
-              score={82}
-              description="Minor grammatical mistakes"
-            />
-
-            <ScoreItem
-              title="Accent"
-              score={87}
-              description="Clear and understandable"
-            />
-
-            <ScoreItem
-              title="Vocabulary"
-              score={91}
-              description="Good word selection"
-            />
-
-            <ScoreItem
-              title="Pronunciation"
-              score={84}
-              description="Mostly accurate pronunciation"
-            />
-
-          </div>
-
-          <div className="ai-learning-page__feedback">
-
-            <div className="ai-learning-page__feedback-header">
-
-              <span>
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 3a9 9 0 1 0 9 9" />
-                  <path d="M12 7v5l3 2" />
-                </svg>
-              </span>
-
-              <h3>AI Feedback</h3>
-
-            </div>
-
-            <p>
-              Your overall communication was
-              strong. Try to reduce pauses and
-              focus on sentence structure to make
-              your speaking more natural.
-            </p>
-
-          </div>
-
-          <div className="ai-learning-page__score-actions">
-
-            <button
-              className="ai-learning-page__primary-button"
-              onClick={startAgain}
-            >
-              Practice Again
-            </button>
-
-            <button
-              className="ai-learning-page__secondary-button"
-              onClick={() =>
-                setConversationEnded(false)
-              }
-            >
-              Back to Learning
-            </button>
-
-          </div>
 
         </div>
-      </div>
     );
-  }
-
-  // ---------------------------------------------------------
-  // MAIN UI
-  // ---------------------------------------------------------
-
-  return (
-    <div className="ai-learning-page">
-
-      <div className="ai-learning-page__container">
-
-        <header className="ai-learning-page__header">
-
-          <div>
-
-            <span className="ai-learning-page__eyebrow">
-              AI SPEAKING PRACTICE
-            </span>
-
-            <h1>
-              Let's have a conversation
-            </h1>
-
-            <p>
-              Speak naturally and improve your
-              communication skills with your AI
-              conversation partner.
-            </p>
-
-          </div>
-
-          <div className="ai-learning-page__session-status">
-
-            <span className="ai-learning-page__status-dot"></span>
-
-            {conversationStarted
-              ? "Live Session"
-              : "Ready"}
-
-          </div>
-
-        </header>
-
-        <main className="ai-learning-page__conversation-card">
-
-          {/* AI SECTION */}
-
-          <div className="ai-learning-page__ai-section">
-
-            <div
-              className={`ai-learning-page__ai-avatar ${
-                isAiSpeaking
-                  ? "ai-learning-page__ai-avatar--speaking"
-                  : ""
-              }`}
-            >
-
-              <div className="ai-learning-page__avatar-face">
-
-                <span className="ai-learning-page__eye"></span>
-
-                <span className="ai-learning-page__eye"></span>
-
-                <span className="ai-learning-page__mouth"></span>
-
-              </div>
-
-            </div>
-
-            <div className="ai-learning-page__ai-info">
-
-              <span className="ai-learning-page__ai-name">
-                AI Conversation Partner
-              </span>
-
-              <span className="ai-learning-page__ai-status">
-
-                {isAiSpeaking
-                  ? "Speaking..."
-                  : isThinking
-                  ? "Thinking..."
-                  : isTranscribing
-                  ? "Understanding..."
-                  : isListening
-                  ? "Listening..."
-                  : "Ready"}
-
-              </span>
-
-            </div>
-
-          </div>
-
-          {/* AI MESSAGE */}
-
-          <div className="ai-learning-page__question">
-
-            <span className="ai-learning-page__question-label">
-              AI says
-            </span>
-
-            <p>
-              {aiMessage ||
-                "Press Start Conversation to begin."}
-            </p>
-
-          </div>
-
-          {/* USER TRANSCRIPT */}
-
-          {(transcript || error) && (
-
-            <div className="ai-learning-page__question">
-
-              <span className="ai-learning-page__question-label">
-                You said
-              </span>
-
-              {error ? (
-                <p>{error}</p>
-              ) : (
-                <p>{transcript}</p>
-              )}
-
-            </div>
-
-          )}
-
-          {/* VOICE AREA */}
-
-          <div className="ai-learning-page__voice-area">
-
-            {isListening && (
-
-              <div className="ai-learning-page__voice-status">
-
-                <span className="ai-learning-page__voice-wave">
-
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-                  <i></i>
-
-                </span>
-
-                <span>
-                  Listening to you...
-                </span>
-
-              </div>
-
-            )}
-
-            {isTranscribing && (
-
-              <span className="ai-learning-page__voice-hint">
-                Converting your speech to text...
-              </span>
-
-            )}
-
-            {isThinking && (
-
-              <span className="ai-learning-page__voice-hint">
-                AI is thinking...
-              </span>
-
-            )}
-
-            {!conversationStarted &&
-              !isTranscribing && (
-
-                <span className="ai-learning-page__voice-hint">
-                  Start the conversation to begin
-                </span>
-
-              )}
-
-            {!conversationStarted && (
-
-              <>
-                <button
-                  className="ai-learning-page__microphone"
-                  onClick={startConversation}
-                  aria-label="Start conversation"
-                >
-
-                  <svg viewBox="0 0 24 24">
-
-                    <rect
-                      x="9"
-                      y="2"
-                      width="6"
-                      height="12"
-                      rx="3"
-                    />
-
-                    <path d="M5 11a7 7 0 0 0 14 0" />
-
-                    <path d="M12 18v4" />
-
-                    <path d="M8 22h8" />
-
-                  </svg>
-
-                </button>
-
-                <span className="ai-learning-page__microphone-label">
-                  Start Conversation
-                </span>
-              </>
-
-            )}
-
-            {conversationStarted &&
-              isListening && (
-
-                <span className="ai-learning-page__microphone-label">
-                  Speak naturally
-                </span>
-
-              )}
-
-            {conversationStarted &&
-              !isListening &&
-              (isThinking || isTranscribing) && (
-
-                <span className="ai-learning-page__microphone-label">
-                  Processing...
-                </span>
-
-              )}
-
-          </div>
-
-          {/* CONTROLS */}
-
-          <div className="ai-learning-page__controls">
-
-            <div className="ai-learning-page__conversation-tip">
-
-              <svg viewBox="0 0 24 24">
-
-                <circle cx="12" cy="12" r="9" />
-
-                <path d="M12 10v6" />
-
-                <path d="M12 7h.01" />
-
-              </svg>
-
-              <span>
-                Speak naturally. VOCO automatically
-                detects when you finish speaking.
-              </span>
-
-            </div>
-
-            {conversationStarted && (
-
-              <button
-                className="ai-learning-page__end-button"
-                onClick={endConversation}
-              >
-                End Conversation
-              </button>
-
-            )}
-
-          </div>
-
-        </main>
-
-        <div className="ai-learning-page__session-info">
-
-          <div>
-            <span>Conversation</span>
-            <strong>Speaking Practice</strong>
-          </div>
-
-          <div>
-            <span>Mode</span>
-            <strong>Voice Only</strong>
-          </div>
-
-          <div>
-            <span>Typing</span>
-            <strong>Disabled</strong>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-  );
 }
 
-
-// ---------------------------------------------------------
-// SCORE ITEM
-// ---------------------------------------------------------
-
 function ScoreItem({
-  title,
-  score,
-  description,
+    title,
+    score,
+    description
 }) {
-  return (
-    <div className="ai-learning-page__metric">
+    return (
+        <div className="ai-learning-page__metric">
 
-      <div className="ai-learning-page__metric-top">
+            <div className="ai-learning-page__metric-top">
 
-        <div>
+                <div>
 
-          <h3>{title}</h3>
+                    <h3>{title}</h3>
 
-          <span>{description}</span>
+                    <span>{description}</span>
+
+                </div>
+
+                <strong>
+                    {score}%
+                </strong>
+
+            </div>
+
+            <div className="ai-learning-page__progress">
+
+                <span
+                    style={{
+                        width: `${score}%`
+                    }}
+                />
+
+            </div>
 
         </div>
-
-        <strong>
-          {score}%
-        </strong>
-
-      </div>
-
-      <div className="ai-learning-page__progress">
-
-        <span
-          style={{
-            width: `${score}%`,
-          }}
-        ></span>
-
-      </div>
-
-    </div>
-  );
+    );
 }
