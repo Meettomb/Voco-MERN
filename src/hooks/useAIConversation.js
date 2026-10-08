@@ -6,7 +6,7 @@ const useAIConversation = (language) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const sendMessage = async (message) => {
+  const sendMessage = async (message, options = {}) => {
     if (!message?.trim() || loading) {
       return null;
     }
@@ -49,17 +49,25 @@ const useAIConversation = (language) => {
         );
       }
 
-      const assistantMessage = {
-        role: "assistant",
-        content: response.reply
-      };
+      const reply = response.reply;
 
-      setMessages((previous) => [
-        ...previous,
-        assistantMessage
-      ]);
+      /*
+       * By default, show the AI response immediately.
+       *
+       * When waitForDisplay is true, the caller will
+       * display the AI response after TTS is ready.
+       */
+      if (!options.waitForDisplay) {
+        setMessages((previous) => [
+          ...previous,
+          {
+            role: "assistant",
+            content: reply
+          }
+        ]);
+      }
 
-      return response.reply;
+      return reply;
 
     } catch (err) {
       console.error("VOCO AI error:", err);
@@ -78,6 +86,18 @@ const useAIConversation = (language) => {
     }
   };
 
+  const addAssistantMessage = (reply) => {
+    if (!reply?.trim()) return;
+
+    setMessages((previous) => [
+      ...previous,
+      {
+        role: "assistant",
+        content: reply
+      }
+    ]);
+  };
+
   const clearConversation = () => {
     setMessages([]);
     setError("");
@@ -88,6 +108,7 @@ const useAIConversation = (language) => {
     loading,
     error,
     sendMessage,
+    addAssistantMessage,
     clearConversation
   };
 };

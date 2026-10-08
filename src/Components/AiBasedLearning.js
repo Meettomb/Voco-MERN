@@ -89,6 +89,7 @@ export default function AiBasedLearning() {
         loading,
         error,
         sendMessage,
+        addAssistantMessage,
         clearConversation
     } = useAIConversation(languageCode);
 
@@ -128,10 +129,13 @@ export default function AiBasedLearning() {
                     ? "नमस्ते। बातचीत शुरू करें और मुझसे हिंदी में बात करें।"
                     : "Hello. Start a natural English conversation with me.";
 
-            const reply = await sendMessage(openingMessage);
+            const reply = await sendMessage(openingMessage, {
+                waitForDisplay: true
+            });
 
             if (reply) {
                 await speakAIResponse(reply);
+                addAssistantMessage(reply);
             }
 
             setIsAiSpeaking(false);
@@ -380,11 +384,13 @@ export default function AiBasedLearning() {
                     // Send transcript to AI
                     // --------------------------------
 
-                    const reply =
-                        await sendMessage(transcript);
+                    const reply = await sendMessage(transcript, {
+                        waitForDisplay: true
+                    });
 
                     if (reply) {
                         await speakAIResponse(reply);
+                        addAssistantMessage(reply);
                     }
 
                 } catch (error) {
