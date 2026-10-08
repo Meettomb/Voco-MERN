@@ -2,12 +2,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
+
 import subprocess
 import tempfile
 import os
 import uuid
+import sys
+
 
 app = FastAPI()
+
 
 # CORS configuration
 app.add_middleware(
@@ -21,7 +25,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 
 VOICES = {
     "en": os.path.join(
@@ -75,7 +81,7 @@ def synthesize(request: TTSRequest):
     try:
 
         command = [
-            "python",
+            sys.executable,
             "-m",
             "piper",
             "-m",
@@ -84,11 +90,19 @@ def synthesize(request: TTSRequest):
             output_file
         ]
 
+        env = os.environ.copy()
+
+        # Force UTF-8 for Piper on Windows
+        env["PYTHONIOENCODING"] = "utf-8"
+        env["PYTHONUTF8"] = "1"
+
         subprocess.run(
             command,
             input=request.text,
             text=True,
-            check=True
+            encoding="utf-8",
+            check=True,
+            env=env
         )
 
         return FileResponse(
