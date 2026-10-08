@@ -13,8 +13,17 @@ export default function AiBasedLearning() {
 
     usePageTitle("AI-Based Learning");
 
-    const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
+
+    const mediaRecorderRef = useRef(null);
+    const audioStreamRef = useRef(null);
+    const audioContextRef = useRef(null);
+    const analyserRef = useRef(null);
+    const silenceTimerRef = useRef(null);
+    const silenceCheckRef = useRef(null);
+
+    const hasSpeechStartedRef = useRef(false);
+    const recordingStartTimeRef = useRef(null);
 
     /*
      * Get selected language from navigation.
@@ -192,20 +201,71 @@ export default function AiBasedLearning() {
     const toggleListening = async () => {
         if (loading || isAiSpeaking) return;
 
+        // Manual stop
         if (isListening) {
-            mediaRecorderRef.current?.stop();
+            if (
+                mediaRecorderRef.current &&
+                mediaRecorderRef.current.state === "recording"
+            ) {
+                mediaRecorderRef.current.stop();
+            }
+
             return;
         }
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
-                audio: true
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true,
+                    channelCount: 1
+                }
             });
 
-            const mediaRecorder = new MediaRecorder(stream);
+            audioStreamRef.current = stream;
+
+            const mediaRecorder = new MediaRecorder(stream, {
+                mimeType: "audio/webm"
+            });
 
             mediaRecorderRef.current = mediaRecorder;
             audioChunksRef.current = [];
+
+            // --------------------------------
+            // Audio analyser for silence detection
+            // --------------------------------
+
+            const audioContext = new AudioContext();
+            audioContextRef.current = audioContext;
+
+            const analyser = audioContext.createAnalyser();
+
+            analyser.fftSize = 2048;
+            analyser.smoothingTimeConstant = 0.8;
+
+            analyserRef.current = analyser;
+
+            const source =
+                audioContext.createMediaStreamSource(stream);
+
+            source.connect(analyser);
+
+            const dataArray = new Uint8Array(
+                analyser.frequencyBinCount
+            );
+
+            // Reset recording state
+            hasSpeechStartedRef.current = false;
+            recordingStartTimeRef.current = Date.now();
+
+            const SPEECH_THRESHOLD = 0.025;
+            const SILENCE_DURATION = 1000;
+            const MIN_SPEECH_DURATION = 300;
+
+            // --------------------------------
+            // Collect audio
+            // --------------------------------
 
             mediaRecorder.ondataavailable = (event) => {
                 if (event.data.size > 0) {
@@ -213,22 +273,78 @@ export default function AiBasedLearning() {
                 }
             };
 
+            // --------------------------------
+            // Recording finished
+            // --------------------------------
+
             mediaRecorder.onstop = async () => {
                 try {
                     setIsListening(false);
 
-                    stream.getTracks().forEach((track) => track.stop());
+                    // Stop microphone
+                    stream.getTracks().forEach((track) => {
+                        track.stop();
+                    });
+
+                    audioStreamRef.current = null;
+
+                    // Stop analyser
+                    if (silenceCheckRef.current) {
+                        cancelAnimationFrame(
+                            silenceCheckRef.current
+                        );
+
+                        silenceCheckRef.current = null;
+                    }
+
+                    if (silenceTimerRef.current) {
+                        clearTimeout(
+                            silenceTimerRef.current
+                        );
+
+                        silenceTimerRef.current = null;
+                    }
+
+                    if (audioContextRef.current) {
+                        await audioContextRef.current.close();
+
+                        audioContextRef.current = null;
+                    }
+
+                    mediaRecorderRef.current = null;
+
+                    // --------------------------------
+                    // Create audio blob
+                    // --------------------------------
 
                     const audioBlob = new Blob(
                         audioChunksRef.current,
                         {
-                            type: mediaRecorder.mimeType || "audio/webm"
+                            type:
+                                mediaRecorder.mimeType ||
+                                "audio/webm"
                         }
                     );
 
-                    if (!audioBlob.size) {
+                    audioChunksRef.current = [];
+
+                    console.log(
+                        "Recorded audio size:",
+                        audioBlob.size
+                    );
+
+                    // Ignore empty recordings
+                    if (audioBlob.size < 1000) {
+                        console.log(
+                            "Recording too short. Ignoring."
+                        );
+
                         return;
                     }
+
+                    // --------------------------------
+                    // Send to Whisper
+                    // --------------------------------
 
                     setIsAiSpeaking(true);
 
@@ -239,36 +355,172 @@ export default function AiBasedLearning() {
 
                     if (!result?.success) {
                         throw new Error(
-                            result?.message || "Speech recognition failed"
+                            result?.message ||
+                            "Speech recognition failed"
                         );
                     }
 
-                    const transcript = result.text?.trim();
+                    const transcript =
+                        result.text?.trim();
 
-                    console.log("Whisper transcript:", transcript);
+                    console.log(
+                        "Whisper transcript:",
+                        transcript
+                    );
 
-                    if (transcript) {
-                        const reply = await sendMessage(transcript);
+                    if (!transcript) {
+                        console.log(
+                            "No speech detected."
+                        );
 
-                        if (reply) {
-                            await speakAIResponse(reply);
-                        }
+                        return;
+                    }
+
+                    // --------------------------------
+                    // Send transcript to AI
+                    // --------------------------------
+
+                    const reply =
+                        await sendMessage(transcript);
+
+                    if (reply) {
+                        await speakAIResponse(reply);
                     }
 
                 } catch (error) {
-                    console.error("Speech-to-text error:", error);
+                    console.error(
+                        "Speech-to-text error:",
+                        error
+                    );
                 } finally {
                     setIsAiSpeaking(false);
                 }
             };
 
+            // --------------------------------
+            // Start recording
+            // --------------------------------
+
             mediaRecorder.start();
 
             setIsListening(true);
 
+            console.log("Recording started");
+
+            // --------------------------------
+            // Monitor microphone volume
+            // --------------------------------
+
+            const checkAudioLevel = () => {
+                if (
+                    !mediaRecorderRef.current ||
+                    mediaRecorderRef.current.state !==
+                    "recording"
+                ) {
+                    return;
+                }
+
+                analyser.getByteTimeDomainData(
+                    dataArray
+                );
+
+                let sum = 0;
+
+                for (
+                    let i = 0;
+                    i < dataArray.length;
+                    i++
+                ) {
+                    const normalized =
+                        (dataArray[i] - 128) / 128;
+
+                    sum += normalized * normalized;
+                }
+
+                const rms = Math.sqrt(
+                    sum / dataArray.length
+                );
+
+                // --------------------------------
+                // Speech detected
+                // --------------------------------
+
+                if (rms > SPEECH_THRESHOLD) {
+                    hasSpeechStartedRef.current = true;
+
+                    // User started speaking again,
+                    // cancel pending silence timer.
+
+                    if (silenceTimerRef.current) {
+                        clearTimeout(
+                            silenceTimerRef.current
+                        );
+
+                        silenceTimerRef.current = null;
+                    }
+                }
+
+                // --------------------------------
+                // Silence detected
+                // --------------------------------
+
+                else if (
+                    hasSpeechStartedRef.current &&
+                    !silenceTimerRef.current
+                ) {
+                    const recordingDuration =
+                        Date.now() -
+                        recordingStartTimeRef.current;
+
+                    // Don't stop during the first
+                    // few milliseconds of recording.
+
+                    if (
+                        recordingDuration >=
+                        MIN_SPEECH_DURATION
+                    ) {
+                        silenceTimerRef.current =
+                            setTimeout(() => {
+                                console.log(
+                                    "Silence detected. Stopping recording."
+                                );
+
+                                if (
+                                    mediaRecorderRef.current &&
+                                    mediaRecorderRef.current
+                                        .state ===
+                                    "recording"
+                                ) {
+                                    mediaRecorderRef.current.stop();
+                                }
+
+                                silenceTimerRef.current =
+                                    null;
+                            }, SILENCE_DURATION);
+                    }
+                }
+
+                silenceCheckRef.current =
+                    requestAnimationFrame(
+                        checkAudioLevel
+                    );
+            };
+
+            checkAudioLevel();
+
         } catch (error) {
-            console.error("Microphone error:", error);
+            console.error(
+                "Microphone error:",
+                error
+            );
+
             setIsListening(false);
+
+            if (error.name === "NotAllowedError") {
+                console.error(
+                    "Microphone permission was denied."
+                );
+            }
         }
     };
     /*

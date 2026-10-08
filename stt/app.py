@@ -5,14 +5,13 @@ import os
 
 app = FastAPI()
 
-MODEL_SIZE = "tiny"
+MODEL_SIZE = "base"
 
 model = WhisperModel(
     MODEL_SIZE,
     device="cpu",
     compute_type="int8"
 )
-
 
 @app.get("/health")
 def health():
@@ -46,8 +45,9 @@ async def transcribe(
         segments, info = model.transcribe(
             temp_path,
             language=language,
-            beam_size=1,
-            vad_filter=True
+            beam_size=5,
+            vad_filter=True,
+            condition_on_previous_text=False
         )
 
         text = " ".join(
