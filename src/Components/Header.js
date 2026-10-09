@@ -24,6 +24,13 @@ function Header({ onOpen }) {
 
   const [uiLanguage, setUiLanguage] = useState();
 
+  const [currentUrl, setCurrentUrl] = useState("");
+  useEffect(() => {
+    setCurrentUrl(window.location.pathname);
+  }, [window.location.pathname]);
+
+  const isVercelDomain = window.location.hostname.endsWith('.vercel.app');
+
   const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
 
 
@@ -155,6 +162,7 @@ function Header({ onOpen }) {
                 </li>
               )}
 
+              {!isVercelDomain && (
                 <li>
                   <Link
                     to="/choose-learning-language"
@@ -164,6 +172,7 @@ function Header({ onOpen }) {
                     {t("nav.aiBasedLearning")}
                   </Link>
                 </li>
+              )}
 
               {/* {isSingleLanguage ? (
                 <li>
@@ -405,42 +414,44 @@ function Header({ onOpen }) {
               </li>
             )}
 
-            <li>
-              <Link
-                to="ai-based-learning"
-                className={target === "ai-based-learning" ? "active-link" : ""}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+            {!isVercelDomain && (
+              <li>
+                <Link
+                  to="ai-based-learning"
+                  className={target === "ai-based-learning" ? "active-link" : ""}
                 >
-                  <path
-                    d="M9 3C7.34 3 6 4.34 6 6C4.34 6 3 7.34 3 9C3 10.1 3.6 11.06 4.5 11.58C3.6 12.1 3 13.06 3 14.17C3 15.83 4.34 17.17 6 17.17C6 18.83 7.34 20.17 9 20.17C10.1 20.17 11.06 19.57 11.58 18.67"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M15 3C16.66 3 18 4.34 18 6C19.66 6 21 7.34 21 9C21 10.1 20.4 11.06 19.5 11.58C20.4 12.1 21 13.06 21 14.17C21 15.83 19.66 17.17 18 17.17C18 18.83 16.66 20.17 15 20.17C13.9 20.17 12.94 19.57 12.42 18.67"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M12 7V17M9 10H12M12 13H15"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                  />
-                  <circle cx="12" cy="5" r="1" fill="currentColor" />
-                </svg>
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9 3C7.34 3 6 4.34 6 6C4.34 6 3 7.34 3 9C3 10.1 3.6 11.06 4.5 11.58C3.6 12.1 3 13.06 3 14.17C3 15.83 4.34 17.17 6 17.17C6 18.83 7.34 20.17 9 20.17C10.1 20.17 11.06 19.57 11.58 18.67"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M15 3C16.66 3 18 4.34 18 6C19.66 6 21 7.34 21 9C21 10.1 20.4 11.06 19.5 11.58C20.4 12.1 21 13.06 21 14.17C21 15.83 19.66 17.17 18 17.17C18 18.83 16.66 20.17 15 20.17C13.9 20.17 12.94 19.57 12.42 18.67"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M12 7V17M9 10H12M12 13H15"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                    />
+                    <circle cx="12" cy="5" r="1" fill="currentColor" />
+                  </svg>
 
-                {t("nav.aiBasedLearning")}
-              </Link>
-            </li>
+                  {t("nav.aiBasedLearning")}
+                </Link>
+              </li>
+            )}
             {/* {isSingleLanguage ? (
               <li>
                 <Link to="/mcqs-exam" state={{ target: "mcqs-exam" }} onClick={() => setMenuOpen(false)}>
