@@ -24,11 +24,6 @@ function Header({ onOpen }) {
 
   const [uiLanguage, setUiLanguage] = useState();
 
-  const [currentUrl, setCurrentUrl] = useState("");
-  useEffect(() => {
-    setCurrentUrl(window.location.pathname);
-  }, [window.location.pathname]);
-
   const isVercelDomain = window.location.hostname.endsWith('.vercel.app');
 
   const REACT_APP_API_URL = process.env.REACT_APP_API_URL;

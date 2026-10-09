@@ -1,9 +1,14 @@
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import logo from "../assets/images/Voco.png"; // adjust path if needed
 import { Link } from "react-router-dom";
 
 function Footer() {
   const { t } = useTranslation();
+
+
+  
+  const isVercelDomain = window.location.hostname.endsWith('vercel.app');
 
   return (
     <footer className="footer">
@@ -36,12 +41,14 @@ function Footer() {
                 {t("footer.links.videos")}
               </Link>
             </li>
-            <li>
-              <Link to="/ai-based-learning">
-                {t("footer.links.aiBasedLearning")}
-              </Link>
-            </li>
-          
+            {!isVercelDomain && (
+              <li>
+                <Link to="/ai-based-learning">
+                  {t("footer.links.aiBasedLearning")}
+                </Link>
+              </li>
+            )}
+
           </ul>
         </div>
 
