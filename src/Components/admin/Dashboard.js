@@ -6,7 +6,7 @@ import usePageTitle from "../../hooks/usePageTitle";
 
 export default function Dashboard() {
   usePageTitle("Dashboard");
-  
+
   const REACT_APP_API_URL = process.env.REACT_APP_API_URL
 
   const [dashboard, setDashboard] = useState(null);
@@ -112,17 +112,6 @@ export default function Dashboard() {
           </svg>
         </div>
 
-        {/* <div className="stat-card">
-          <div className="stat-left">
-            <p>Revenue</p>
-            <h3>$12,540</h3>
-          </div>
-
-          <svg viewBox="0 0 24 24" className="stat-icon">
-            <path d="M12 1 3 5v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5z" />
-          </svg>
-        </div> */}
-
       </div>
 
       {/* ================= GRID ================= */}
@@ -173,21 +162,33 @@ export default function Dashboard() {
 
         </div>
 
-        {/* Top Languages */}
-        <div className="dashboard-card">
 
+        {/* AI Services */}
+        <div className="dashboard-card">
           <div className="card-header">
-            <h2>Top Learning Languages</h2>
+            <h2>AI Services</h2>
           </div>
 
-          <ul className="data-list">
-            <li>English</li>
-            <li>Spanish</li>
-            <li>French</li>
-            <li>Hindi</li>
+          <ul className="status-list">
+            {dashboard?.system?.aiServices?.map((service) => (
+              <li key={service.name}>
+                {service.name}:
+                <span
+                  className={
+                    service.status === "Running"
+                      ? "green"
+                      : service.status === "Checking"
+                        ? ""
+                        : "red"
+                  }
+                >
+                  {service.status}
+                </span>
+              </li>
+            ))}
           </ul>
-
         </div>
+
 
       </div>
 
