@@ -5,7 +5,7 @@ import LearningLanguagesModel from "../model/LearningLanguagesModel.js";
 import UserProgressModel from "../model/UserProgressModel.js";
 import UserModel from "../model/UserModel.js";
 import { sendMail } from "../utils/mailService.js";
-import { createExamAttempt } from "./factories/ExamAttemptFactory.js";
+import { createExamAttempt } from "../services/factories/ExamAttemptFactory.js";
 
 
 /*
