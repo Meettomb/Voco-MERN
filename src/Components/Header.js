@@ -155,11 +155,15 @@ function Header({ onOpen }) {
                 </li>
               )}
 
-              <li>
-                <Link to="ai-based-learning" className={target === "ai-based-learning" ? "active-link" : ""}>
-                  {t("nav.aiBasedLearning")}
-                </Link>
-              </li>
+                <li>
+                  <Link
+                    to="/choose-learning-language"
+                    state={{ target: "ai-based-learning" }}
+                    className={target === "ai-based-learning" ? "active-link" : ""}
+                  >
+                    {t("nav.aiBasedLearning")}
+                  </Link>
+                </li>
 
               {/* {isSingleLanguage ? (
                 <li>

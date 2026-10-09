@@ -5,6 +5,7 @@ import LearningLanguagesModel from "../model/LearningLanguagesModel.js";
 import UserProgressModel from "../model/UserProgressModel.js";
 import UserModel from "../model/UserModel.js";
 import { sendMail } from "../utils/mailService.js";
+import { createExamAttempt } from "../services/factories/ExamAttemptFactory.js";
 
 
 /*
@@ -143,21 +144,12 @@ export const startExam = async (req, res) => {
         );
 
 
-        const attempt = await ExamAttempt.create({
-
+        const attempt = await createExamAttempt("chapter", {
             userId,
-
-            chapterId:
-                new mongoose.Types.ObjectId(chapterId),
-
-            examType: "chapter",
-
+            chapterId: new mongoose.Types.ObjectId(chapterId),
             mcqIds,
-
             startTime,
-
             endTime,
-
         });
 
 
@@ -343,20 +335,12 @@ export const startAndGetExamQuestions = async (req, res) => {
             /*
              * Create the attempt exactly as startExam does.
              */
-            attempt = await ExamAttempt.create({
-
+            attempt = await createExamAttempt("chapter", {
                 userId,
-
                 chapterId: chapterObjectId,
-
-                examType: "chapter",
-
                 mcqIds,
-
                 startTime,
-
                 endTime,
-
             });
         }
 
@@ -935,32 +919,13 @@ export const getFinalExamQuestions = async (req, res) => {
             /*
              * Create new attempt
              */
-            attempt =
-                await ExamAttempt.create({
-
-                    userId,
-
-                    langId:
-                        language._id,
-
-                    examType:
-                        "final",
-
-                    mcqIds:
-                        selectedMcqs.map(
-                            q => q._id
-                        ),
-
-                    answers: [],
-
-                    startTime,
-
-                    endTime,
-
-                    isCompleted:
-                        false
-
-                });
+            attempt = await createExamAttempt("final", {
+                userId,
+                langId: language._id,
+                mcqIds: selectedMcqs.map(q => q._id),
+                startTime,
+                endTime,
+            });
         }
 
 

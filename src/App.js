@@ -67,6 +67,10 @@ const ManageProfilePic = lazy(() => import("./Components/admin/profile-pic/Manag
 const AuthRoute = lazy(() => import("./Components/AuthRoute"));
 const AdminRoute = lazy(() => import("./Components/AdminRoute"));
 
+const PrivacyPolicy = lazy(() => import("./Components/PrivacyPolicy"));
+const TermsOfUse = lazy(() => import("./Components/TermsOfUse"));
+const AboutUs = lazy(() => import("./Components/AboutUs"));
+
 function App() {
   const [authView, setAuthView] = useState(null);
 
@@ -119,6 +123,7 @@ function App() {
                 <AuthRoute onAuthFail={() => setAuthView("login")}>
                   <LearnChapter />
                 </AuthRoute>} />
+
 
 
 
@@ -263,6 +268,11 @@ function App() {
                 <PhoneNumberVerify />
               </AuthRoute>
             } />
+
+            
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-use" element={<TermsOfUse />} />
+              <Route path="/about" element={<AboutUs />} />
 
             <Route path="/forgot-password/enter-email" element={<EnterEmail />} />
             <Route path="/forgot-password/otp-verify" element={<ForgotPasswordOtpVerify />} />

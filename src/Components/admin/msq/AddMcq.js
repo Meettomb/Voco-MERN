@@ -37,6 +37,7 @@ export default function AddMcq() {
       );
 
       setChapters(res.data.data);
+      
 
     };
 

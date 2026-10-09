@@ -37,17 +37,11 @@ function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/choose-learning-language"
-                state={{ target: "mcqs-exam" }}
-              >
-                {t("footer.links.mcqs")}
+              <Link to="/ai-based-learning">
+                {t("footer.links.aiBasedLearning")}
               </Link>
             </li>
-            {/* <li>
-              <Link to="/progress">
-                {t("footer.links.progress")}
-              </Link>
-            </li> */}
+          
           </ul>
         </div>
 
@@ -56,16 +50,16 @@ function Footer() {
           <h4>{t("footer.sections.company")}</h4>
           <ul>
             <li>
-              <Link to="/about">{t("footer.links.about")}</Link>
+              <Link to="/about" target="blanck">{t("footer.links.about")}</Link>
             </li>
             <li>
               <Link to="/contact">{t("footer.links.contact")}</Link>
             </li>
             <li>
-              <Link to="/privacy">{t("footer.links.privacy")}</Link>
+              <Link to="/privacy-policy" target="blanck">{t("footer.links.privacy")}</Link>
             </li>
             <li>
-              <Link to="/terms">{t("footer.links.terms")}</Link>
+              <Link to="/terms-of-use" target="blanck">{t("footer.links.terms")}</Link>
             </li>
           </ul>
         </div>

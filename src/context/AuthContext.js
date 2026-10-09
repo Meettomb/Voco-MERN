@@ -1,4 +1,4 @@
-import { createContext, use, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import getUser from "../utils/getUser";
 import i18n from "../i18n/i18";
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("activeLanguage", JSON.stringify(lang));
   };
 
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     try {
       if (!id) {
         setUserData(null);
@@ -53,9 +53,9 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, REACT_APP_API_URL]);
 
-  const fetchUiLanguage = async (langCodeParam) => {
+  const fetchUiLanguage = useCallback(async (langCodeParam) => {
     try {
       const langCode = (
         langCodeParam ||
@@ -73,18 +73,18 @@ export const AuthProvider = ({ children }) => {
       );
 
       setUiLanguage(res.data.data);
-
     } catch (err) {
       console.log("UI Language fetch error:", err);
       setUiLanguage(null);
     }
-  };
+  }, [REACT_APP_API_URL]);
+
   useEffect(() => {
     fetchUser();
-    fetchUiLanguage(); // initial load
+    fetchUiLanguage();
 
     const handleLanguageChange = (lng) => {
-      fetchUiLanguage(lng); // pass new language directly
+      fetchUiLanguage(lng);
     };
 
     i18n.on("languageChanged", handleLanguageChange);
@@ -92,8 +92,7 @@ export const AuthProvider = ({ children }) => {
     return () => {
       i18n.off("languageChanged", handleLanguageChange);
     };
-
-  }, [id]);
+  }, [id, fetchUser, fetchUiLanguage]);
 
 
 
