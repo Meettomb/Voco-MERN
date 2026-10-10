@@ -42,38 +42,55 @@ export default function LearnChapter() {
     }, [message]);
 
     /*  Fetch chapter */
-    useEffect(() => {
-        if (!userData || !chapterId) return;
+   useEffect(() => {
+    if (!userData || !chapterId) {
+        return;
+    }
 
-        const getChapterLanguage = async () => {
-            try {
-                const res = await axios.get(
-                    `${REACT_APP_API_URL}/LearningWordsModel/getLearningWords/${chapterId}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${localStorage.getItem("token")}`,
-                        },
-                    }
-                );
+    const controller = new AbortController();
 
-                if (res.data.status === 1) {
-                    setChapterData(res.data.data); //  FIXED
-                } else {
-                    setChapterData(null);
-                    setMessage("Chapter not found");
-                    setMessageType("error");
+    const getChapterLanguage = async () => {
+        setLoading(true);
+        setChapterData(null);
+
+        try {
+            const res = await axios.get(
+                `${REACT_APP_API_URL}/LearningWordsModel/getLearningWords/${chapterId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    },
+                    signal: controller.signal
                 }
-            } catch (err) {
-                console.error(err);
+            );
+
+            if (res.data.status === 1) {
+                setChapterData(res.data.data);
+            } else {
+                setChapterData(null);
+                setMessage("Chapter not found");
+                setMessageType("error");
+            }
+
+        } catch (error) {
+            if (error.code !== "ERR_CANCELED") {
+                console.error("Error fetching chapter:", error);
+                setChapterData(null);
                 setMessage("Error fetching chapter");
                 setMessageType("error");
-            } finally {
-                setLoading(false); // correct place
             }
-        };
+        } finally {
+            if (!controller.signal.aborted) {
+                setLoading(false);
+            }
+        }
+    };
 
-        getChapterLanguage();
-    }, [userData, chapterId]);
+    getChapterLanguage();
+
+    return () => controller.abort();
+
+}, [userData, chapterId, REACT_APP_API_URL]);
 
 
     useEffect(() => {

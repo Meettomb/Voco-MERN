@@ -4,7 +4,8 @@ import { addLearningWord,
     getLearningWords, 
     updateLearningWordById, 
     deleteLearningWordsByChapterId,
-    getLearningWordById
+    getLearningWordById,
+    getChaptersByLanguage
  } from "../controller/LearningWordsController.js";
 import { imageUpload } from "../middleware/imageUpload.js";
 import fs from "fs";
@@ -93,4 +94,9 @@ LearningWordsRoutes.delete(
   deleteLearningWordsByChapterId
 );
 
+LearningWordsRoutes.get(
+    "/getChaptersByLanguage/:languageId",
+    authMiddleware,
+    getChaptersByLanguage
+);
 export default LearningWordsRoutes;

@@ -33,84 +33,73 @@ function LearnWords() {
    *
    * max(Progress API time, Chapters API time)
    */
-  useEffect(() => {
-
+useEffect(() => {
     if (!activeLanguage?._id) {
-      return;
+        setChapters([]);
+        setCompletedChapters([]);
+        setIsCourseCompleted(false);
+        return;
     }
 
+    const controller = new AbortController();
+
     const fetchLearnWordsData = async () => {
+        try {
+            const languageId = activeLanguage._id;
 
-      try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                signal: controller.signal
+            };
 
-        const languageId = activeLanguage._id;
+            const [progressResponse, chaptersResponse] =
+                await Promise.all([
+                    axios.get(
+                        `${REACT_APP_API_URL}/UserProgressModel/user-progress/${languageId}`,
+                        config
+                    ),
 
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
+                    axios.get(
+                        `${REACT_APP_API_URL}/LearningWordsModel/getChaptersByLanguage/${activeLanguage._id}`,
+                        config
+                    )
+                ]);
 
-        /*
-         * Fetch progress and language-specific chapters in parallel.
-         */
-        const [progressResponse, chaptersResponse] =
-          await Promise.all([
-            axios.get(
-              `${REACT_APP_API_URL}/UserProgressModel/user-progress/${languageId}`,
-              config
-            ),
+            if (progressResponse.data.status === 1) {
+                const progressData = progressResponse.data.data;
 
-            /*
-             * The backend should filter by languageId.
-             * This prevents downloading learning words belonging
-             * to other languages.
-             */
-            axios.get(
-              `${REACT_APP_API_URL}/LearningWordsModel/getLearningWords?languageId=${languageId}`,
-              config
-            ),
-          ]);
+                setCompletedChapters(
+                    progressData.completedChapters || []
+                );
 
+                setIsCourseCompleted(
+                    progressData.isCourseCompleted || false
+                );
+            }
 
-        /*
-         * Process progress response.
-         */
-        if (progressResponse.data.status === 1) {
+            if (chaptersResponse.data.status === 1) {
+                setChapters(chaptersResponse.data.data || []);
+            } else {
+                setChapters([]);
+            }
 
-          const progressData = progressResponse.data.data;
-
-          setCompletedChapters(
-            progressData.completedChapters || []
-          );
-
-          setIsCourseCompleted(
-            progressData.isCourseCompleted || false
-          );
+        } catch (error) {
+            if (error.code !== "ERR_CANCELED") {
+                console.error(
+                    "Failed to load Learn Words data:",
+                    error
+                );
+            }
         }
-
-
-        /*
-         * The backend already returns only the active language.
-         * Therefore, no large client-side filter is required.
-         */
-        setChapters(
-          chaptersResponse.data.data || []
-        );
-
-      } catch (err) {
-
-        console.error(
-          "Failed to load Learn Words data:",
-          err
-        );
-      }
-
     };
 
     fetchLearnWordsData();
 
-  }, [activeLanguage?._id, REACT_APP_API_URL, token]);
+    return () => controller.abort();
+
+}, [activeLanguage?._id, REACT_APP_API_URL, token]);
 
 
   /*
