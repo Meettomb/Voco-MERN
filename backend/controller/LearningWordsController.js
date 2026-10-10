@@ -814,38 +814,92 @@ export const deleteLearningWordsByChapterId = async (req, res) => {
  * followed by populate calls. This is intentionally preserved
  * so the Strategy Pattern does not affect retrieval performance.
  */
+
 export const getLearningWordById = async (req, res) => {
-
     try {
-
         const { id } = req.params;
 
-
-        const word = await LearningWord.findById(id)
-            .populate("learningWordsLangauge")
-            .populate("chapterId");
-
-
-        if (!word) {
-
-            return res.status(404).json({
+        if (!id) {
+            return res.status(400).json({
                 status: 0,
-                message: "LearningWord not found"
+                message: "Chapter ID is required"
             });
         }
 
+        const chapter = await LearningWord.findById(id)
+            .lean()
+            .maxTimeMS(5000);
+
+        if (!chapter) {
+            return res.status(404).json({
+                status: 0,
+                message: "Chapter content not found"
+            });
+        }
 
         return res.status(200).json({
             status: 1,
-            data: word
+            message: "Chapter content fetched successfully",
+            data: chapter
         });
 
+    } catch (error) {
+        console.error("Error fetching chapter content:", {
+            id: req.params.id,
+            name: error.name,
+            message: error.message,
+            stack: error.stack
+        });
 
-    } catch (err) {
+        if (error.name === "CastError") {
+            return res.status(400).json({
+                status: 0,
+                message: "Invalid learning-word document ID"
+            });
+        }
 
-        return res.status(400).json({
+        return res.status(500).json({
             status: 0,
-            message: err.message
+            message: "Failed to fetch chapter content"
+        });
+    }
+};
+
+export const getChaptersByLanguage = async (req, res) => {
+    try {
+        const { languageId } = req.params;
+
+        if (!languageId) {
+            return res.status(400).json({
+                status: 0,
+                message: "Language ID is required"
+            });
+        }
+
+        const chapters = await LearningWord.find({
+            learningWordsLangauge: languageId
+        })
+            .select("_id chapterId")
+            .populate({
+                path: "chapterId",
+                select: "translations"
+            })
+            .sort({ _id: 1 })
+            .lean()
+            .maxTimeMS(5000);
+
+        return res.status(200).json({
+            status: 1,
+            message: "Chapters fetched successfully",
+            data: chapters
+        });
+
+    } catch (error) {
+        console.error("Error fetching chapters:", error);
+
+        return res.status(500).json({
+            status: 0,
+            message: "Failed to fetch chapters"
         });
     }
 };

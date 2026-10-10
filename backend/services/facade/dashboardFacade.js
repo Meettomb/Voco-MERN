@@ -136,7 +136,7 @@ const checkTTSStatus = async () => {
 
     return response.status === 200 ? "Running" : "Unavailable";
   } catch (error) {
-    console.error("TTS health check failed:", error.message);
+    // console.error("TTS health check failed:", error.message);
     return "Unavailable";
   }
 };
