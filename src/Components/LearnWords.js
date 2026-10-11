@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import apiCache from "../services/ApiCache";
 import { useTranslation } from "react-i18next";
 import usePageTitle from "../hooks/usePageTitle";
 import { useAuth } from "../context/AuthContext";
@@ -34,7 +35,9 @@ function LearnWords() {
    * max(Progress API time, Chapters API time)
    */
 useEffect(() => {
-    if (!activeLanguage?._id) {
+    const languageId = activeLanguage?._id;
+
+    if (!languageId) {
         setChapters([]);
         setCompletedChapters([]);
         setIsCourseCompleted(false);
@@ -42,18 +45,34 @@ useEffect(() => {
     }
 
     const controller = new AbortController();
+    let isActive = true;
+
+    const cacheKey = `learn-words:${languageId}`;
 
     const fetchLearnWordsData = async () => {
-        try {
-            const languageId = activeLanguage._id;
+        /*
+         * 1. Check cache before making API requests.
+         */
+        const cachedData = apiCache.get(cacheKey);
 
+        if (cachedData) {
+            setChapters(cachedData.chapters);
+            setCompletedChapters(cachedData.completedChapters);
+            setIsCourseCompleted(cachedData.isCourseCompleted);
+            return;
+        }
+
+        try {
             const config = {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
-                signal: controller.signal
+                signal: controller.signal,
             };
 
+            /*
+             * 2. Fetch independent API responses concurrently.
+             */
             const [progressResponse, chaptersResponse] =
                 await Promise.all([
                     axios.get(
@@ -62,31 +81,61 @@ useEffect(() => {
                     ),
 
                     axios.get(
-                        `${REACT_APP_API_URL}/LearningWordsModel/getChaptersByLanguage/${activeLanguage._id}`,
+                        `${REACT_APP_API_URL}/LearningWordsModel/getChaptersByLanguage/${languageId}`,
                         config
-                    )
+                    ),
                 ]);
 
-            if (progressResponse.data.status === 1) {
-                const progressData = progressResponse.data.data;
+            if (!isActive) return;
 
-                setCompletedChapters(
-                    progressData.completedChapters || []
-                );
-
-                setIsCourseCompleted(
-                    progressData.isCourseCompleted || false
+            /*
+             * 3. Validate API responses.
+             */
+            if (
+                progressResponse.data?.status !== 1 ||
+                chaptersResponse.data?.status !== 1
+            ) {
+                throw new Error(
+                    "Failed to retrieve chapter or progress data."
                 );
             }
 
-            if (chaptersResponse.data.status === 1) {
-                setChapters(chaptersResponse.data.data || []);
-            } else {
-                setChapters([]);
-            }
+            const progressData = progressResponse.data.data;
+            const chaptersData = chaptersResponse.data.data || [];
+
+            /*
+             * 4. Combine responses into one cache entry.
+             */
+            const data = {
+                chapters: chaptersData,
+                completedChapters:
+                    progressData?.completedChapters || [],
+                isCourseCompleted:
+                    progressData?.isCourseCompleted || false,
+            };
+
+            /*
+             * 5. Cache successful responses for five minutes.
+             */
+            apiCache.set(
+                cacheKey,
+                data,
+                5 * 60 * 1000
+            );
+
+            /*
+             * 6. Update the UI.
+             */
+            setChapters(data.chapters);
+            setCompletedChapters(data.completedChapters);
+            setIsCourseCompleted(data.isCourseCompleted);
 
         } catch (error) {
-            if (error.code !== "ERR_CANCELED") {
+            if (
+                error.code !== "ERR_CANCELED" &&
+                error.name !== "CanceledError" &&
+                isActive
+            ) {
                 console.error(
                     "Failed to load Learn Words data:",
                     error
@@ -97,7 +146,10 @@ useEffect(() => {
 
     fetchLearnWordsData();
 
-    return () => controller.abort();
+    return () => {
+        isActive = false;
+        controller.abort();
+    };
 
 }, [activeLanguage?._id, REACT_APP_API_URL, token]);
 

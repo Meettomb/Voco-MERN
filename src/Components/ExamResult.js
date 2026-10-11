@@ -1,12 +1,15 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import apiCache from "../services/ApiCache";
+import { useAuth } from "../context/AuthContext";
 
 export default function ResultPage() {
     const { state } = useLocation();
     const navigate = useNavigate();
     const { t } = useTranslation();
     const isFinal = state?.examType === "final";
+    const { activeLanguage } = useAuth();
 
     return (
         <div className="resultPage_container">
@@ -50,7 +53,19 @@ export default function ResultPage() {
 
                     {/* Actions */}
                     <div className="resultActions">
-                        <button className="btnPrimary" onClick={() => navigate("/")} name="home">
+                        <button
+                            className="btnPrimary"
+                            name="home"
+                            onClick={() => {
+                                if (activeLanguage?._id) {
+                                    apiCache.invalidate(
+                                        `learn-words:${activeLanguage._id}`
+                                    );
+                                }
+
+                                navigate("/");
+                            }}
+                        >
                             {t(isFinal ? "FinalExamResult.home" : "ChapterExamResult.home")}
                         </button>
 
