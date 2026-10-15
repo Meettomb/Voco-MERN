@@ -52,8 +52,8 @@ export const saveConversationMessage = async (req, res) => {
     }
 
     if (!["user", "assistant"].includes(role) ||
-        typeof content !== "string" ||
-        !content.trim()) {
+      typeof content !== "string" ||
+      !content.trim()) {
       return res.status(400).json({
         success: false,
         message: "A valid role and message content are required",
@@ -269,3 +269,129 @@ export const getConversationReport = async (req, res) => {
     });
   }
 };
+
+
+
+
+export const getConversationList = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    if (!mongoose.isValidObjectId(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID",
+      });
+    }
+
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = 5;
+    const skip = (page - 1) * limit;
+
+    const match = {
+      userId: new mongoose.Types.ObjectId(userId),
+    };
+
+    const [result] = await ConversationModel.aggregate([
+      { $match: match },
+      {
+        $facet: {
+          conversations: [
+            {
+              $sort: {
+                startedAt: -1,
+                createdAt: -1,
+                _id: -1,
+              },
+            },
+            { $skip: skip },
+            { $limit: limit },
+            {
+              $project: {
+                _id: 1,
+                language: 1,
+                status: 1,
+                startedAt: 1,
+                endedAt: 1,
+                createdAt: 1,
+                messageCount: {
+                  $size: { $ifNull: ["$messages", []] },
+                },
+                "performance.overallScore": 1,
+              },
+            },
+          ],
+          totalCount: [{ $count: "total" }],
+        },
+      },
+    ]);
+
+    const total = result?.totalCount?.[0]?.total || 0;
+
+    return res.status(200).json({
+      success: true,
+      data: result?.conversations || [],
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasNextPage: page * limit < total,
+        hasPreviousPage: page > 1,
+      },
+    });
+  } catch (error) {
+    console.error("Get conversation list error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to retrieve conversation list",
+    });
+  }
+};
+
+export const deleteConversation = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { conversationId } = req.params;
+
+    if (!mongoose.isValidObjectId(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID",
+      });
+    }
+
+    if (!mongoose.isValidObjectId(conversationId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid conversation ID",
+      });
+    }
+
+    const deletedConversation = await ConversationModel.findOneAndDelete({
+      _id: conversationId,
+      userId: new mongoose.Types.ObjectId(userId),
+    });
+
+    if (!deletedConversation) {
+      return res.status(404).json({
+        success: false,
+        message: "Conversation not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Conversation deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete conversation error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to delete conversation",
+    });
+  }
+};
+

@@ -82,3 +82,25 @@ export const getConversationReport = async (conversationId) => {
 
   return response.data;
 };
+
+
+
+
+export const getConversationList = async (page = 1) => {
+  const response = await axios.get(
+    `${API_URL}/conversations?page=${page}`,
+    { headers: getAuthHeaders() }
+  );
+
+  return response.data;
+};
+
+export const deleteConversation = async (conversationId) => {
+  const response = await axios.delete(
+    `${API_URL}/conversations/${conversationId}`,
+    { headers: getAuthHeaders() }
+  );
+
+  return response.data;
+};
+

@@ -7,11 +7,15 @@ import {
   saveConversationMessage,
   endConversation,
   getConversationReport,
+  getConversationList,
+  deleteConversation,
 } from "../controller/conversationController.js";
 
 const router = express.Router();
 
 router.post("/", authMiddleware, createConversation);
+router.get("/", authMiddleware, getConversationList);
+router.delete("/:conversationId", authMiddleware, deleteConversation);
 
 router.post(
   "/:conversationId/messages",
