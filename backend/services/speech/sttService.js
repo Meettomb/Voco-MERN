@@ -1,7 +1,7 @@
 import axios from "axios";
 import FormData from "form-data";
 
-const STT_URL = "http://127.0.0.1:8001";
+const STT_URL = process.env.STT_URL;
 
 export const transcribeAudio = async (
   audioBuffer,

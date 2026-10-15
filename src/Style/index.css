@@ -9041,7 +9041,16 @@ svg {
   }
 }
 
-
+.ai-learning-page__send-button{
+  padding: 10px 16px;
+  border: none;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
 
 /* ========================================================================================== */
 /* ========================================================================================== */

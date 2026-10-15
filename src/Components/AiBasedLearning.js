@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 
 import usePageTitle from "../hooks/usePageTitle";
 import useAIConversation from "../hooks/useAIConversation";
+import { getRandomOpeningQuestion } from "../utils/aiGreeting";
 
 export default function AiBasedLearning() {
     const location = useLocation();
@@ -124,26 +125,33 @@ export default function AiBasedLearning() {
         hasStartedConversationRef.current = true;
 
         const startConversation = async () => {
+            const startTime = performance.now();
+
             try {
+                console.log("[AI] Startup started");
+
                 setIsAiSpeaking(true);
 
-                // The AI initiates the conversation.
-                // Do not send an artificial user message.
                 const greeting = getRandomOpeningQuestion(
                     uiLanguage,
                     languageCode
                 );
-                // Display the greeting as an assistant message.
+
                 addAssistantMessage(greeting);
 
-                // Speak using the selected learning language.
+                console.log(
+                    `[AI] Greeting displayed: ${(performance.now() - startTime).toFixed(0)
+                    } ms`
+                );
+
                 await speakAIResponse(greeting);
 
-            } catch (error) {
-                console.error(
-                    "Failed to start AI conversation:",
-                    error
+                console.log(
+                    `[AI] Greeting playback finished: ${(performance.now() - startTime).toFixed(0)
+                    } ms`
                 );
+            } catch (error) {
+                console.error("Failed to start AI conversation:", error);
             } finally {
                 setIsAiSpeaking(false);
             }
@@ -586,12 +594,19 @@ export default function AiBasedLearning() {
     ) => {
         if (!text?.trim()) return;
 
+        const startTime = performance.now();
+
         try {
             setIsAiSpeaking(true);
 
             const audioBlob = await synthesizeSpeech(
                 text,
                 speechLanguage
+            );
+
+            console.log(
+                `[TTS] Audio generated in ${(performance.now() - startTime).toFixed(0)
+                } ms`
             );
 
             if (!audioBlob || audioBlob.size === 0) {
@@ -606,10 +621,8 @@ export default function AiBasedLearning() {
 
                 await new Promise((resolve, reject) => {
                     audio.onended = resolve;
-
-                    audio.onerror = () => {
+                    audio.onerror = () =>
                         reject(new Error("Audio playback failed"));
-                    };
                 });
             } finally {
                 URL.revokeObjectURL(audioUrl);
@@ -620,65 +633,6 @@ export default function AiBasedLearning() {
     };
 
 
-    const getRandomOpeningQuestion = (uiLang, learningLang) => {
-        const questions = {
-            en: [
-                "Hi there! 😊 What do you usually enjoy doing in your free time?",
-                "Hello! If you could travel anywhere in the world, where would you go?",
-                "Hey! What was the most interesting thing that happened to you recently?",
-                "Hi! Are you a morning person or a night owl? Why?",
-                "Hello! What's your favorite food, and how often do you eat it?",
-                "Hey there! What kind of movies or TV shows do you enjoy watching?",
-                "Hi! If you could learn any new skill, what would you choose?",
-                "Hello! What does your perfect weekend look like?",
-                "Hey! Do you prefer travelling alone or with friends? Why?",
-                "Hi there! What's something new you'd like to try this year?",
-                "Hello! What kind of music do you enjoy listening to?",
-                "Hey! If you could meet any famous person, who would it be?",
-                "Hi! What's your favorite childhood memory?",
-                "Hello! Do you prefer living in a busy city or a peaceful village?",
-                "Hey there! What is one thing that always makes you happy?"
-            ],
-
-            hi: [
-                "नमस्ते! आपको अपने खाली समय में क्या करना पसंद है?",
-                "नमस्ते! अगर आप दुनिया में कहीं भी घूमने जा सकते, तो कहाँ जाते?",
-                "हैलो! हाल ही में आपके साथ सबसे दिलचस्प क्या हुआ?",
-                "नमस्ते! आपको सुबह जल्दी उठना पसंद है या देर रात तक जागना?",
-                "हैलो! आपका पसंदीदा खाना कौन-सा है और क्यों?",
-                "नमस्ते! आपको किस तरह की फिल्में देखना पसंद है?",
-                "हैलो! अगर आप कोई नया कौशल सीख सकते, तो क्या सीखते?",
-                "नमस्ते! आपके लिए एक शानदार सप्ताहांत कैसा होगा?",
-                "हैलो! आपको अकेले घूमना पसंद है या दोस्तों के साथ?",
-                "नमस्ते! इस साल आप कौन-सी नई चीज़ आज़माना चाहेंगे?",
-                "हैलो! आपको किस तरह का संगीत सुनना पसंद है?",
-                "नमस्ते! अगर आप किसी प्रसिद्ध व्यक्ति से मिल सकते, तो किससे मिलते?",
-                "हैलो! आपके बचपन की सबसे अच्छी याद क्या है?",
-                "नमस्ते! आपको बड़े शहर में रहना पसंद है या शांत गाँव में?",
-                "हैलो! ऐसी कौन-सी चीज़ है जो आपको हमेशा खुश कर देती है?"
-            ]
-        };
-
-        const languageQuestions = questions[learningLang] || questions.en;
-
-        const randomIndex = Math.floor(
-            Math.random() * languageQuestions.length
-        );
-
-        const question = languageQuestions[randomIndex];
-
-        if (uiLang === "hi" && learningLang === "en") {
-            return `नमस्ते! चलिए, अंग्रेज़ी में बातचीत का अभ्यास करते हैं। ${question}`;
-        }
-
-        if (uiLang === "en" && learningLang === "hi") {
-            return `Hello! Let's practise speaking Hindi together. ${question}`;
-        }
-
-        return question;
-    };
-
-    
     /*
      * Conversation completed.
      */
@@ -1043,6 +997,7 @@ export default function AiBasedLearning() {
                             }}
                         />
 
+
                         <button
                             type="submit"
                             disabled={
@@ -1050,9 +1005,26 @@ export default function AiBasedLearning() {
                                 isAiSpeaking ||
                                 !input.trim()
                             }
+                            aria-label="Send message"
+                            title="Send message"
+                            className="ai-learning-page__send-button"
                         >
-                            Send
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M22 2 11 13" />
+                                <path d="m22 2-7 20-4-9-9-4Z" />
+                            </svg>
                         </button>
+
 
                     </form>
 
