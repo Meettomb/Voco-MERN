@@ -17,17 +17,26 @@ export const transcribeAudio = async (
 
   formData.append("language", language);
 
-  const response = await axios.post(
-    `${STT_URL}/transcribe`,
-    formData,
-    {
-      headers: {
-        ...formData.getHeaders()
-      },
-      maxBodyLength: Infinity,
-      maxContentLength: Infinity
-    }
-  );
+  try {
+    const response = await axios.post(
+      `${STT_URL}/transcribe`,
+      formData,
+      {
+        headers: {
+          ...formData.getHeaders()
+        },
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity
+      }
+    );
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    console.error("STT upstream URL:", `${STT_URL}/transcribe`);
+    console.error("STT upstream status:", error.response?.status);
+    console.error("STT upstream response:", error.response?.data);
+    console.error("STT upstream message:", error.message);
+
+    throw error;
+  }
 };

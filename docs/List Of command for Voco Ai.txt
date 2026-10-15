@@ -1,0 +1,43 @@
+set OLLAMA_IGPU_ENABLE=1
+ollama serve
+
+to get tcp ex.. = 127.0.0.1:11434
+
+
+
+
+For STT
+
+cd stt
+python -m venv venv
+
+venv\Scripts\activate
+
+pip install -r requirements.txt
+
+uvicorn app:app --host 127.0.0.1 --port 8001
+
+To Test the STT service = http://127.0.0.1:8001/health
+
+
+
+For TTS
+
+cd tts
+python -m venv venv
+venv\Scripts\activate
+
+python -m pip install --upgrade pip
+pip install piper-tts
+
+download the English voice files into the Piper(TTS) directory = python -m piper.download_voices en_US-lessac-medium
+Test Piper : echo Hello! Welcome to VOCO. Let's practice English together. | python -m piper -m en_US-lessac-medium.onnx -f test.wav
+
+download the Hindi voice files into the Piper(TTS) directory = python -m piper.download_voices hi_IN-pratham-medium
+Test Piper : python -m piper -m hi_IN-pratham-medium -f hindi_test.wav -- "नमस्ते! आपका स्वागत है। आज हम हिंदी में बातचीत करेंगे।"
+
+venv\Script\Activate
+python -m pip install fastapi uvicorn
+uvicorn app:app --host 127.0.0.1 --port 8002
+to Check Health: http://127.0.0.1:8002/health
+
