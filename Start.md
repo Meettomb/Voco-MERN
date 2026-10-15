@@ -73,6 +73,7 @@ VOCO uses Ollama to run Qwen3 locally.
 Open a terminal and run:
 
 ```bash
+set OLLAMA_IGPU_ENABLE=1
 ollama serve
 ```
 
