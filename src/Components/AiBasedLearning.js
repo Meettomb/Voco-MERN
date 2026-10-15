@@ -408,14 +408,19 @@ export default function AiBasedLearning() {
                     // Send transcript to AI
                     // --------------------------------
 
+
                     const reply = await sendMessage(transcript, {
                         waitForDisplay: true
                     });
 
                     if (reply) {
-                        await speakAIResponse(reply);
+                        // Display the AI response immediately.
                         addAssistantMessage(reply);
+
+                        // Then play the AI's audio response.
+                        await speakAIResponse(reply);
                     }
+
 
                 } catch (error) {
                     console.error("Speech-to-text error:", error);
@@ -672,6 +677,8 @@ export default function AiBasedLearning() {
 
         return question;
     };
+
+    
     /*
      * Conversation completed.
      */
