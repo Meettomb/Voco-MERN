@@ -214,3 +214,157 @@ export const chatWithOllama = async ({
 
     return data.message?.content || "";
 };
+
+
+export const analyzeConversationWithOllama = async ({
+    language,
+    messages,
+}) => {
+    const languageCode =
+        typeof language === "object"
+            ? language?.code
+            : language;
+
+    const languageName =
+        languageCode === "hi" ? "Hindi" : "English";
+
+    const transcript = messages
+        .map((message) => {
+            const speaker =
+                message.role === "user" ? "Learner" : "VOCO";
+
+            return `${speaker}: ${message.content}`;
+        })
+        .join("\n");
+
+    const prompt = `
+Evaluate the learner's language skills based on this conversation.
+The learner is practicing ${languageName}.
+Evaluate only the learner's messages.
+
+Return valid JSON with exactly these fields:
+{
+  "overallScore": 0,
+  "grammarScore": 0,
+  "vocabularyScore": 0,
+  "fluencyScore": 0,
+  "conversationQualityScore": 0,
+  "strengths": [],
+  "improvements": [],
+  "practiceWords": [],
+  "feedback": ""
+}
+
+Rules:
+- Scores must be integers from 0 to 100.
+- Assess grammar, vocabulary, written-response coherence, and conversation quality.
+- Do not claim to measure pronunciation or actual speaking speed.
+- Include 2 to 4 specific strengths.
+- Include 2 to 4 actionable improvements.
+- Include up to 5 useful practice words or phrases.
+- Write encouraging feedback in ${languageName}.
+- Do not invent errors or evidence.
+- If there is insufficient conversation, mention this limitation in feedback.
+- Return JSON only, without Markdown.
+
+Conversation:
+${transcript}
+`;
+
+    const response = await fetch(`${OLLAMA_URL}/api/chat`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            model: MODEL,
+            messages: [
+                {
+                    role: "system",
+                    content:
+                        "You are a language evaluator. Return only valid JSON.",
+                },
+                {
+                    role: "user",
+                    content: prompt,
+                },
+            ],
+            stream: false,
+            think: false,
+            format: "json",
+            options: {
+                temperature: 0.1,
+                num_ctx: 4096,
+            },
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Ollama analysis error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const content = data.message?.content;
+
+    if (!content) {
+        throw new Error("Ollama returned an empty report");
+    }
+
+    let report;
+
+    try {
+        report = JSON.parse(content);
+    } catch {
+        throw new Error("Ollama returned invalid report JSON");
+    }
+
+    const scoreFields = [
+        "overallScore",
+        "grammarScore",
+        "vocabularyScore",
+        "fluencyScore",
+        "conversationQualityScore",
+    ];
+
+    for (const field of scoreFields) {
+        if (
+            !Number.isInteger(report[field]) ||
+            report[field] < 0 ||
+            report[field] > 100
+        ) {
+            throw new Error(`Invalid report score: ${field}`);
+        }
+    }
+
+    for (const field of [
+        "strengths",
+        "improvements",
+        "practiceWords",
+    ]) {
+        if (
+            !Array.isArray(report[field]) ||
+            !report[field].every(
+                (item) => typeof item === "string"
+            )
+        ) {
+            throw new Error(`Invalid report field: ${field}`);
+        }
+    }
+
+    if (typeof report.feedback !== "string") {
+        throw new Error("Invalid report feedback");
+    }
+
+    return {
+        overallScore: report.overallScore,
+        grammarScore: report.grammarScore,
+        vocabularyScore: report.vocabularyScore,
+        fluencyScore: report.fluencyScore,
+        conversationQualityScore:
+            report.conversationQualityScore,
+        strengths: report.strengths.slice(0, 4),
+        improvements: report.improvements.slice(0, 4),
+        practiceWords: report.practiceWords.slice(0, 5),
+        feedback: report.feedback,
+    };
+};

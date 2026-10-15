@@ -9,6 +9,14 @@ import usePageTitle from "../hooks/usePageTitle";
 import useAIConversation from "../hooks/useAIConversation";
 import { getRandomOpeningQuestion } from "../utils/aiGreeting";
 
+import {
+    createConversation as createConversationAPI,
+    saveConversationMessage,
+    endConversation as endConversationAPI,
+} from "../services/aiService";
+
+import FullScreenLoader from "./FullScreenLoader";
+
 export default function AiBasedLearning() {
     const location = useLocation();
     const { t } = useTranslation();
@@ -27,6 +35,13 @@ export default function AiBasedLearning() {
 
     const hasSpeechStartedRef = useRef(false);
     const recordingStartTimeRef = useRef(null);
+
+
+    const conversationIdRef = useRef(null);
+
+    const [performanceReport, setPerformanceReport] = useState(null);
+    const [reportLoading, setReportLoading] = useState(false);
+    const [reportError, setReportError] = useState("");
 
     /*
      * Get selected language from navigation.
@@ -79,6 +94,35 @@ export default function AiBasedLearning() {
      */
     const languageCode = activeLanguage?.code || "en";
 
+    const ensureConversation = async () => {
+        if (conversationIdRef.current) {
+            return conversationIdRef.current;
+        }
+
+        const response = await createConversationAPI(languageCode);
+
+        if (!response?.success || !response?.conversationId) {
+            throw new Error("Unable to create conversation in MongoDB.");
+        }
+
+        conversationIdRef.current = response.conversationId;
+
+        return response.conversationId;
+    };
+
+    const persistMessage = async (role, content) => {
+        if (!content?.trim()) return;
+
+        const conversationId = await ensureConversation();
+
+        await saveConversationMessage({
+            conversationId,
+            role,
+            content: content.trim(),
+        });
+    };
+
+
     const languageName =
         languageCode === "hi"
             ? "Hindi"
@@ -101,11 +145,12 @@ export default function AiBasedLearning() {
     const [isListening, setIsListening] =
         useState(false);
 
-    const [isAiSpeaking, setIsAiSpeaking] =
-        useState(false);
+    const [isAiSpeaking, setIsAiSpeaking] = useState(false);
 
-    const [conversationEnded, setConversationEnded] =
-        useState(false);
+    const [conversationEnded, setConversationEnded] = useState(false);
+
+
+    const [conversationRun, setConversationRun] = useState(0);
     const hasStartedConversationRef = useRef(false);
 
     /*
@@ -124,6 +169,8 @@ export default function AiBasedLearning() {
 
         hasStartedConversationRef.current = true;
 
+
+
         const startConversation = async () => {
             const startTime = performance.now();
 
@@ -137,7 +184,10 @@ export default function AiBasedLearning() {
                     languageCode
                 );
 
+                await ensureConversation();
+
                 addAssistantMessage(greeting);
+                await persistMessage("assistant", greeting);
 
                 console.log(
                     `[AI] Greeting displayed: ${(performance.now() - startTime).toFixed(0)
@@ -159,7 +209,7 @@ export default function AiBasedLearning() {
 
         startConversation();
 
-    }, [activeLanguage?.code, languageCode]);
+    }, [activeLanguage?.code, languageCode, conversationRun]);
 
     // const getInitialGreeting = (uiLang, learningLang) => {
     //     if (uiLang === "hi" && learningLang === "en") {
@@ -221,11 +271,24 @@ export default function AiBasedLearning() {
 
         setInput("");
 
+
         setIsAiSpeaking(true);
 
-        await sendMessage(message);
+        try {
+            await ensureConversation();
+            await persistMessage("user", message);
 
-        setIsAiSpeaking(false);
+            const reply = await sendMessage(message);
+
+            if (reply) {
+                await persistMessage("assistant", reply);
+            }
+        } catch (error) {
+            console.error("Failed to save conversation:", error);
+        } finally {
+            setIsAiSpeaking(false);
+        }
+
     };
 
     /*
@@ -417,17 +480,25 @@ export default function AiBasedLearning() {
                     // --------------------------------
 
 
+
+                    await ensureConversation();
+                    await persistMessage("user", transcript);
+
                     const reply = await sendMessage(transcript, {
                         waitForDisplay: true
                     });
 
+
                     if (reply) {
-                        // Display the AI response immediately.
+                        await persistMessage("assistant", reply);
+
+                        // Display the AI response once.
                         addAssistantMessage(reply);
 
-                        // Then play the AI's audio response.
+                        // Play the audio once.
                         await speakAIResponse(reply);
                     }
+
 
 
                 } catch (error) {
@@ -569,11 +640,46 @@ export default function AiBasedLearning() {
     /*
      * End conversation.
      */
-    const endConversation = () => {
-        setIsListening(false);
-        setIsAiSpeaking(false);
-        setConversationEnded(true);
+
+    const endConversation = async () => {
+        if (isListening || isAiSpeaking || loading) {
+            setReportError(
+                "Please finish the current recording or response before ending the conversation."
+            );
+            return;
+        }
+
+        setReportLoading(true);
+        setReportError("");
+        setPerformanceReport(null);
+
+        try {
+            const conversationId = await ensureConversation();
+            const response = await endConversationAPI(conversationId);
+
+            if (!response?.success || !response?.data?.performance) {
+                throw new Error(
+                    response?.message || "Unable to generate performance report."
+                );
+            }
+
+            setPerformanceReport(response.data.performance);
+            setConversationEnded(true);
+        } catch (error) {
+            console.error("Performance report error:", error);
+
+            setReportError(
+                error.response?.data?.message ||
+                error.message ||
+                "Unable to generate your performance report."
+            );
+
+            setConversationEnded(true);
+        } finally {
+            setReportLoading(false);
+        }
     };
+
 
     /*
      * Start a new conversation.
@@ -581,12 +687,26 @@ export default function AiBasedLearning() {
     const startAgain = () => {
         clearConversation();
 
+        conversationIdRef.current = null;
+
+        setPerformanceReport(null);
+        setReportError("");
+        setReportLoading(false);
+
         setConversationEnded(false);
         setIsListening(false);
         setIsAiSpeaking(false);
+
         hasStartedConversationRef.current = false;
+
         setInput("");
+
+        // Trigger the greeting effect for a fresh session.
+        setConversationRun((previous) => previous + 1);
     };
+    const goToHome = () => {
+        window.location.href = "/";
+    }
 
     const speakAIResponse = async (
         text,
@@ -636,6 +756,18 @@ export default function AiBasedLearning() {
     /*
      * Conversation completed.
      */
+
+
+    if (reportLoading) {
+        return (
+            <FullScreenLoader
+                message="Analyzing Your Conversation"
+                subtitle="VOCO is evaluating your grammar, vocabulary, fluency, and conversation quality. Your personalized feedback will be ready shortly."
+            />
+        );
+    }
+
+
     if (conversationEnded) {
         return (
             <div className="ai-learning-page">
@@ -663,57 +795,60 @@ export default function AiBasedLearning() {
                         <div className="ai-learning-page__overall-score">
 
                             <div className="ai-learning-page__score-circle">
-                                <span>--</span>
+                                <span>
+                                    {performanceReport?.overallScore ?? "--"}
+                                </span>
                                 <small>/ 100</small>
                             </div>
 
-                            <div className="ai-learning-page__score-content">
 
-                                <h2>Conversation Finished</h2>
+                            <div className="ai-learning-page__score-content">
+                                <h2>
+                                    {reportLoading
+                                        ? "Analyzing Your Conversation..."
+                                        : "Your Performance"}
+                                </h2>
 
                                 <p>
-                                    AI evaluation will be connected
-                                    after the voice conversation system
-                                    is complete.
+                                    {reportLoading
+                                        ? "VOCO is evaluating your conversation. This may take a little while."
+                                        : reportError
+                                            ? reportError
+                                            : performanceReport?.feedback ||
+                                            "No feedback is available."}
                                 </p>
-
                             </div>
+
 
                         </div>
 
+
                         <div className="ai-learning-page__metrics">
-
-                            <ScoreItem
-                                title="Fluency"
-                                score={0}
-                                description="Evaluation coming soon"
-                            />
-
                             <ScoreItem
                                 title="Grammar"
-                                score={0}
-                                description="Evaluation coming soon"
-                            />
-
-                            <ScoreItem
-                                title="Accent"
-                                score={0}
-                                description="Evaluation coming soon"
+                                score={performanceReport?.grammarScore ?? 0}
+                                description="Grammar and sentence construction"
                             />
 
                             <ScoreItem
                                 title="Vocabulary"
-                                score={0}
-                                description="Evaluation coming soon"
+                                score={performanceReport?.vocabularyScore ?? 0}
+                                description="Word choice and vocabulary range"
                             />
 
                             <ScoreItem
-                                title="Pronunciation"
-                                score={0}
-                                description="Evaluation coming soon"
+                                title="Fluency"
+                                score={performanceReport?.fluencyScore ?? 0}
+                                description="Written-response coherence"
                             />
 
+                            <ScoreItem
+                                title="Conversation Quality"
+                                score={performanceReport?.conversationQualityScore ?? 0}
+                                description="Relevance and conversational flow"
+                            />
                         </div>
+
 
                         <div className="ai-learning-page__feedback">
 
@@ -730,11 +865,38 @@ export default function AiBasedLearning() {
 
                             </div>
 
-                            <p>
-                                Detailed language feedback will be
-                                available after the evaluation system
-                                is connected.
-                            </p>
+
+                            {reportLoading ? (
+                                <p>Generating your personalized feedback...</p>
+                            ) : performanceReport ? (
+                                <div>
+                                    <p>{performanceReport.feedback}</p>
+
+                                    <h4>Strengths</h4>
+                                    <ul>
+                                        {performanceReport.strengths.map((item, index) => (
+                                            <li key={`strength-${index}`}>{item}</li>
+                                        ))}
+                                    </ul>
+
+                                    <h4>Areas to Improve</h4>
+                                    <ul>
+                                        {performanceReport.improvements.map((item, index) => (
+                                            <li key={`improvement-${index}`}>{item}</li>
+                                        ))}
+                                    </ul>
+
+                                    <h4>Words to Practice</h4>
+                                    <ul>
+                                        {performanceReport.practiceWords.map((item, index) => (
+                                            <li key={`word-${index}`}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ) : (
+                                <p>{reportError || "No performance report is available."}</p>
+                            )}
+
 
                         </div>
 
@@ -749,13 +911,10 @@ export default function AiBasedLearning() {
 
                             <button
                                 className="ai-learning-page__secondary-button"
-                                onClick={() =>
-                                    setConversationEnded(false)
-                                }
+                                onClick={goToHome}
                             >
-                                Back to Learning
+                                Home
                             </button>
-
                         </div>
 
                     </div>
@@ -1057,6 +1216,7 @@ export default function AiBasedLearning() {
                         <button
                             className="ai-learning-page__end-button"
                             onClick={endConversation}
+                            disabled={reportLoading || loading || isAiSpeaking || isListening}
                         >
                             End Conversation
                         </button>

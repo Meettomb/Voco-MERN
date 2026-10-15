@@ -12,6 +12,7 @@ import ExamAttemptRoutes from "./routes/ExamAttemptRoutes.js";
 import UserProgressRoutes from "./routes/UserProgressRoutes.js";
 import ProfilePicRoutes from "./routes/ProfilePicRouter.js";
 import aiRoutes from "./routes/aiRoutes.js";
+import conversationRoutes from "./routes/conversationRoutes.js";
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use("/api/ExamAttemptModel", ExamAttemptRoutes);
 app.use("/api/UserProgressModel", UserProgressRoutes);
 app.use("/api/ProfilePicModel", ProfilePicRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/conversations", conversationRoutes);
 
 
 app.get("/api/health", (req, res) => {

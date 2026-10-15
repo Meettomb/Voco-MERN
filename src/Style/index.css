@@ -2173,6 +2173,24 @@ html {
 }
 
 
+.loader-title {
+  margin: 18px 0 8px;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.loader-subtitle {
+  max-width: 340px;
+  margin: 0 auto;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+  color: #b3b3b3;
+}
+
+
+
 .loader-card {
   background: var(--color-bg-card);
   padding: 36px 44px;
@@ -9041,7 +9059,7 @@ svg {
   }
 }
 
-.ai-learning-page__send-button{
+.ai-learning-page__send-button {
   padding: 10px 16px;
   border: none;
   background: var(--btn-primary-bg);
@@ -9694,10 +9712,8 @@ svg {
 
 .manage-profile-pic-list {
   display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(180px, 1fr)
-  );
+  grid-template-columns: repeat(auto-fill,
+      minmax(180px, 1fr));
 
   gap: 20px;
   width: 100%;
@@ -10038,10 +10054,8 @@ svg {
   }
 
   .manage-profile-pic-list {
-    grid-template-columns: repeat(
-      auto-fill,
-      minmax(150px, 1fr)
-    );
+    grid-template-columns: repeat(auto-fill,
+        minmax(150px, 1fr));
 
     gap: 16px;
   }
@@ -10090,6 +10104,7 @@ svg {
   }
 
 }
+
 @media (max-width: 480px) {
 
   .manage-profile-pic-header h1 {
@@ -10120,11 +10135,9 @@ svg {
    ========================= */
 
 .privacy-policy-header {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary),
-    var(--color-primary-dark)
-  );
+  background: linear-gradient(135deg,
+      var(--color-primary),
+      var(--color-primary-dark));
   color: var(--color-text-inverse);
   padding: 70px 20px 80px;
   text-align: center;
@@ -10188,7 +10201,7 @@ svg {
   box-shadow: var(--shadow-md);
 }
 
-.privacy-policy-card > p {
+.privacy-policy-card>p {
   color: var(--color-text-secondary);
   font-size: 16px;
   line-height: 1.8;
@@ -10394,11 +10407,9 @@ svg {
    ========================= */
 
 .terms-header {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary),
-    var(--color-primary-dark)
-  );
+  background: linear-gradient(135deg,
+      var(--color-primary),
+      var(--color-primary-dark));
   color: var(--color-text-inverse);
   padding: 70px 20px 80px;
   text-align: center;
@@ -10462,7 +10473,7 @@ svg {
   box-shadow: var(--shadow-md);
 }
 
-.terms-card > p {
+.terms-card>p {
   color: var(--color-text-secondary);
   font-size: 16px;
   line-height: 1.8;
@@ -10671,11 +10682,9 @@ svg {
    ========================= */
 
 .about-hero {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary),
-    var(--color-primary-dark)
-  );
+  background: linear-gradient(135deg,
+      var(--color-primary),
+      var(--color-primary-dark));
   color: var(--color-text-inverse);
   padding: 90px 20px 110px;
   text-align: center;
@@ -10801,7 +10810,7 @@ svg {
 }
 
 .about-intro p,
-.about-technology > p {
+.about-technology>p {
   max-width: 850px;
   margin: 0 0 16px;
   color: var(--color-text-secondary);
