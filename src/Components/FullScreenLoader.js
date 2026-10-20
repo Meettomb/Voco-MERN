@@ -1,5 +1,8 @@
 
-function FullScreenLoader() {
+function FullScreenLoader({
+  message = "Loading...",
+  subtitle = ""
+}) {
   return (
     <div className="loader-overlay">
       <div className="loader-card">
@@ -11,7 +14,11 @@ function FullScreenLoader() {
           <span></span>
         </div>
 
-        <p>Loading...</p>
+        <h3 className="loader-title">{message}</h3>
+
+        {subtitle && (
+          <p className="loader-subtitle">{subtitle}</p>
+        )}
       </div>
     </div>
   );

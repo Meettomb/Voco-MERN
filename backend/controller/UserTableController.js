@@ -131,7 +131,7 @@ export const updateUserActiveStatus = async (req, res) => {
     const updatedUser = await UserModel.findByIdAndUpdate(
       req.params.id,
       { isActive: isActive },
-      { new: true }
+      { returnDocument: "after" }
     );
 
     if (!updatedUser) {
@@ -648,7 +648,7 @@ export const updateUserPasswordById = async (req, res) => {
     const updatedUser = await UserModel.findByIdAndUpdate(
       id,
       { password: hashedPassword },
-      { new: true }
+      { returnDocument: "after" }
     );
 
     // ✅ SEND MAIL (CORRECT VARIABLE)

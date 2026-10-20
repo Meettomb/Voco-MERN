@@ -1,6 +1,7 @@
 import { Suspense, lazy, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import FullScreenLoader from "./Components/FullScreenLoader";
+import ScrollToTop from "./Components/ScrollToTop";
 
 
 import { AuthProvider } from "./context/AuthContext";
@@ -36,6 +37,7 @@ const FinalExam = lazy(() => import("./Components/FinalExam"));
 
 const AiBasedLearning = lazy(() => import("./Components/AiBasedLearning"));
 const VerifyEmailChange = lazy(() => import("./Components/profile/VerifyEmailChange"));
+const SingleConversation = lazy(() => import("./Components/profile/Conversation/SingleConversation"));
 
 // Admin Components
 const AdminHeader = lazy(() => import("./Components/admin/AdminHeader"));
@@ -71,12 +73,14 @@ const PrivacyPolicy = lazy(() => import("./Components/PrivacyPolicy"));
 const TermsOfUse = lazy(() => import("./Components/TermsOfUse"));
 const AboutUs = lazy(() => import("./Components/AboutUs"));
 
+
 function App() {
   const [authView, setAuthView] = useState(null);
 
   return (
     <AuthProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <Suspense fallback={<FullScreenLoader />}>
           <Routes>
             {/* Pages WITH Header + Footer */}
@@ -122,6 +126,12 @@ function App() {
               <Route path="/learn-chapter/:chapterId" element={
                 <AuthRoute onAuthFail={() => setAuthView("login")}>
                   <LearnChapter />
+                </AuthRoute>} />
+
+
+              <Route path="/SingleConversation/:conversationId" element={
+                <AuthRoute onAuthFail={() => setAuthView("login")}>
+                  <SingleConversation />
                 </AuthRoute>} />
 
 
@@ -235,7 +245,7 @@ function App() {
                   <ViewMcq />
                 </AuthRoute>} />
 
-                {/* ==================== Profile Picture Routes ==================== */}
+              {/* ==================== Profile Picture Routes ==================== */}
 
               <Route path="profile-pic/add" element={
                 <AuthRoute onAuthFail={() => setAuthView("login")}>
@@ -253,7 +263,7 @@ function App() {
             <Route path="/OtpVerify" element={<OtpVerify />} />
 
             <Route path="/certificate/:id" element={
-                <Certificate />
+              <Certificate />
             } />
 
             <Route path="/verify-email-change" element={
@@ -269,10 +279,10 @@ function App() {
               </AuthRoute>
             } />
 
-            
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/terms-of-use" element={<TermsOfUse />} />
-              <Route path="/about" element={<AboutUs />} />
+
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-use" element={<TermsOfUse />} />
+            <Route path="/about" element={<AboutUs />} />
 
             <Route path="/forgot-password/enter-email" element={<EnterEmail />} />
             <Route path="/forgot-password/otp-verify" element={<ForgotPasswordOtpVerify />} />
@@ -299,6 +309,7 @@ function App() {
           </Routes>
         </Suspense>
 
+
         {/* AUTH POPUPS (GLOBAL) */}
         {authView === "login" && (
           <SignIn
@@ -313,8 +324,9 @@ function App() {
             onOpenSignIn={() => setAuthView("login")}
           />
         )}
-      </BrowserRouter>
-    </AuthProvider>
+
+    </BrowserRouter>
+    </AuthProvider >
   );
 }
 
