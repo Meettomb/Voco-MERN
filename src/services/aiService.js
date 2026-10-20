@@ -104,3 +104,11 @@ export const deleteConversation = async (conversationId) => {
   return response.data;
 };
 
+export const getSingleConversation = async (conversationId) => {
+  const response = await axios.get(
+    `${API_URL}/conversations/${conversationId}`,
+    {headers: getAuthHeaders()}
+  );
+
+  return response.data;
+};

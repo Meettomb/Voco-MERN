@@ -395,3 +395,45 @@ export const deleteConversation = async (req, res) => {
   }
 };
 
+
+
+// Retrieve a complete conversation by ID
+export const getSingleConversation = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { conversationId } = req.params;
+
+    // Validate conversation ID
+    if (!mongoose.isValidObjectId(conversationId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid conversation ID",
+      });
+    }
+
+    // Retrieve the complete conversation for the logged-in user
+    const conversation = await ConversationModel.findOne({
+      _id: conversationId,
+      userId,
+    }).lean();
+
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        message: "Conversation not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: conversation,
+    });
+  } catch (error) {
+    console.error("Get single conversation error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to retrieve conversation",
+    });
+  }
+};

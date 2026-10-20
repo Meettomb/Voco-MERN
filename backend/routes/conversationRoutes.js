@@ -9,6 +9,7 @@ import {
   getConversationReport,
   getConversationList,
   deleteConversation,
+  getSingleConversation
 } from "../controller/conversationController.js";
 
 const router = express.Router();
@@ -33,6 +34,12 @@ router.get(
   "/:conversationId/report",
   authMiddleware,
   getConversationReport
+);
+
+router.get(
+  "/:conversationId",
+  authMiddleware,
+  getSingleConversation
 );
 
 export default router;

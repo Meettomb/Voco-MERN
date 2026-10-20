@@ -4,6 +4,7 @@ import {
   getConversationList,
   deleteConversation,
 } from "../../../services/aiService";
+import { useNavigate } from "react-router-dom";
 
 export default function ConversationsList() {
   const [conversations, setConversations] = useState([]);
@@ -12,6 +13,7 @@ export default function ConversationsList() {
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const navigate = useNavigate();
 
   const loadConversations = useCallback(async (targetPage) => {
     try {
@@ -26,7 +28,7 @@ export default function ConversationsList() {
       console.error("Failed to load conversations:", err);
       setError(
         err.response?.data?.message ||
-          "Unable to load your conversations."
+        "Unable to load your conversations."
       );
     } finally {
       setLoading(false);
@@ -61,7 +63,7 @@ export default function ConversationsList() {
       console.error("Failed to delete conversation:", err);
       setError(
         err.response?.data?.message ||
-          "Unable to delete this conversation."
+        "Unable to delete this conversation."
       );
     } finally {
       setDeletingId(null);
@@ -103,6 +105,7 @@ export default function ConversationsList() {
     return minutes < 1 ? "Less than 1 min" : `${minutes} min`;
   };
 
+ 
   return (
     <section className="conversation-list">
       <div className="conversation-list__header">
@@ -191,6 +194,17 @@ export default function ConversationsList() {
               <article
                 className="conversation-list__item"
                 key={conversation._id}
+                onClick={() =>
+                  navigate(`/SingleConversation/${conversation._id}`)
+                }
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    navigate(`/SingleConversation/${conversation._id}`);
+                  }
+                }}
               >
                 <div className="conversation-list__item-icon">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -310,9 +324,10 @@ export default function ConversationsList() {
                 <button
                   type="button"
                   className="conversation-list__delete"
-                  onClick={() =>
-                    handleDeleteConversation(conversation._id)
-                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteConversation(conversation._id);
+                  }}
                   disabled={deletingId === conversation._id}
                   aria-label="Delete conversation"
                   title="Delete conversation"
