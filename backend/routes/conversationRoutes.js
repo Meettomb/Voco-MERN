@@ -10,7 +10,7 @@ import {
   getConversationList,
   deleteConversation,
   getSingleConversation
-} from "../controller/conversationController.js";
+} from "../controller/ConversationController.js";
 
 const router = express.Router();
 
