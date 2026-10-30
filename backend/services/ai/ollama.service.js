@@ -102,6 +102,24 @@ export const analyzeConversationWithOllama = async ({
         (message) => message.role === "user"
     );
 
+    const spokenMessageCount = learnerMessages.filter(
+        (message) => message.inputMode === "speech"
+    ).length;
+
+    const typedMessageCount = learnerMessages.filter(
+        (message) => message.inputMode === "text"
+    ).length;
+
+    const learnerMessageCount = learnerMessages.length;
+
+    let interactionMode = "text";
+
+    if (spokenMessageCount > 0 && typedMessageCount > 0) {
+        interactionMode = "mixed";
+    } else if (spokenMessageCount > 0) {
+        interactionMode = "speech";
+    }
+
     if (learnerMessages.length === 0) {
         throw new Error(
             "No learner messages available for evaluation"
@@ -168,7 +186,7 @@ export const analyzeConversationWithOllama = async ({
                 messages: [
                     {
                         role: "system",
-                       content: getConversationAnalysisSystemPrompt(),
+                        content: getConversationAnalysisSystemPrompt(),
                     },
                     {
                         role: "user",
@@ -328,19 +346,20 @@ export const analyzeConversationWithOllama = async ({
         grammarScore: report.grammarScore,
         vocabularyScore: report.vocabularyScore,
         fluencyScore: report.fluencyScore,
-
         pronunciationScore: null,
-
         comprehensionScore: report.comprehensionScore,
-
         conversationQualityScore:
             report.conversationQualityScore,
 
+        interactionMode,
+        learnerMessageCount,
+        spokenMessageCount,
+        typedMessageCount,
+
         strengths: report.strengths.slice(0, 4),
-
         improvements: report.improvements.slice(0, 4),
-
         practiceWords: report.practiceWords.slice(0, 5),
+        corrections: report.corrections,
 
         feedback,
     };

@@ -42,7 +42,7 @@ export const saveConversationMessage = async (req, res) => {
   try {
     const userId = req.user.id;
     const { conversationId } = req.params;
-    const { role, content } = req.body;
+    const { role, content, inputMode } = req.body;
 
     if (!mongoose.isValidObjectId(conversationId)) {
       return res.status(400).json({
@@ -59,6 +59,16 @@ export const saveConversationMessage = async (req, res) => {
         message: "A valid role and message content are required",
       });
     }
+    if (
+      role === "user" &&
+      inputMode != null &&
+      !["speech", "text"].includes(inputMode)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Input mode must be speech or text",
+      });
+    }
 
     const conversation = await ConversationModel.findOneAndUpdate(
       {
@@ -71,6 +81,9 @@ export const saveConversationMessage = async (req, res) => {
           messages: {
             role,
             content: content.trim(),
+            ...(role === "user" && inputMode
+              ? { inputMode }
+              : {}),
             timestamp: new Date(),
           },
         },
@@ -179,6 +192,7 @@ export const endConversation = async (req, res) => {
       messages: conversation.messages.map((message) => ({
         role: message.role,
         content: message.content,
+        inputMode: message.inputMode ?? null,
       })),
     });
 
