@@ -160,38 +160,14 @@ function Header({ onOpen }) {
               {!isVercelDomain && (
                 <li>
                   <Link
-                    to="/choose-learning-language"
-                    state={{ target: "ai-based-learning" }}
+                    to="/ai-based-learning"
+                    state={{ language: { code: "en", english: "English" } }}
                     className={target === "ai-based-learning" ? "active-link" : ""}
                   >
                     {t("nav.aiBasedLearning")}
                   </Link>
                 </li>
               )}
-
-              {/* {isSingleLanguage ? (
-                <li>
-                  <Link to="/mcqs-exam"
-                    className={target === "mcqs-exam" ? "active-link" : ""}
-                  >
-                    {t("nav.mcqs")}
-                  </Link>
-                </li>
-              ) : (
-                <li>
-                  <Link to="/choose-learning-language"
-                    state={{ target: "mcqs-exam" }}
-                    className={target === "mcqs-exam" ? "active-link" : ""}
-                  >
-                    {t("nav.mcqs")}
-                  </Link>
-                </li>
-              )} */}
-
-
-              {/* <li>
-                <Link to="/progress">{t("nav.progress")}</Link>
-              </li> */}
 
               <li>
                 <select
@@ -412,7 +388,13 @@ function Header({ onOpen }) {
             {!isVercelDomain && (
               <li>
                 <Link
-                  to="ai-based-learning"
+                  to="/ai-based-learning"
+                  state={{
+                    language: {
+                      code: "en",
+                      english: "English",
+                    },
+                  }}
                   className={target === "ai-based-learning" ? "active-link" : ""}
                 >
                   <svg
