@@ -7,7 +7,7 @@ function Footer() {
   const { t } = useTranslation();
 
 
-  
+
   const isVercelDomain = window.location.hostname.endsWith('vercel.app');
 
   return (
@@ -43,7 +43,15 @@ function Footer() {
             </li>
             {!isVercelDomain && (
               <li>
-                <Link to="/ai-based-learning">
+                <Link
+                  to="/ai-based-learning"
+                  state={{
+                    language: {
+                      code: "en",
+                      english: "English",
+                    },
+                  }}
+                >
                   {t("footer.links.aiBasedLearning")}
                 </Link>
               </li>
