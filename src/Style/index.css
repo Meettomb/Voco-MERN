@@ -8889,50 +8889,219 @@ svg {
   background: var(--color-primary);
 }
 
+/* ========================================
+   AI Feedback Card
+======================================== */
+
 .ai-learning-page .ai-learning-page__feedback {
-  margin-top: 35px;
-  padding: 20px;
-  border: 1px solid var(--color-border-light);
-  border-radius: 12px;
-  background: var(--color-bg-hover);
+    margin-top: 28px;
+    padding: 24px;
+    border: 1px solid var(--color-border-light);
+    border-radius: 14px;
+    background: var(--color-bg-hover);
+    box-sizing: border-box;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
+/* ========================================
+   Feedback Header
+======================================== */
+
 .ai-learning-page .ai-learning-page__feedback-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border-light);
 }
 
 .ai-learning-page .ai-learning-page__feedback-header span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  background: var(--color-primary-light);
-  color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
 }
 
 .ai-learning-page .ai-learning-page__feedback-header svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .ai-learning-page .ai-learning-page__feedback-header h3 {
-  font-size: 14px;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--color-text-primary);
 }
 
-.ai-learning-page .ai-learning-page__feedback p {
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  line-height: 1.7;
+/* ========================================
+   Feedback Paragraphs
+======================================== */
+
+.ai-learning-page .ai-learning-page__feedback > p,
+.ai-learning-page .ai-learning-page__feedback > div > p {
+    margin: 0 0 18px;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+/* ========================================
+   Section Headings
+======================================== */
+
+.ai-learning-page .ai-learning-page__feedback h4 {
+    margin: 28px 0 12px;
+    padding-left: 12px;
+    border-left: 3px solid var(--color-primary);
+    color: var(--color-text-primary);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.ai-learning-page .ai-learning-page__feedback h4:first-child {
+    margin-top: 0;
+}
+
+/* ========================================
+   Strengths, Improvements and Practice Words
+======================================== */
+
+.ai-learning-page .ai-learning-page__feedback ul {
+    margin: 0 0 22px;
+    padding-left: 24px;
+    list-style-type: disc;
+}
+
+.ai-learning-page .ai-learning-page__feedback li {
+    margin-bottom: 10px;
+    padding-left: 5px;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+}
+
+.ai-learning-page .ai-learning-page__feedback li:last-child {
+    margin-bottom: 0;
+}
+
+.ai-learning-page .ai-learning-page__feedback li::marker {
+    color: var(--color-primary);
+}
+
+/* ========================================
+   Sentence Corrections
+======================================== */
+
+.ai-learning-page .ai-learning-page__corrections {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 0 0 24px;
+}
+
+.ai-learning-page .ai-learning-page__correction-item {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid var(--color-border-light);
+    border-radius: 10px;
+    background: var(--color-bg);
+    box-sizing: border-box;
+}
+
+.ai-learning-page .ai-learning-page__correction-item p {
+    margin: 0 0 12px;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+}
+
+.ai-learning-page .ai-learning-page__correction-item p:last-child {
+    margin-bottom: 0;
+}
+
+.ai-learning-page .ai-learning-page__correction-item strong {
+    display: inline-block;
+    margin-right: 3px;
+    color: var(--color-text-primary);
+    font-weight: 700;
+}
+
+/* ========================================
+   Empty States
+======================================== */
+
+.ai-learning-page .ai-learning-page__feedback p:last-child {
+    overflow-wrap: anywhere;
+}
+
+/* ========================================
+   Responsive Layout
+======================================== */
+
+@media (max-width: 768px) {
+    .ai-learning-page .ai-learning-page__feedback {
+        margin-top: 22px;
+        padding: 18px;
+        border-radius: 12px;
+    }
+
+    .ai-learning-page .ai-learning-page__feedback-header {
+        gap: 10px;
+        margin-bottom: 18px;
+        padding-bottom: 14px;
+    }
+
+    .ai-learning-page .ai-learning-page__feedback-header h3 {
+        font-size: 16px;
+    }
+
+    .ai-learning-page .ai-learning-page__feedback h4 {
+        margin-top: 24px;
+        font-size: 14px;
+    }
+
+    .ai-learning-page .ai-learning-page__feedback li,
+    .ai-learning-page .ai-learning-page__feedback > p,
+    .ai-learning-page .ai-learning-page__feedback > div > p {
+        font-size: 13px;
+        line-height: 1.75;
+    }
+
+    .ai-learning-page .ai-learning-page__correction-item {
+        padding: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ai-learning-page .ai-learning-page__feedback {
+        padding: 15px;
+    }
+
+    .ai-learning-page .ai-learning-page__feedback ul {
+        padding-left: 20px;
+    }
+
+    .ai-learning-page .ai-learning-page__feedback li {
+        padding-left: 3px;
+    }
 }
 
 .ai-learning-page .ai-learning-page__score-actions {
@@ -11681,7 +11850,7 @@ svg {
 
 /* ========================================================================================== */
 /* ========================================================================================== */
-/* VerifyEmailChange */
+/* SingleConversation */
 /* ========================================================================================== */
 /* ========================================================================================== */
 
@@ -11902,126 +12071,169 @@ svg {
 }
 
 /* =========================
-   Performance Cards
+   Performance Overview
    ========================= */
 
 .single-conversation .single-conversation__scores-section {
-  margin-bottom: 34px;
+    margin-bottom: 36px;
 }
 
 .single-conversation .single-conversation__scores-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 16px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
 }
 
 .single-conversation .single-conversation__score-card {
-  min-width: 0;
-  padding: 20px;
-  border: 1px solid var(--color-border-light);
-  border-radius: 14px;
-  background: var(--color-bg-card);
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 205px;
+    padding: 24px;
+    border: 1px solid var(--color-border-light);
+    border-radius: 16px;
+    background: var(--color-bg-card);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .single-conversation .single-conversation__score-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
 }
 
+/* Icon and Score */
+
 .single-conversation .single-conversation__score-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
 }
 
 .single-conversation .single-conversation__score-icon {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-  font-size: 17px;
-  font-weight: 800;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    font-size: 17px;
+    font-weight: 800;
 }
 
 .single-conversation .single-conversation__score-value {
-  color: var(--color-text-primary);
-  font-size: 25px;
-  font-weight: 800;
+    color: var(--color-text-primary);
+    font-size: 29px;
+    font-weight: 800;
+    line-height: 1.2;
 }
+
+/* Metric Label */
 
 .single-conversation .single-conversation__score-label {
-  margin-bottom: 14px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  font-weight: 650;
+    margin: 0 0 12px;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
 }
 
+/* Progress Bar */
+
 .single-conversation .single-conversation__progress-track {
-  width: 100%;
-  height: 7px;
-  overflow: hidden;
-  border-radius: 20px;
-  background: var(--color-bg-hover);
+    width: 100%;
+    height: 8px;
+    margin-top: auto;
+    overflow: hidden;
+    border-radius: 20px;
+    background: var(--color-bg-hover);
 }
 
 .single-conversation .single-conversation__progress-fill {
-  height: 100%;
-  border-radius: inherit;
-  background: var(--color-primary);
-  transition: width 0.4s ease;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-primary);
+    transition: width 0.4s ease;
 }
+
+/* Metric Colors */
 
 .single-conversation .single-conversation__score-card--green
 .single-conversation__score-icon {
-  background: #dcfce7;
-  color: #15803d;
+    background: #dcfce7;
+    color: #15803d;
 }
 
 .single-conversation .single-conversation__score-card--green
 .single-conversation__progress-fill {
-  background: var(--color-accent-green);
+    background: var(--color-accent-green);
 }
 
 .single-conversation .single-conversation__score-card--orange
 .single-conversation__score-icon {
-  background: #ffedd5;
-  color: #c2410c;
+    background: #ffedd5;
+    color: #c2410c;
 }
 
 .single-conversation .single-conversation__score-card--orange
 .single-conversation__progress-fill {
-  background: var(--color-accent-orange);
+    background: var(--color-accent-orange);
 }
 
 .single-conversation .single-conversation__score-card--purple
 .single-conversation__score-icon {
-  background: #f3e8ff;
-  color: #7e22ce;
+    background: #f3e8ff;
+    color: #7e22ce;
 }
 
 .single-conversation .single-conversation__score-card--purple
 .single-conversation__progress-fill {
-  background: #a855f7;
+    background: #a855f7;
 }
 
 .single-conversation .single-conversation__score-card--yellow
 .single-conversation__score-icon {
-  background: #fef9c3;
-  color: #a16207;
+    background: #fef9c3;
+    color: #a16207;
 }
 
 .single-conversation .single-conversation__score-card--yellow
 .single-conversation__progress-fill {
-  background: var(--color-accent-yellow);
+    background: var(--color-accent-yellow);
 }
+
+/* Tablet */
+
+@media (max-width: 1100px) {
+    .single-conversation .single-conversation__scores-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+    .single-conversation .single-conversation__scores-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .single-conversation .single-conversation__score-card {
+        min-height: 185px;
+        padding: 20px;
+    }
+
+    .single-conversation .single-conversation__score-value {
+        font-size: 25px;
+    }
+}
+
 
 /* =========================
    Main Content Layout
@@ -12456,4 +12668,175 @@ svg {
     transition: none !important;
     animation: none !important;
   }
+}
+
+/* =========================
+   Session Information
+   ========================= */
+
+.single-conversation .single-conversation__session {
+    margin-bottom: 30px;
+}
+
+.single-conversation .single-conversation__session-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.single-conversation .single-conversation__session-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 9px;
+    min-width: 0;
+    min-height: 88px;
+    padding: 17px 18px;
+    border: 1px solid var(--color-border-light);
+    border-radius: 12px;
+    background: var(--color-bg-section);
+    transition: border-color 0.2s ease,
+                background 0.2s ease,
+                transform 0.2s ease;
+}
+
+.single-conversation .single-conversation__session-item:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-light);
+    transform: translateY(-2px);
+}
+
+.single-conversation .single-conversation__session-item span {
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+.single-conversation .single-conversation__session-item strong {
+    color: var(--color-text-primary);
+    font-size: 15px;
+    font-weight: 750;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+    .single-conversation .single-conversation__session-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 500px) {
+    .single-conversation .single-conversation__session-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .single-conversation .single-conversation__session-item {
+        min-height: 76px;
+        padding: 14px 16px;
+    }
+}
+
+/* =========================
+   Conversation Statistics
+   ========================= */
+
+.single-conversation .single-conversation__statistics {
+    margin-bottom: 30px;
+}
+
+.single-conversation .single-conversation__statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.single-conversation .single-conversation__stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    min-height: 155px;
+    padding: 20px;
+    border: 1px solid var(--color-border-light);
+    border-radius: 14px;
+    background: var(--color-bg-section);
+    transition: transform 0.2s ease,
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+.single-conversation .single-conversation__stat-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.single-conversation .single-conversation__stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 16px;
+    border-radius: 11px;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+}
+
+.single-conversation .single-conversation__stat-label {
+    margin-bottom: 7px;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.single-conversation .single-conversation__stat-card strong {
+    color: var(--color-text-primary);
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+    .single-conversation .single-conversation__statistics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Mobile */
+@media (max-width: 500px) {
+    .single-conversation .single-conversation__statistics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .single-conversation .single-conversation__stat-card {
+        min-height: 140px;
+        padding: 15px;
+    }
+
+    .single-conversation .single-conversation__stat-icon {
+        width: 37px;
+        height: 37px;
+        margin-bottom: 13px;
+    }
+
+    .single-conversation .single-conversation__stat-card strong {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 350px) {
+    .single-conversation .single-conversation__statistics-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }

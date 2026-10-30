@@ -46,10 +46,17 @@ export const saveConversationMessage = async ({
   conversationId,
   role,
   content,
+  inputMode,
 }) => {
   const response = await axios.post(
     `${API_URL}/conversations/${conversationId}/messages`,
-    { role, content },
+    {
+      role,
+      content,
+      ...(role === "user" && inputMode
+        ? { inputMode }
+        : {}),
+    },
     {
       headers: getAuthHeaders(),
     }

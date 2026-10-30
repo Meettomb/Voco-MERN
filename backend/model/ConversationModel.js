@@ -13,6 +13,11 @@ const conversationMessageSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    inputMode: {
+      type: String,
+      enum: ["speech", "text", null],
+      default: null,
+    },
     timestamp: {
       type: Date,
       default: Date.now,
@@ -27,10 +32,46 @@ const performanceSchema = new mongoose.Schema(
     grammarScore: Number,
     vocabularyScore: Number,
     fluencyScore: Number,
+    pronunciationScore: {
+      type: Number,
+      default: null,
+    },
+    comprehensionScore: Number,
     conversationQualityScore: Number,
+
+    interactionMode: {
+      type: String,
+      enum: ["speech", "text", "mixed"],
+      default: "text",
+    },
+
+    learnerMessageCount: {
+      type: Number,
+      default: 0,
+    },
+
+    spokenMessageCount: {
+      type: Number,
+      default: 0,
+    },
+
+    typedMessageCount: {
+      type: Number,
+      default: 0,
+    },
+
     strengths: [String],
     improvements: [String],
     practiceWords: [String],
+
+    corrections: [
+      {
+        original: String,
+        corrected: String,
+        explanation: String,
+      },
+    ],
+
     feedback: String,
   },
   { _id: false }
