@@ -29,10 +29,21 @@ export const sendMessageToAI = async ({
 };
 
 // Create a conversation in MongoDB
-export const createConversation = async (language) => {
+// Create a conversation with the learner's first input
+export const createConversation = async ({
+  language,
+  content,
+  inputMode,
+  openingMessage,
+}) => {
   const response = await axios.post(
     `${API_URL}/conversations`,
-    { language },
+    {
+      language,
+      content,
+      inputMode,
+      openingMessage,
+    },
     {
       headers: getAuthHeaders(),
     }
