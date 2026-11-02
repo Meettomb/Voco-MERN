@@ -255,7 +255,7 @@ export default function AiBasedLearning() {
 
     }, [activeLanguage?.code, languageCode, conversationRun]);
 
-   
+
     /*
      * Latest AI message.
      */
@@ -678,42 +678,72 @@ export default function AiBasedLearning() {
             return;
         }
 
+        if (!conversationIdRef.current) {
+            setReportError(
+                "Please send at least one message before ending the conversation."
+            );
+
+            alert(
+                "Please send at least one message before ending the conversation."
+            );
+
+            return;
+        }
+
         setReportLoading(true);
         setReportError("");
         setPerformanceReport(null);
 
         try {
-            if (!conversationIdRef.current) {
-                setReportError(
-                    "Please send at least one message before ending the conversation."
-                );
-                alert("Please send at least one message before ending the conversation.");
-                return;
-            }
-
             const response = await endConversationAPI(
                 conversationIdRef.current
             );
 
-            if (!response?.success || !response?.data?.performance) {
+            if (!response?.success) {
                 throw new Error(
-                    response?.message || "Unable to generate performance report."
+                    response?.message ||
+                    "Unable to end conversation."
                 );
             }
 
-            setPerformanceReport(response.data.performance);
-            setConversationEnded(true);
+            // Backend accepted the report-generation job.
+            if (response.status === "analyzing") {
+                setConversationEnded(true);
+                setReportLoading(false);
+
+                setReportError("");
+
+                return;
+            }
+
+            // Handle an already-completed report.
+            if (response.status === "completed") {
+                setPerformanceReport(
+                    response.performance ||
+                    response.data?.performance ||
+                    null
+                );
+
+                setConversationEnded(true);
+                setReportLoading(false);
+
+                return;
+            }
+
+            throw new Error(
+                response.message ||
+                "Unexpected report status."
+            );
+
         } catch (error) {
-            console.error("Performance report error:", error);
+            console.error("End conversation error:", error);
 
             setReportError(
                 error.response?.data?.message ||
                 error.message ||
-                "Unable to generate your performance report."
+                "Unable to submit your conversation for analysis."
             );
 
-            setConversationEnded(true);
-        } finally {
             setReportLoading(false);
         }
     };
@@ -808,279 +838,43 @@ export default function AiBasedLearning() {
     }
 
 
-    if (conversationEnded) {
+    if (conversationEnded && !performanceReport && !reportError) {
         return (
             <div className="ai-learning-page">
                 <div className="ai-learning-page__container">
                     <div className="ai-learning-page__score-card">
 
-                        {/* Performance Header */}
                         <div className="ai-learning-page__score-header">
-                            <span className="ai-learning-page__score-icon">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M12 3l2.8 5.7L21 9.6l-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9L12 3Z" />
-                                </svg>
-                            </span>
-
-                            <h1>Conversation Complete</h1>
+                            <h1>Conversation Submitted Successfully!</h1>
 
                             <p>
-                                Here is your complete performance report
-                                for this conversation.
+                                Your conversation has ended. VOCO is now
+                                analyzing your responses to prepare your
+                                personalized performance report.
                             </p>
                         </div>
 
-                        {/* Overall Performance */}
-                        <div className="ai-learning-page__overall-score">
-                            <div className="ai-learning-page__score-circle">
-                                <span>
-                                    {performanceReport?.overallScore ?? "--"}
-                                </span>
-                                <small>/ 100</small>
-                            </div>
-
-                            <div className="ai-learning-page__score-content">
-                                <h2>Your Performance</h2>
-
-                                <p>
-                                    {reportError
-                                        ? reportError
-                                        : performanceReport?.feedback ||
-                                        "No feedback is available."}
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Performance Metrics */}
-                        <div className="ai-learning-page__metrics">
-                            <ScoreItem
-                                title="Grammar"
-                                score={performanceReport?.grammarScore}
-                                description="Grammar and sentence construction"
-                            />
-
-                            <ScoreItem
-                                title="Vocabulary"
-                                score={performanceReport?.vocabularyScore}
-                                description="Word choice and vocabulary range"
-                            />
-
-                            <ScoreItem
-                                title="Fluency"
-                                score={performanceReport?.fluencyScore}
-                                description="Expression and conversational flow"
-                            />
-
-                            <ScoreItem
-                                title="Comprehension"
-                                score={performanceReport?.comprehensionScore}
-                                description="Understanding and responding appropriately"
-                            />
-
-                            <ScoreItem
-                                title="Conversation Quality"
-                                score={performanceReport?.conversationQualityScore}
-                                description="Relevance and conversational coherence"
-                            />
-
-                            {/* Pronunciation */}
-                            <div className="ai-learning-page__metric">
-                                <div className="ai-learning-page__metric-top">
-                                    <div>
-                                        <h3>Pronunciation</h3>
-                                        <span>Speech pronunciation assessment</span>
-                                    </div>
-
-                                    <strong>
-                                        {performanceReport?.pronunciationScore != null
-                                            ? `${performanceReport.pronunciationScore}%`
-                                            : "N/A"}
-                                    </strong>
-                                </div>
-
-                                <p>
-                                    {performanceReport?.pronunciationScore != null
-                                        ? "Pronunciation assessment completed."
-                                        : "Not assessed. Audio-based pronunciation assessment is not available yet."}
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Conversation Statistics */}
                         <div className="ai-learning-page__feedback">
-                            <div className="ai-learning-page__feedback-header">
-                                <h3>Conversation Statistics</h3>
-                            </div>
+                            <h3>Report Generation in Progress</h3>
 
-                            <div className="ai-learning-page__session-info">
-                                <div>
-                                    <span>Interaction Mode</span>
-                                    <strong>
-                                        {performanceReport?.interactionMode
-                                            ? performanceReport.interactionMode
-                                                .charAt(0)
-                                                .toUpperCase() +
-                                            performanceReport.interactionMode.slice(1)
-                                            : "Unavailable"}
-                                    </strong>
-                                </div>
+                            <p>
+                                This process may take a few minutes.
+                                You can leave this page. We will send
+                                you an email when your report is ready.
+                            </p>
 
-                                <div>
-                                    <span>Total Learner Messages</span>
-                                    <strong>
-                                        {performanceReport?.learnerMessageCount ?? 0}
-                                    </strong>
-                                </div>
-
-                                <div>
-                                    <span>Spoken Messages</span>
-                                    <strong>
-                                        {performanceReport?.spokenMessageCount ?? 0}
-                                    </strong>
-                                </div>
-
-                                <div>
-                                    <span>Typed Messages</span>
-                                    <strong>
-                                        {performanceReport?.typedMessageCount ?? 0}
-                                    </strong>
-                                </div>
-                            </div>
+                            <p>
+                                You can also check the analysis status
+                                anytime from your Profile section.
+                            </p>
                         </div>
 
-                        {/* AI Feedback */}
-                        <div className="ai-learning-page__feedback">
-                            <div className="ai-learning-page__feedback-header">
-                                <span>
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M12 3a9 9 0 1 0 9 9" />
-                                        <path d="M12 7v5l3 2" />
-                                    </svg>
-                                </span>
-
-                                <h3>AI Feedback</h3>
-                            </div>
-
-                            {reportError && !performanceReport ? (
-                                <p>{reportError}</p>
-                            ) : performanceReport ? (
-                                <div>
-                                    {/* Personalized Feedback */}
-                                    <p>
-                                        {performanceReport.feedback ||
-                                            "No personalized feedback is available."}
-                                    </p>
-
-                                    {/* Strengths */}
-                                    <h4>Strengths</h4>
-
-                                    {Array.isArray(performanceReport.strengths) &&
-                                        performanceReport.strengths.length > 0 ? (
-                                        <ul>
-                                            {performanceReport.strengths.map(
-                                                (item, index) => (
-                                                    <li key={`strength-${index}`}>
-                                                        {item}
-                                                    </li>
-                                                )
-                                            )}
-                                        </ul>
-                                    ) : (
-                                        <p>No strengths were provided.</p>
-                                    )}
-
-                                    {/* Areas to Improve */}
-                                    <h4>Areas to Improve</h4>
-
-                                    {Array.isArray(performanceReport.improvements) &&
-                                        performanceReport.improvements.length > 0 ? (
-                                        <ul>
-                                            {performanceReport.improvements.map(
-                                                (item, index) => (
-                                                    <li key={`improvement-${index}`}>
-                                                        {item}
-                                                    </li>
-                                                )
-                                            )}
-                                        </ul>
-                                    ) : (
-                                        <p>No improvement suggestions were provided.</p>
-                                    )}
-
-                                    {/* Sentence Corrections */}
-                                    <h4>Sentence Corrections</h4>
-
-                                    {Array.isArray(performanceReport.corrections) &&
-                                        performanceReport.corrections.length > 0 ? (
-                                        <div className="ai-learning-page__corrections">
-                                            {performanceReport.corrections.map(
-                                                (item, index) => (
-                                                    <div
-                                                        className="ai-learning-page__correction-item"
-                                                        key={`correction-${index}`}
-                                                    >
-                                                        <p>
-                                                            <strong>Original:</strong>{" "}
-                                                            {item.original}
-                                                        </p>
-
-                                                        <p>
-                                                            <strong>Corrected:</strong>{" "}
-                                                            {item.corrected}
-                                                        </p>
-
-                                                        <p>
-                                                            <strong>Explanation:</strong>{" "}
-                                                            {item.explanation}
-                                                        </p>
-                                                    </div>
-                                                )
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <p>
-                                            No sentence corrections were provided
-                                            for this conversation.
-                                        </p>
-                                    )}
-
-                                    {/* Words to Practice */}
-                                    <h4>Words to Practice</h4>
-
-                                    {Array.isArray(performanceReport.practiceWords) &&
-                                        performanceReport.practiceWords.length > 0 ? (
-                                        <ul>
-                                            {performanceReport.practiceWords.map(
-                                                (item, index) => (
-                                                    <li key={`word-${index}`}>
-                                                        {item}
-                                                    </li>
-                                                )
-                                            )}
-                                        </ul>
-                                    ) : (
-                                        <p>No practice words were provided.</p>
-                                    )}
-                                </div>
-                            ) : (
-                                <p>No performance report is available.</p>
-                            )}
-                        </div>
-
-                        {/* Navigation Actions */}
                         <div className="ai-learning-page__score-actions">
                             <button
                                 className="ai-learning-page__primary-button"
-                                onClick={startAgain}
-                            >
-                                Practice Again
-                            </button>
-
-                            <button
-                                className="ai-learning-page__secondary-button"
                                 onClick={goToHome}
                             >
-                                Home
+                                Go to Home
                             </button>
                         </div>
 

@@ -1,4 +1,3 @@
-const OLLAMA_URL = process.env.OLLAMA_URL;
 import { getConversationSystemPrompt } from "./prompts/conversationPrompt.js";
 import {
     getConversationAnalysisPrompt,
@@ -6,6 +5,16 @@ import {
 } from "./prompts/conversationAnalysisPrompt.js";
 
 const MODEL = "qwen3:1.7b";
+
+const getOllamaUrl = () => {
+    const ollamaUrl = process.env.OLLAMA_URL;
+
+    if (!ollamaUrl) {
+        throw new Error("OLLAMA_URL is not configured");
+    }
+
+    return ollamaUrl;
+};
 
 export const chatWithOllama = async ({
     message,
@@ -44,7 +53,7 @@ export const chatWithOllama = async ({
         }
     ];
 
-    const response = await fetch(`${OLLAMA_URL}/api/chat`, {
+    const response = await fetch(`${getOllamaUrl()}/api/chat`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -175,7 +184,7 @@ export const analyzeConversationWithOllama = async ({
     // --------------------------------------------------
 
     const response = await fetch(
-        `${OLLAMA_URL}/api/chat`,
+        `${getOllamaUrl()}/api/chat`,
         {
             method: "POST",
             headers: {
@@ -196,9 +205,11 @@ export const analyzeConversationWithOllama = async ({
                 stream: false,
                 think: false,
                 format: "json",
+                keep_alive: "10m",
                 options: {
                     temperature: 0,
                     num_ctx: 8192,
+                    num_predict: 700,
                 },
             }),
         }
@@ -216,6 +227,28 @@ export const analyzeConversationWithOllama = async ({
     }
 
     const data = await response.json();
+
+    console.log("========== OLLAMA REPORT PERFORMANCE ==========");
+    console.log(
+        "Model Load Time:",
+        `${(data.load_duration / 1e9).toFixed(2)} seconds`
+    );
+    console.log(
+        "Prompt Evaluation Time:",
+        `${(data.prompt_eval_duration / 1e9).toFixed(2)} seconds`
+    );
+    console.log(
+        "Response Generation Time:",
+        `${(data.eval_duration / 1e9).toFixed(2)} seconds`
+    );
+    console.log(
+        "Total Ollama Time:",
+        `${(data.total_duration / 1e9).toFixed(2)} seconds`
+    );
+    console.log("Prompt Tokens:", data.prompt_eval_count);
+    console.log("Generated Tokens:", data.eval_count);
+    console.log("================================================");
+
     const content = data.message?.content;
 
     if (

@@ -9,7 +9,8 @@ import {
   getConversationReport,
   getConversationList,
   deleteConversation,
-  getSingleConversation
+  getSingleConversation,
+  getConversationReportStatus
 } from "../controller/ConversationController.js";
 
 const router = express.Router();
@@ -17,6 +18,12 @@ const router = express.Router();
 router.post("/", authMiddleware, createConversation);
 router.get("/", authMiddleware, getConversationList);
 router.delete("/:conversationId", authMiddleware, deleteConversation);
+
+router.get(
+  "/:conversationId/report-status",
+  authMiddleware,
+  getConversationReportStatus
+);
 
 router.post(
   "/:conversationId/messages",

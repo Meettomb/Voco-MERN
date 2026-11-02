@@ -245,11 +245,49 @@ export const sendMail = async (to, subject, type, value) => {
 
   }
 
-  // ✅ REMINDER MAIL
-// ✅ REMINDER MAIL
-if (type === "reminder") {
+  if (type === "conversationReport") {
+    content = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
+      <h2 style="color: #1E90FF;">Your VOCO Performance Report Is Ready!</h2>
 
-  content = `
+      <p>Hello,</p>
+
+      <p>
+        Your AI conversation has been analyzed successfully.
+        Your performance report is now available.
+      </p>
+
+      <p>
+        Click below to view your report:
+      </p>
+
+      <a
+        href="${value.reportUrl}"
+        style="
+          display: inline-block;
+          background: #1E90FF;
+          color: white;
+          padding: 12px 24px;
+          text-decoration: none;
+          border-radius: 6px;
+        "
+      >
+        View My Report
+      </a>
+
+      <p style="margin-top: 25px;">
+        Keep practising with VOCO to improve your language skills!
+      </p>
+
+      <p>Regards,<br />LearnVOCO Team</p>
+    </div>
+  `;
+  }
+
+  // ✅ REMINDER MAIL
+  if (type === "reminder") {
+
+    content = `
     <div style="max-width:520px;margin:auto;text-align:center;">
 
       <div style="
@@ -322,7 +360,7 @@ if (type === "reminder") {
 
     </div>
   `;
-}
+  }
 
   const html = `
 <table width="100%" cellpadding="0" cellspacing="0"

@@ -92,7 +92,7 @@ const conversationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["active", "analyzing", "completed"],
+      enum: ["active", "analyzing", "completed", "failed"],
       default: "active",
       index: true,
     },
