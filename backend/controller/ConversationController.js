@@ -4,10 +4,12 @@ import ConversationModel from "../model/ConversationModel.js";
 import { analyzeConversationWithOllama } from "../services/ai/ollama.service.js";
 
 // Create a new conversation
+
+// Create a conversation when the learner sends their first input
 export const createConversation = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { language } = req.body;
+    const { language, content, inputMode, openingMessage } = req.body;
 
     if (!["en", "hi"].includes(language)) {
       return res.status(400).json({
@@ -16,26 +18,65 @@ export const createConversation = async (req, res) => {
       });
     }
 
+    if (typeof content !== "string" || !content.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "The learner's first message is required",
+      });
+    }
+
+    if (!["speech", "text"].includes(inputMode)) {
+      return res.status(400).json({
+        success: false,
+        message: "Input mode must be speech or text",
+      });
+    }
+
+    const messages = [];
+
+    // Preserve VOCO's opening message when provided
+    if (
+      typeof openingMessage === "string" &&
+      openingMessage.trim()
+    ) {
+      messages.push({
+        role: "assistant",
+        content: openingMessage.trim(),
+        timestamp: new Date(),
+      });
+    }
+
+    // Save the first learner input
+    messages.push({
+      role: "user",
+      content: content.trim(),
+      inputMode,
+      timestamp: new Date(),
+    });
+
     const conversation = await ConversationModel.create({
       userId,
       language,
-      messages: [],
+      messages,
       status: "active",
     });
 
     return res.status(201).json({
       success: true,
+      message: "Conversation started successfully",
       conversationId: conversation._id,
       data: conversation,
     });
   } catch (error) {
     console.error("Create conversation error:", error);
+
     return res.status(500).json({
       success: false,
       message: "Unable to create conversation",
     });
   }
 };
+
 
 // Save a user or AI message
 export const saveConversationMessage = async (req, res) => {

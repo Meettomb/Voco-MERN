@@ -38,6 +38,8 @@ export default function AiBasedLearning() {
 
 
     const conversationIdRef = useRef(null);
+    const conversationCreationRef = useRef(null);
+    const openingMessageRef = useRef("");
 
     const [performanceReport, setPerformanceReport] = useState(null);
     const [reportLoading, setReportLoading] = useState(false);
@@ -94,38 +96,69 @@ export default function AiBasedLearning() {
      */
     const languageCode = activeLanguage?.code || "en";
 
-    const ensureConversation = async () => {
+    /*
+ * Save the learner's first message and create
+ * the conversation only at that moment.
+ */
+    const persistLearnerMessage = async (content, inputMode) => {
+        if (!content?.trim()) {
+            throw new Error("Learner message cannot be empty.");
+        }
+
+        // Reuse an existing conversation.
         if (conversationIdRef.current) {
-            return conversationIdRef.current;
+            return saveConversationMessage({
+                conversationId: conversationIdRef.current,
+                role: "user",
+                content: content.trim(),
+                inputMode,
+            });
         }
 
-        const response = await createConversationAPI(languageCode);
-
-        if (!response?.success || !response?.conversationId) {
-            throw new Error("Unable to create conversation in MongoDB.");
+        // Reuse an ongoing creation request if one exists.
+        if (conversationCreationRef.current) {
+            return conversationCreationRef.current;
         }
 
-        conversationIdRef.current = response.conversationId;
+        const creationPromise = (async () => {
+            const response = await createConversationAPI({
+                language: languageCode,
+                content: content.trim(),
+                inputMode,
+                openingMessage: openingMessageRef.current,
+            });
 
-        return response.conversationId;
+            if (!response?.success || !response?.conversationId) {
+                throw new Error("Unable to create conversation in MongoDB.");
+            }
+
+            conversationIdRef.current = response.conversationId;
+
+            return response;
+        })();
+
+        conversationCreationRef.current = creationPromise;
+
+        try {
+            return await creationPromise;
+        } finally {
+            conversationCreationRef.current = null;
+        }
     };
 
-    const persistMessage = async (
-        role,
-        content,
-        inputMode = null
-    ) => {
-        const conversationId = await ensureConversation();
-
-        if (!conversationId) {
-            throw new Error("Unable to create conversation");
+    /*
+     * Save AI messages only when a conversation
+     * has already been created by learner input.
+     */
+    const persistAssistantMessage = async (content) => {
+        if (!content?.trim() || !conversationIdRef.current) {
+            return;
         }
 
         return saveConversationMessage({
-            conversationId,
-            role,
-            content,
-            inputMode,
+            conversationId: conversationIdRef.current,
+            role: "assistant",
+            content: content.trim(),
         });
     };
 
@@ -191,17 +224,21 @@ export default function AiBasedLearning() {
                     languageCode
                 );
 
-                await ensureConversation();
+                // Keep the greeting in memory.
+                // Do not create a database entry yet.
+                openingMessageRef.current = greeting;
 
                 addAssistantMessage(greeting);
-                await persistMessage("assistant", greeting);
+
+                // Play the greeting without saving it to MongoDB.
+                await speakAIResponse(greeting);
 
                 console.log(
                     `[AI] Greeting displayed: ${(performance.now() - startTime).toFixed(0)
                     } ms`
                 );
 
-                await speakAIResponse(greeting);
+                // await speakAIResponse(greeting);
 
                 console.log(
                     `[AI] Greeting playback finished: ${(performance.now() - startTime).toFixed(0)
@@ -218,22 +255,7 @@ export default function AiBasedLearning() {
 
     }, [activeLanguage?.code, languageCode, conversationRun]);
 
-    // const getInitialGreeting = (uiLang, learningLang) => {
-    //     if (uiLang === "hi" && learningLang === "en") {
-    //         return "नमस्ते! VOCO में आपका स्वागत है। चलिए, अंग्रेज़ी बोलने का अभ्यास शुरू करते हैं। आज आप कैसे हैं?";
-    //     }
-
-    //     if (uiLang === "en" && learningLang === "hi") {
-    //         return "Hello! Welcome to VOCO. Let's practise speaking Hindi together. आज आपका दिन कैसा रहा?";
-    //     }
-
-    //     if (uiLang === "hi" && learningLang === "hi") {
-    //         return "नमस्ते! VOCO में आपका स्वागत है। आज आप कैसे हैं? चलिए, हिंदी में बातचीत शुरू करते हैं।";
-    //     }
-
-    //     return "Hello! Welcome to VOCO English speaking practice. How are you today? Let's start with a simple question: What did you do today?";
-    // };
-
+   
     /*
      * Latest AI message.
      */
@@ -282,14 +304,14 @@ export default function AiBasedLearning() {
         setIsAiSpeaking(true);
 
         try {
-            await ensureConversation();
-
-            await persistMessage("user", message, "text");
+            // Create the database record on the first text input.
+            // Subsequent inputs are saved to the existing record.
+            await persistLearnerMessage(message, "text");
 
             const reply = await sendMessage(message);
 
             if (reply) {
-                await persistMessage("assistant", reply);
+                await persistAssistantMessage(reply);
             }
         } catch (error) {
             console.error("Failed to save conversation:", error);
@@ -489,17 +511,15 @@ export default function AiBasedLearning() {
 
 
 
-                    await ensureConversation();
-
-                    await persistMessage("user", transcript, "speech");
+                    // Create the database record on the first speech input.
+                    await persistLearnerMessage(transcript, "speech");
 
                     const reply = await sendMessage(transcript, {
                         waitForDisplay: true
                     });
 
-
                     if (reply) {
-                        await persistMessage("assistant", reply);
+                        await persistAssistantMessage(reply);
 
                         // Display the AI response once.
                         addAssistantMessage(reply);
@@ -663,8 +683,17 @@ export default function AiBasedLearning() {
         setPerformanceReport(null);
 
         try {
-            const conversationId = await ensureConversation();
-            const response = await endConversationAPI(conversationId);
+            if (!conversationIdRef.current) {
+                setReportError(
+                    "Please send at least one message before ending the conversation."
+                );
+                alert("Please send at least one message before ending the conversation.");
+                return;
+            }
+
+            const response = await endConversationAPI(
+                conversationIdRef.current
+            );
 
             if (!response?.success || !response?.data?.performance) {
                 throw new Error(
@@ -697,6 +726,8 @@ export default function AiBasedLearning() {
         clearConversation();
 
         conversationIdRef.current = null;
+        conversationCreationRef.current = null;
+        openingMessageRef.current = "";
 
         setPerformanceReport(null);
         setReportError("");
