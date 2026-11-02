@@ -1,5 +1,6 @@
 
 import axios from "axios";
+import cleanTextForSpeech from "../utils/cleanTextForSpeech";
 
 const TTS_URL = process.env.REACT_APP_TTS_URL;
 
@@ -7,10 +8,11 @@ export const synthesizeSpeech = async (text, language = "en") => {
     const startTime = performance.now();
 
     try {
+        const speechText = cleanTextForSpeech(text);
         const response = await axios.post(
             `${TTS_URL}/synthesize`,
             {
-                text,
+                text: speechText,
                 language
             },
             {
