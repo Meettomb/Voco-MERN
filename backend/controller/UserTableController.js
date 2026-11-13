@@ -86,7 +86,8 @@ export const getUserDataById = async (req, res) => {
   try {
     const user = await UserModel
       .findById(req.params.id)
-      .populate("learningLanguages");
+      .populate("learningLanguages")
+      .populate("profilePicId");
 
     if (!user) {
       return res.status(404).json({
