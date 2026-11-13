@@ -5280,6 +5280,8 @@ svg {
   font-weight: 800;
   font-size: 0.9rem;
   color: var(--color-text-primary);
+  padding: 0;
+  cursor: pointer;
 }
 
 .profile_main .profile-hero .avatar-wrapper .level-badge svg {
@@ -5290,6 +5292,166 @@ svg {
 .profile_main .profile-hero .avatar-wrapper .level-badge:hover {
   transform: scale(1.1);
   transition: 0.3s ease;
+}
+
+.profile-avatar-picker-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(5px);
+}
+
+.profile-avatar-picker {
+  width: min(760px, 100%);
+  max-height: min(86vh, 760px);
+  overflow: auto;
+  padding: 24px;
+  box-sizing: border-box;
+  border: 1px solid var(--color-border-light);
+  border-radius: 18px;
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-md);
+}
+
+.profile-avatar-picker-header,
+.profile-avatar-picker-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.profile-avatar-picker-header {
+  margin-bottom: 20px;
+}
+
+.profile-avatar-picker-header h2 {
+  color: var(--color-text-primary);
+  font-size: 1.4rem;
+}
+
+.profile-avatar-picker-header p,
+.profile-avatar-picker-status {
+  margin-top: 6px;
+  color: var(--color-text-secondary);
+}
+
+.profile-avatar-picker-close {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.profile-avatar-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 14px;
+  max-height: 48vh;
+  overflow-y: auto;
+  padding: 2px;
+}
+
+.profile-avatar-option {
+  position: relative;
+  aspect-ratio: 1;
+  padding: 6px;
+  overflow: hidden;
+  border: 2px solid var(--color-border-light);
+  border-radius: 14px;
+  background: var(--color-bg-section);
+  cursor: pointer;
+}
+
+.profile-avatar-option.selected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+.profile-avatar-option img {
+  width: 100%;
+  height: 100%;
+  border-radius: 9px;
+  object-fit: cover;
+}
+
+.profile-avatar-current {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  left: 6px;
+  padding: 4px;
+  border-radius: 0 0 8px 8px;
+  background: rgba(15, 23, 42, 0.75);
+  color: #fff;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.profile-avatar-picker-error {
+  margin-bottom: 14px;
+  color: #b91c1c;
+}
+
+.profile-avatar-picker-status {
+  padding: 28px 8px;
+  text-align: center;
+}
+
+.profile-avatar-picker-actions {
+  justify-content: flex-end;
+  margin-top: 22px;
+}
+
+.profile-avatar-cancel,
+.profile-avatar-save {
+  min-width: 90px;
+  padding: 10px 18px;
+  border: 1px solid var(--color-border-medium);
+  border-radius: 8px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.profile-avatar-cancel {
+  background: transparent;
+  color: var(--color-text-primary);
+}
+
+.profile-avatar-save {
+  border-color: var(--btn-primary-bg);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+}
+
+.profile-avatar-cancel:disabled,
+.profile-avatar-save:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@media (max-width: 520px) {
+  .profile-avatar-picker {
+    padding: 18px;
+  }
+
+  .profile-avatar-picker-grid {
+    grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
+    gap: 10px;
+  }
 }
 
 
